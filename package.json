@@ -1,0 +1,7 @@
+{
+  "name": "trion-mvp",
+  "version": "1.0.0",
+  "dependencies": {
+    "yahoo-finance2": "^3.0.0"
+  }
+}
