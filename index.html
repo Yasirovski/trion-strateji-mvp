@@ -5,123 +5,222 @@
   <title>Trion Strateji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- AdSense Başlatma -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5776496009950122" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="styles.css">
+  <!-- Google AdSense Başlatma Kodu -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5776496009950122"
+    crossorigin="anonymous"></script>
 
-  <!-- Google Charts Gauge -->
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script>
-    google.charts.load('current',{packages:['gauge']});
-  </script>
-  <style>
-    /* 2× genişlik için %200 */
-    .sidebar, .main { width:200%; }
-  </style>
+  <!-- Harici Stil Dosyası -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+    <h1>Trion Strateji</h1>
+    <nav>
+      <button onclick="switchMarket('BIST')">Borsa İstanbul</button>
+      <button onclick="switchMarket('USA')">Amerika B.</button>
+      <button onclick="switchMarket('CMD')">Emtialar</button>
+    </nav>
+  </header>
 
-<header>…</header>
+  <div class="container">
+    <!-- A) Symbol List -->
+    <aside class="sidebar" id="watchlist"></aside>
 
-<div class="container">
-  <!-- Watchlist -->
-  <aside class="sidebar">
-    <div id="watchlist"></div>
-  </aside>
+    <!-- B) Chart + Gauge -->
+    <section class="main">
+      <div id="tv-chart"></div>
+      <div id="gauge-container">
+        <svg id="gauge-svg"></svg>
+      </div>
+    </section>
 
-  <!-- Chart + Gauge -->
-  <section class="main">
-    <div id="tv-chart"></div>
-    <div id="gauge-container">
-      <div id="gauge-chart" style="width:400px; height:240px; margin:auto"></div>
-    </div>
-  </section>
+    <!-- Reklam & Haber -->
+    <aside class="news">
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-5776496009950122"
+           data-ad-slot="5878236921"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
 
-  <!-- Reklam & Haber -->
-  <aside class="news">…</aside>
-</div>
+      <div id="rss-feed">
+        <h3>Finans Haberleri</h3>
+        <ul id="news-list"></ul>
+      </div>
+    </aside>
+  </div>
 
-<footer>…</footer>
+  <footer>
+    <a href="about.html">Hakkında</a> |
+    <a href="contact.html">İletişim</a>
+  </footer>
 
-<script>
-  const config = {
-    BIST: {
-      wl: [ /* BIST30 sembolleri */ ],
-      chartSymbol: "BIST:XU100",
-      gaugeURL: "./.netlify/functions/get-greed-bist"
-    },
-    USA: {
-      wl: [ /* NASDAQ TOP10 */ ],
-      chartSymbol: "NASDAQ:NDX",
-      gaugeURL: "./.netlify/functions/get-greed-usa"
-    },
-    CMD: {
-      wl: [ /* emtialar */ ],
-      chartSymbol: "OANDA:XAUUSD",
-      gaugeURL: "./.netlify/functions/get-greed-cmd"
-    }
-  };
-
-  function loadWatchlist(market){
-    const c = document.getElementById('watchlist');
-    c.innerHTML = '';
-    const s = document.createElement('script');
-    s.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-list.js";
-    s.async = true;
-    s.innerHTML = JSON.stringify({
-      symbols: config[market].wl,
-      showSymbolLogo: true, colorTheme: "light", locale: "tr"
-    });
-    c.appendChild(s);
-  }
-
-  function loadChart(market){
-    const c = document.getElementById('tv-chart');
-    c.innerHTML = '';
-    const s = document.createElement('script');
-    s.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
-    s.async = true;
-    s.innerHTML = JSON.stringify({
-      symbol: config[market].chartSymbol,
-      interval: "D", timezone: "Europe/Istanbul",
-      theme: "light", style:"1", locale:"tr",
-      container_id:"tv-chart"
-    });
-    c.appendChild(s);
-  }
-
-  function drawGauge(value){
-    const data = google.visualization.arrayToDataTable([['Label','Value'],['',value]]);
-    const options = {
-      width:400, height:240,
-      redFrom:0, redTo:25,
-      yellowFrom:25, yellowTo:75,
-      greenFrom:75, greenTo:100,
-      minorTicks:5
+  <script>
+    const config = {
+      BIST: {
+        wl: [
+          { description: "AKBNK", proName: "BIST:AKBNK" },
+          { description: "ARCLK", proName: "BIST:ARCLK" },
+          /* ... diğer BIST30 sembolleri ... */
+        ],
+        chartSymbol: "BIST:XU100",
+        gaugeURL: "./.netlify/functions/get-greed-bist"
+      },
+      USA: {
+        wl: [
+          { description: "AAPL", proName: "NASDAQ:AAPL" },
+          { description: "MSFT", proName: "NASDAQ:MSFT" },
+          /* ... NASDAQ TOP10 ... */
+        ],
+        chartSymbol: "NASDAQ:NDX",
+        gaugeURL: "./.netlify/functions/get-greed-usa"
+      },
+      CMD: {
+        wl: [
+          { description: "ALTIN", proName: "OANDA:XAUUSD" },
+          { description: "GUMUS", proName: "OANDA:XAGUSD" },
+          /* ... diğer emtialar ... */
+        ],
+        chartSymbol: "OANDA:XAUUSD",
+        gaugeURL: "./.netlify/functions/get-greed-cmd"
+      }
     };
-    const chart = new google.visualization.Gauge(document.getElementById('gauge-chart'));
-    chart.draw(data, options);
-  }
 
-  function loadGauge(market){
-    fetch(config[market].gaugeURL)
-      .then(r=>r.json()).then(d=>{
-        drawGauge(Math.round(d.value));
-      }).catch(e=>{
-        drawGauge(0);
-        console.error(e);
+    function loadWatchlist(market) {
+      const container = document.getElementById('watchlist');
+      container.innerHTML = '';
+      const script = document.createElement('script');
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-list.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        symbols: config[market].wl,
+        showSymbolLogo: true,
+        colorTheme: "light",
+        isTransparent: false,
+        locale: "tr"
       });
-  }
+      container.appendChild(script);
+    }
 
-  function switchMarket(m){
-    loadWatchlist(m);
-    loadChart(m);
-    loadGauge(m);
-  }
+    function loadChart(market) {
+      const container = document.getElementById('tv-chart');
+      container.innerHTML = '';
+      const script = document.createElement('script');
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        symbol: config[market].chartSymbol,
+        interval: "D",
+        timezone: "Europe/Istanbul",
+        theme: "light",
+        style: "1",
+        locale: "tr",
+        toolbar_bg: "#f1f3f6",
+        allow_symbol_change: false,
+        container_id: "tv-chart"
+      });
+      container.appendChild(script);
+    }
 
-  // Başlangıç
-  google.charts.setOnLoadCallback(() => switchMarket('BIST'));
-</script>
+    // SVG Gauge Rendering
+    function drawSVGGauge(value) {
+      const svg = document.getElementById('gauge-svg');
+      const w = svg.clientWidth, h = svg.clientHeight;
+      const cx = w / 2, cy = h, r = Math.min(cx, cy);
+      svg.innerHTML = '';
 
+      const ns = "http://www.w3.org/2000/svg";
+      function polarToCartesian(angle) {
+        const a = (angle - 90) * Math.PI / 180;
+        return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+      }
+      function describeArc(start, end) {
+        const p1 = polarToCartesian(end);
+        const p2 = polarToCartesian(start);
+        const largeArc = end - start > 180 ? 1 : 0;
+        return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${largeArc} 0 ${p2.x} ${p2.y}`;
+      }
+      // Background
+      const bg = document.createElementNS(ns, 'path');
+      bg.setAttribute('d', describeArc(180, 0));
+      bg.setAttribute('fill', 'none');
+      bg.setAttribute('stroke', '#ddd');
+      bg.setAttribute('stroke-width', 20);
+      svg.appendChild(bg);
+
+      // Colored arcs
+      [[180, 225, 'red'], [225, 315, 'orange'], [315, 360, 'green']].forEach(([s,e,c]) => {
+        const p = document.createElementNS(ns, 'path');
+        p.setAttribute('d', describeArc(s, e));
+        p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', c);
+        p.setAttribute('stroke-width', 20);
+        svg.appendChild(p);
+      });
+
+      // Needle
+      const angle = 180 + (value / 100) * 180;
+      const needleEnd = polarToCartesian(angle);
+      const needle = document.createElementNS(ns, 'line');
+      needle.setAttribute('x1', cx);
+      needle.setAttribute('y1', cy);
+      needle.setAttribute('x2', needleEnd.x);
+      needle.setAttribute('y2', needleEnd.y);
+      needle.setAttribute('stroke', '#333');
+      needle.setAttribute('stroke-width', 4);
+      svg.appendChild(needle);
+
+      // Center circle
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('cx', cx);
+      dot.setAttribute('cy', cy);
+      dot.setAttribute('r', 6);
+      dot.setAttribute('fill', '#333');
+      svg.appendChild(dot);
+
+      // Value text
+      const txt = document.createElementNS(ns, 'text');
+      txt.setAttribute('x', cx);
+      txt.setAttribute('y', cy - 10);
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', '24');
+      txt.textContent = value;
+      svg.appendChild(txt);
+    }
+
+    function loadGauge(market) {
+      fetch(config[market].gaugeURL)
+        .then(res => res.json())
+        .then(data => drawSVGGauge(Math.round(data.value)))
+        .catch(() => drawSVGGauge(0));
+    }
+
+    (function loadRSS() {
+      const RSS_URL = 'https://rss.investing.com/top-news.rss';
+      const API = 'https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL);
+      fetch(API)
+        .then(res => res.json())
+        .then(data => {
+          const ul = document.getElementById('news-list');
+          data.items.slice(0, 5).forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+            ul.appendChild(li);
+          });
+        })
+        .catch(console.error);
+    })();
+
+    function switchMarket(market) {
+      loadWatchlist(market);
+      loadChart(market);
+      loadGauge(market);
+    }
+
+    // İlk açılışta BIST
+    window.onload = () => switchMarket('BIST');
+  </script>
 </body>
 </html>
