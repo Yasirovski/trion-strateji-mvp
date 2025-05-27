@@ -3,300 +3,206 @@
 <head>
   <meta charset="UTF-8">
   <title>Trion Strateji</title>
-  <meta name="viewport" content="width=1100">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
-    header { font-size: 2em; font-weight: bold; margin: 20px 0 10px 40px; }
-    .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 6px; }
-    .center-buttons button { font-size: 1em; padding: 9px 22px; border-radius: 8px; background: #f2f2f2; border: 1px solid #ccc; cursor: pointer; transition: background .18s; }
-    .center-buttons button.active, .center-buttons button:active { background: #d3e5ff; font-weight: bold; }
-    .breaking-news-area { width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden; background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566; height: 46px; display: flex; align-items: center; position: relative; box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;}
-    .breaking-news-content { white-space: nowrap; display: inline-block; padding-left: 100%; animation: ticker 28s linear infinite; font-size: 1.1em; font-weight: 600; color: #0a1122; letter-spacing: .4px;}
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%);} }
-    .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
-    .left, .right { width: 270px; min-height: 700px; background: #f9f9f9; border-radius: 8px; padding: 8px 4px; box-shadow: 0 2px 10px #eee; display: flex; flex-direction: column; align-items: center;}
-    .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
-    .gauge-area { width: 440px; margin: 36px auto 0 auto; text-align: center;}
-    .gauge-label { font-weight: bold; font-size: 1.19em; margin-bottom: 12px; color: #222;}
-    .panel-list { width: 100%; margin-top: 10px; }
-    .panel-list table { width: 100%; border-collapse: collapse;}
-    .panel-list th, .panel-list td { padding: 4px 0; text-align: left; font-size: 1.07em;}
-    .panel-list tr { border-bottom: 1px solid #eee;}
-    .panel-list th { font-size: 1.09em; color: #888;}
-    .chg-pos { color: #189600; font-weight: 600;}
-    .chg-neg { color: #c61c1c; font-weight: 600;}
-    .chg-zero { color: #888;}
-    .brand { opacity:.8; width: 102px; margin:10px auto 0 auto; display:block;}
-    @media (max-width: 1100px) {
-      .container { flex-direction: column; align-items: stretch; }
-      .left, .right, .middle { width: 100%; min-height: unset; }
-      .gauge-area { width: 95vw; }
-      .breaking-news-area { width: 96vw; }
+    body { font-family: Arial, sans-serif; margin:0; background:#fafbfc; }
+    #main { display: flex; flex-direction: row; justify-content: space-between; max-width: 1400px; margin: 0 auto; }
+    #sidebar { width: 270px; background:#fff; border-radius:15px; margin:25px 0 0 15px; box-shadow:0 4px 18px #0001; padding:12px; }
+    #center { flex: 1; margin: 25px 10px 0 10px; display:flex; flex-direction:column; align-items:center;}
+    #rightbar { width: 270px; margin:25px 15px 0 0;}
+    #tv-embed { margin: 0 0 12px 0; }
+    .market-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
+    .market-dot { width:12px; height:12px; border-radius:50%; margin-right:6px; animation:blink 1s infinite alternate; display:inline-block;}
+    .market-dot.open { background:#24ce66; animation:none;}
+    .market-dot.closed { background:#ff5b5b;}
+    @keyframes blink { 0% { opacity:1;} 100%{ opacity:.2;} }
+    .market-table { width:100%; border-collapse:collapse; font-size: 1rem;}
+    .market-table td { padding: 3px 7px; }
+    .market-table th { text-align:left; padding:2px 7px 2px 0;}
+    .tw-logo { width: 80px; margin-top:16px; opacity:0.6; }
+    .finnhub-logo { width: 100px; margin-top:14px; opacity:0.9; }
+    .tab-btns {text-align: center;}
+    .tab-btns button { font-size:1.2rem; padding:7px 22px; margin:0 10px 17px 0; border-radius:10px; border: 1px solid #ccc; background:#fff; cursor:pointer;}
+    .tab-btns button.active { background: #d1f9e9; border-color: #24ce66; font-weight:bold;}
+    .ticker-bar { width:100%; background: #fffbe7; border-radius:8px; box-shadow:0 2px 8px #0001; margin: 14px 0 12px 0; font-size:1.12rem; padding:7px 18px; color:#444;}
+    @media (max-width:1100px) {
+      #main { flex-direction:column; align-items:center;}
+      #sidebar, #rightbar { width:97%; margin:10px auto; }
+      #center {margin:0;}
     }
-    .gauge { position: relative; width: 410px; height: 210px; margin: 0 auto; background: #fff;}
-    .gauge-canvas { width: 100%; height: 100%; display: block;}
-    .gauge-labels { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;}
-    .gauge-labels span { position: absolute; font-size: 1em; font-weight: 600; color: #333; width: 68px; text-align: center; line-height: 1.08em;}
-    .gauge-labels .l1 { left: 24px; top: 127px;}
-    .gauge-labels .l2 { left: 69px; top: 48px;}
-    .gauge-labels .l3 { left: 171px; top: 18px;}
-    .gauge-labels .l4 { right: 77px; top: 48px;}
-    .gauge-labels .l5 { right: 24px; top: 127px;}
-    .gauge-score { position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%); font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800; border-radius: 32px; padding: 8px 34px; z-index: 22; box-shadow: 0 2px 10px #ddd; border: 3.5px solid #fff; letter-spacing: 2px;}
-    .gauge-section-label { position: absolute; left: 50%; transform: translateX(-50%); width: 98%; text-align: center; bottom: -9px; font-size: 1em; color: #222; font-weight: bold; background: none;}
   </style>
 </head>
 <body>
-  <header>Trion Strateji</header>
-  <div class="center-buttons">
+  <h1 style="margin:16px 0 2px 22px;">Trion Strateji</h1>
+  <div class="tab-btns">
     <button id="bistBtn" class="active">Borsa İstanbul</button>
     <button id="usBtn">Amerika B.</button>
     <button id="emtiaBtn">Emtialar</button>
   </div>
-  <!-- Breaking News Banner -->
-  <div class="breaking-news-area" id="breaking-news">
-    <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
-  </div>
-  <div class="container">
-    <!-- SOLDA FINNHUB PANELİ -->
-    <div class="left" id="custom-symbol-list">
-      <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
-      <div class="panel-list" id="symbols-table"></div>
-      <img src="https://static.finnhub.io/favicon.ico" class="brand" alt="Finnhub">
+  <div class="ticker-bar" id="ticker-bar">Yükleniyor...</div>
+  <div id="main">
+    <div id="sidebar">
+      <b style="font-size:1.17em;">Varlıklar</b>
+      <div id="assets-table" style="margin:12px 0 0 0;">Yükleniyor...</div>
+      <img src="https://s3-symbol-logo.tradingview.com/finnhub--big.svg" class="finnhub-logo" style="display:none;" id="finnhub-logo"/>
+      <img src="https://s3-symbol-logo.tradingview.com/tradingview.svg" class="tw-logo" style="display:none;" id="tw-logo"/>
     </div>
-    <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE -->
-    <div class="middle">
-      <div id="tv-chart"></div>
-      <div class="gauge-area">
-        <div class="gauge-label" id="gauge-label">Açgözlülük Endeksi</div>
-        <div class="gauge" id="gaugeBox">
-          <canvas class="gauge-canvas" id="gauge-canvas" width="410" height="210"></canvas>
-          <div class="gauge-labels">
-            <span class="l1">Çok<br>Çekingen</span>
-            <span class="l2">Çekingen</span>
-            <span class="l3">Normal</span>
-            <span class="l4">Hırslı</span>
-            <span class="l5">Çok<br>Hırslı</span>
-          </div>
-          <div class="gauge-score" id="gauge-score"></div>
-          <div class="gauge-section-label" id="gauge-section-label"></div>
-        </div>
+    <div id="center">
+      <div id="tv-embed"></div>
+      <!-- Gauge veya başka içerik burada -->
+      <div style="height:270px"></div>
+    </div>
+    <div id="rightbar">
+      <div style="background:#fff; border-radius:15px; box-shadow:0 4px 18px #0001; padding:15px;">
+        <b style="font-size:1.2em;">Ekonomik Takvim</b>
+        <iframe src="https://sslecal2.investing.com?pairs=8830,8836,8831,8839,936072,8832,8833,8838,8837,8922&theme=lightTheme" width="240" height="420" frameborder="0" allowtransparency="true"></iframe>
       </div>
     </div>
-    <!-- SAĞDA EKONOMİK TAKVİM -->
-    <div class="right">
-      <div class="news-title">Ekonomik Takvim</div>
-      <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
-    </div>
   </div>
+
   <script>
-    const FINNHUB_API = "d0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g"; // <-- Buraya kendi anahtarını yaz
+    // Finnhub API Keyini buraya ekle
+    const FINNHUB_API_KEY = 'd0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g';
 
-    const symbolsList = {
-      bist: [
-        { sym: "BIST:ASELS", name: "ASELS" },
-        { sym: "BIST:THYAO", name: "THYAO" },
-        { sym: "BIST:AKBNK", name: "AKBNK" },
-        { sym: "BIST:KCHOL", name: "KCHOL" },
-        { sym: "BIST:GARAN", name: "GARAN" },
-        { sym: "BIST:BIMAS", name: "BIMAS" },
-        { sym: "BIST:TUPRS", name: "TUPRS" }
-      ],
-      nasdaq: [
-        { sym: "AAPL", name: "Apple" },
-        { sym: "MSFT", name: "Microsoft" },
-        { sym: "AMZN", name: "Amazon" },
-        { sym: "GOOGL", name: "Google" },
-        { sym: "META", name: "Meta" },
-        { sym: "NVDA", name: "Nvidia" },
-        { sym: "TSLA", name: "Tesla" }
-      ],
-      emtia: [
-        { sym: "BINANCE:BTCUSDT", name: "BTC" },
-        { sym: "BINANCE:ETHUSDT", name: "ETH" },
-        { sym: "OANDA:XAG_USD", name: "Gümüş" }, // Silver
-        { sym: "OANDA:XAU_USD", name: "Altın" }, // Gold
-        { sym: "OANDA:XPT_USD", name: "Platin" }, // Platinum
-        { sym: "OANDA:WTICO_USD", name: "Petrol" }, // WTI Crude
-        { sym: "US10Y", name: "10Y Tahvil" }
-      ]
-    };
-    let currentType = "bist";
+    // BIST30 - TradingView Symbol Overview
+    const bistSymbols = [
+      {name:"ASELS", tv:"BIST:ASELS"},
+      {name:"THYAO", tv:"BIST:THYAO"},
+      {name:"AKBNK", tv:"BIST:AKBNK"},
+      {name:"KCHOL", tv:"BIST:KCHOL"},
+      {name:"GARAN", tv:"BIST:GARAN"},
+      {name:"BIMAS", tv:"BIST:BIMAS"},
+      {name:"TUPRS", tv:"BIST:TUPRS"}
+    ];
+    // Amerika
+    const usSymbols = [
+      {name:"Apple", code:"AAPL", market:"NASDAQ"},
+      {name:"Microsoft", code:"MSFT", market:"NASDAQ"},
+      {name:"Amazon", code:"AMZN", market:"NASDAQ"},
+      {name:"Google", code:"GOOGL", market:"NASDAQ"},
+      {name:"Meta", code:"META", market:"NASDAQ"},
+      {name:"Nvidia", code:"NVDA", market:"NASDAQ"},
+      {name:"Tesla", code:"TSLA", market:"NASDAQ"}
+    ];
+    // Emtia
+    const emtiaSymbols = [
+      {name:"BTC", code:"BINANCE:BTCUSDT", isCrypto:true},
+      {name:"ETH", code:"BINANCE:ETHUSDT", isCrypto:true},
+      {name:"Gümüş", tv:"OANDA:XAGUSD"},
+      {name:"Altın", tv:"OANDA:XAUUSD"},
+      {name:"Platin", tv:"OANDA:XPTUSD"},
+      {name:"Petrol", tv:"OANDA:WTICOUSD"},
+      {name:"10Y Tahvil", tv:"TVC:US10Y"}
+    ];
 
-    async function fetchFinnhubPanel(type) {
-      let panel = symbolsList[type];
-      let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
-      for (let symObj of panel) {
-        try {
-          // BIST sembollerinde ISIN gibi özel semboller gerekirse https://finnhub.io/docs/api/quote#supported-symbols
-          let url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symObj.sym)}&token=${FINNHUB_API}`;
-          let res = await fetch(url);
-          let data = await res.json();
-          let price = data.c !== undefined ? data.c : "-";
-          let prev = data.pc !== undefined ? data.pc : price;
-          let pct = (price !== "-" && prev && prev != 0) ? ((price - prev) / prev * 100).toFixed(2) : "-";
-          let chgClass = pct > 0 ? "chg-pos" : pct < 0 ? "chg-neg" : "chg-zero";
-          pct = pct === "-" ? "" : (pct > 0 ? "+" : "") + pct + "%";
-          html += `<tr>
-            <td>${symObj.name}</td>
-            <td>${price}</td>
-            <td class="${chgClass}">${pct}</td>
-          </tr>`;
-        } catch {
-          html += `<tr>
-            <td>${symObj.name}</td>
-            <td>-</td>
-            <td class="chg-zero">-</td>
-          </tr>`;
-        }
+    // -------------------
+    // Panel Güncelleme
+    // -------------------
+    function setSidebar(type) {
+      document.getElementById("assets-table").innerHTML = "Yükleniyor...";
+      document.getElementById("finnhub-logo").style.display = "none";
+      document.getElementById("tw-logo").style.display = "none";
+      if(type === "bist") {
+        // TradingView ile göster
+        let html = `<table class="market-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr></table>
+          <iframe src="https://tr.tradingview.com/widgetembed/?frameElementId=tradingview_c37d2&symbol=${bistSymbols[0].tv}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=2&locale=tr&studies=[]&hideideas=1&allow_symbol_change=false&widgetbar=show&height=260" width="100%" height="260" frameborder="0"></iframe>`;
+        document.getElementById("assets-table").innerHTML = html;
+        document.getElementById("tw-logo").style.display = "block";
+      } else if(type === "us") {
+        // Finnhub ile panel (yasal, ücretsiz, canlı)
+        document.getElementById("assets-table").innerHTML = `<table class="market-table" id="panel-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th><th></th></tr></table>`;
+        document.getElementById("finnhub-logo").style.display = "block";
+        usSymbols.forEach(sym => {
+          fetch(`https://finnhub.io/api/v1/quote?symbol=${sym.code}&token=${FINNHUB_API_KEY}`)
+            .then(resp=>resp.json())
+            .then(data=>{
+              let tr = document.createElement("tr");
+              let now = new Date();
+              // Market kapanışı (ABD'de 23:00 sonrası kapalı)
+              let marketOpen = now.getUTCHours() >= 13 && now.getUTCHours() < 20; // örnek, daha hassas için bakabilirsin
+              tr.innerHTML = `<td>${sym.name}</td>
+                <td>${data.c}</td>
+                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)}%</td>
+                <td><span class="market-dot ${marketOpen?'open':'closed'}"></span></td>`;
+              document.getElementById("panel-table").appendChild(tr);
+            });
+        });
+      } else {
+        // Emtia - Karışık Finnhub + TradingView
+        document.getElementById("assets-table").innerHTML = `<table class="market-table" id="panel-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th><th></th></tr></table>`;
+        document.getElementById("tw-logo").style.display = "block";
+        emtiaSymbols.forEach(sym=>{
+          if(sym.isCrypto){
+            fetch(`https://finnhub.io/api/v1/quote?symbol=${sym.code.replace("BINANCE:","")}&token=${FINNHUB_API_KEY}`)
+            .then(resp=>resp.json())
+            .then(data=>{
+              let tr = document.createElement("tr");
+              let now = new Date();
+              let marketOpen = true; // kripto her zaman açık
+              tr.innerHTML = `<td>${sym.name}</td>
+                <td>${data.c}</td>
+                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)}%</td>
+                <td><span class="market-dot ${marketOpen?'open':'closed'}"></span></td>`;
+              document.getElementById("panel-table").appendChild(tr);
+            });
+          } else {
+            // TV'den sadece fiyat (isim olarak göster)
+            let tr = document.createElement("tr");
+            tr.innerHTML = `<td>${sym.name}</td><td colspan="3"><i>TradingView'da izleyin</i></td>`;
+            document.getElementById("panel-table").appendChild(tr);
+          }
+        });
       }
-      html += `</table>`;
-      document.getElementById("symbols-table").innerHTML = html;
     }
-    fetchFinnhubPanel(currentType);
 
+    // Ana grafik TradingView
+    function setMainChart(type) {
+      let embed;
+      if(type==="bist") {
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=BIST:XU100&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+      } else if(type==="us") {
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=NASDAQ:NDX&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+      } else {
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=OANDA:XAUUSD&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+      }
+      document.getElementById("tv-embed").innerHTML = embed;
+    }
+
+    // Tab geçişleri
     document.getElementById('bistBtn').onclick = function() {
-      currentType = 'bist';
-      fetchFinnhubPanel('bist');
-      document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
+      setSidebar('bist');
+      setMainChart('bist');
       this.classList.add('active');
       document.getElementById('usBtn').classList.remove('active');
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('usBtn').onclick = function() {
-      currentType = 'nasdaq';
-      fetchFinnhubPanel('nasdaq');
-      document.getElementById("gauge-label").innerText = "Greed Index";
+      setSidebar('us');
+      setMainChart('us');
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('emtiaBtn').onclick = function() {
-      currentType = 'emtia';
-      fetchFinnhubPanel('emtia');
-      document.getElementById("gauge-label").innerText = "VIX";
+      setSidebar('emtia');
+      setMainChart('emtia');
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('usBtn').classList.remove('active');
     };
 
-    // Gauge
-    function drawGauge(val = 62) {
-      const canvas = document.getElementById("gauge-canvas");
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0,0,410,210);
-      const ranges = [
-        {from: 0, to: 20, color: "#f39c12"},
-        {from: 20, to: 40, color: "#e67e22"},
-        {from: 40, to: 60, color: "#ffd800"},
-        {from: 60, to: 80, color: "#27ae60"},
-        {from: 80, to: 100, color: "#e74c3c"}
-      ];
-      let radius = 95, cx = 205, cy = 205, width = 48;
-      let start = Math.PI, end = 2*Math.PI;
-      ranges.forEach(r => {
-        let s = start + Math.PI * (r.from/100);
-        let e = start + Math.PI * (r.to/100);
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, s, e, false);
-        ctx.strokeStyle = r.color;
-        ctx.lineWidth = width;
-        ctx.shadowBlur = 0;
-        ctx.stroke();
-      });
-      // SİVRİ ÇOK BÜYÜK İĞNE
-      let a = start + Math.PI*(val/100);
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(a - Math.PI/2);
-      ctx.beginPath();
-      ctx.moveTo(0, 38);
-      ctx.lineTo(-19, -radius+10);
-      ctx.lineTo(0, -radius-50);
-      ctx.lineTo(19, -radius+10);
-      ctx.closePath();
-      ctx.fillStyle = "#111";
-      ctx.shadowBlur = 12;
-      ctx.shadowColor = "#222";
-      ctx.fill();
-      ctx.restore();
-      // Merkez küçük top
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
-      ctx.fillStyle = "#222";
-      ctx.shadowBlur = 0;
-      ctx.fill();
-      ctx.restore();
-      // Değer kutusu
-      let score = document.getElementById("gauge-score");
-      score.innerText = val;
-      // Alt etiket
-      let sections = ["Çok Çekingen", "Çekingen", "Normal", "Hırslı", "Çok Hırslı"];
-      let sectionLabel = "";
-      if(val < 20) sectionLabel = sections[0];
-      else if(val < 40) sectionLabel = sections[1];
-      else if(val < 60) sectionLabel = sections[2];
-      else if(val < 80) sectionLabel = sections[3];
-      else sectionLabel = sections[4];
-      document.getElementById("gauge-section-label").innerText = sectionLabel;
-    }
-    drawGauge(62);
+    // İlk yükleme
+    setSidebar('bist');
+    setMainChart('bist');
 
-    // BBC Economy RSS
-    async function getBBCNews() {
-      let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
-      try {
-        let res = await fetch(api);
-        let data = await res.json();
-        let stories = data.items.slice(0, 8).map(i => i.title).join(" ♦ ");
-        document.getElementById("breaking-news-content").innerText = stories;
-      } catch {
-        document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
-      }
-    }
-    getBBCNews();
-
-    // TRADINGVIEW GRAFİĞİ
-    function renderTVSymbols(type) {
-      let symbol;
-      if(type=="bist") symbol = "BIST:XU100";
-      else if(type=="nasdaq") symbol = "NASDAQ:NDX";
-      else symbol = "TVC:GOLD";
-      let html = `<div class="tv-widget">
-        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_77c5b&symbol=${symbol}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=1&timezone=Europe/Istanbul&studies=[]&hideideas=1&hidevolume=1&toolbarbg=f7f7f7&withdateranges=1&saveimage=0&studies_overrides={}&enabled_features=[]&disabled_features=[]&locale=tr" width="730" height="380" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-      </div>`;
-      document.getElementById("tv-chart").innerHTML = html;
-    }
-    renderTVSymbols(currentType);
-
-    document.getElementById('bistBtn').onclick = function() {
-      currentType = 'bist';
-      fetchFinnhubPanel('bist');
-      renderTVSymbols('bist');
-      document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      this.classList.add('active');
-      document.getElementById('usBtn').classList.remove('active');
-      document.getElementById('emtiaBtn').classList.remove('active');
-    };
-    document.getElementById('usBtn').onclick = function() {
-      currentType = 'nasdaq';
-      fetchFinnhubPanel('nasdaq');
-      renderTVSymbols('nasdaq');
-      document.getElementById("gauge-label").innerText = "Greed Index";
-      this.classList.add('active');
-      document.getElementById('bistBtn').classList.remove('active');
-      document.getElementById('emtiaBtn').classList.remove('active');
-    };
-    document.getElementById('emtiaBtn').onclick = function() {
-      currentType = 'emtia';
-      fetchFinnhubPanel('emtia');
-      renderTVSymbols('emtia');
-      document.getElementById("gauge-label").innerText = "VIX";
-      this.classList.add('active');
-      document.getElementById('bistBtn').classList.remove('active');
-      document.getElementById('usBtn').classList.remove('active');
-    };
+    // --- BBC Haber Bandı ---
+    fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml")
+      .then(res=>res.json())
+      .then(data=>{
+        let stories = data.items.slice(0, 8).map(i=>i.title).join(' ♦ ');
+        document.getElementById("ticker-bar").innerHTML = stories;
+      })
+      .catch(()=>{ document.getElementById("ticker-bar").innerText="Ekonomi haberleri çekilemiyor."; });
   </script>
 </body>
 </html>
