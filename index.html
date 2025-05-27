@@ -50,7 +50,6 @@
       width: 68px;
       text-align: center;
       line-height: 1.08em;
-      /* Gauge'ye yaklaş */
     }
     .gauge-labels .l1 { left: 24px; top: 127px;}
     .gauge-labels .l2 { left: 69px; top: 48px;}
@@ -108,24 +107,18 @@
   <script>
     // Sadece 7 sembol! (En büyük/yaygınlar)
     const tvSymbolLists = {
-      bist: {
-        symbols: [
-          {s:"BIST:THYAO"}, {s:"BIST:AKBNK"}, {s:"BIST:KCHOL"},
-          {s:"BIST:GARAN"}, {s:"BIST:BIMAS"}, {s:"BIST:TUPRS"}, {s:"BIST:EREGL"}
-        ]
-      },
-      nasdaq: {
-        symbols: [
-          {s: "NASDAQ:AAPL"}, {s: "NASDAQ:MSFT"}, {s: "NASDAQ:AMZN"},
-          {s: "NASDAQ:GOOGL"}, {s: "NASDAQ:META"}, {s: "NASDAQ:NVDA"}, {s: "NASDAQ:TSLA"}
-        ]
-      },
-      emtia: {
-        symbols: [
-          {s: "TVC:SILVER"}, {s: "TVC:PLATINUM"}, {s: "BINANCE:BTCUSDT"},
-          {s: "TVC:USOIL"}, {s: "TVC:US10Y"}, {s: "BINANCE:ETHUSDT"}, {s: "TVC:GOLD"}
-        ]
-      }
+      bist: [
+        {s:"BIST:THYAO"}, {s:"BIST:AKBNK"}, {s:"BIST:KCHOL"},
+        {s:"BIST:GARAN"}, {s:"BIST:BIMAS"}, {s:"BIST:TUPRS"}, {s:"BIST:EREGL"}
+      ],
+      nasdaq: [
+        {s: "NASDAQ:AAPL"}, {s: "NASDAQ:MSFT"}, {s: "NASDAQ:AMZN"},
+        {s: "NASDAQ:GOOGL"}, {s: "NASDAQ:META"}, {s: "NASDAQ:NVDA"}, {s: "NASDAQ:TSLA"}
+      ],
+      emtia: [
+        {s: "TVC:SILVER"}, {s: "TVC:PLATINUM"}, {s: "BINANCE:BTCUSDT"},
+        {s: "TVC:USOIL"}, {s: "TVC:US10Y"}, {s: "BINANCE:ETHUSDT"}, {s: "TVC:GOLD"}
+      ]
     };
 
     function renderSymbolList(type) {
@@ -144,7 +137,7 @@
         "largeChartUrl": "",
         "isTransparent": false,
         "showSymbolLogo": true,
-        "symbols": tvSymbolLists[type].symbols
+        "symbols": tvSymbolLists[type]
       });
       document.getElementById("tv-symbol-list").appendChild(script);
     }
