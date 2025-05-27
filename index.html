@@ -28,7 +28,7 @@
       flex: 1; display: flex; flex-direction: column; align-items: center;
     }
     .gauge-area {
-      width: 420px; margin: 36px auto 0 auto; text-align: center;
+      width: 440px; margin: 36px auto 0 auto; text-align: center;
     }
     .gauge-label {
       font-weight: bold;
@@ -47,33 +47,33 @@
       width: 98%;
     }
     .stock-list li {
-      padding: 9px 0 7px 7px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 10px 8px 13px;
       margin: 0 0 7px 0;
-      font-size: 1.06em;
+      font-size: 1.08em;
       background: #fff;
       border-radius: 7px;
       box-shadow: 0 2px 8px #eee;
       font-weight: bold;
       color: #124;
-      transition: background 0.2s;
       border-left: 6px solid #d3e5ff;
+      letter-spacing: .5px;
     }
-    .stock-list li span {
-      font-weight: normal;
-      color: #999;
-      font-size: .98em;
-      margin-left: 7px;
-    }
+    .stock-list .change-up { color: #27ae60; font-weight: bold;}
+    .stock-list .change-down { color: #e74c3c; font-weight: bold;}
+    .stock-list .change-neutral { color: #777; }
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
       .gauge-area { width: 95vw; }
     }
-    /* Gauge FULL CIRCLE */
+    /* Gauge YARIM DAİRE */
     .gauge {
       position: relative;
-      width: 340px;
-      height: 340px;
+      width: 410px;
+      height: 210px;
       margin: 0 auto;
       background: #fff;
     }
@@ -91,26 +91,28 @@
       font-size: 1em;
       font-weight: 600;
       color: #333;
-      width: 80px;
+      width: 82px;
       text-align: center;
+      line-height: 1.13em;
     }
-    .gauge-labels .l1 { left: 2px; top: 57%; }
-    .gauge-labels .l2 { left: 23px; top: 10%; }
-    .gauge-labels .l3 { left: 122px; top: -8px; }
-    .gauge-labels .l4 { right: 23px; top: 10%; }
-    .gauge-labels .l5 { right: 2px; top: 57%; }
+    .gauge-labels .l1 { left: 2px; top: 120px;}
+    .gauge-labels .l2 { left: 55px; top: 22px;}
+    .gauge-labels .l3 { left: 163px; top: -9px;}
+    .gauge-labels .l4 { right: 60px; top: 22px;}
+    .gauge-labels .l5 { right: 2px; top: 120px;}
     .gauge-score {
-      position: absolute; top: 49%; left: 50%; transform: translate(-50%,-50%);
-      font-size: 2.4em; font-weight: bold; color: #fff; background: #333;
-      border-radius: 32px; padding: 9px 34px; z-index: 22;
+      position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%);
+      font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800;
+      border-radius: 32px; padding: 8px 34px; z-index: 22;
       box-shadow: 0 2px 10px #ddd;
       border: 3.5px solid #fff;
       letter-spacing: 2px;
     }
     .gauge-section-label {
       position: absolute; left: 50%; transform: translateX(-50%);
-      width: 98%; text-align: center; bottom: 8px;
-      font-size: 1em; color: #555;
+      width: 98%; text-align: center; bottom: 4px;
+      font-size: 1.15em; color: #222;
+      font-weight: bold;
     }
   </style>
 </head>
@@ -132,7 +134,7 @@
       <div class="gauge-area">
         <div class="gauge-label" id="gauge-label">Açgözlülük Endeksi</div>
         <div class="gauge" id="gaugeBox">
-          <canvas class="gauge-canvas" id="gauge-canvas" width="340" height="340"></canvas>
+          <canvas class="gauge-canvas" id="gauge-canvas" width="410" height="210"></canvas>
           <div class="gauge-labels">
             <span class="l1">Çok<br>Çekingen</span>
             <span class="l2">Çekingen</span>
@@ -154,21 +156,45 @@
   <!-- TradingView JS -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // 1. Sol liste
+    // 1. Sol: Liste ve değişim
     const stockLists = {
       bist: [
-        "ASELS", "GARAN", "THYAO", "KCHOL", "ENKAI", "FROTO", "BIMAS", "AKBNK", "TUPRS"
+        { code: "ASELS", change: +2.15 },
+        { code: "GARAN", change: -1.13 },
+        { code: "THYAO", change: +0.87 },
+        { code: "KCHOL", change: +0.05 },
+        { code: "ENKAI", change: -0.44 },
+        { code: "FROTO", change: +1.33 },
+        { code: "BIMAS", change: -2.51 },
+        { code: "AKBNK", change: +0.01 },
+        { code: "TUPRS", change: 0.00 }
       ],
       nasdaq: [
-        "Apple", "Microsoft", "Amazon", "Alphabet", "Meta", "Nvidia", "Tesla"
+        { code: "Apple", change: +2.10 },
+        { code: "Microsoft", change: -0.31 },
+        { code: "Amazon", change: +0.96 },
+        { code: "Alphabet", change: -0.82 },
+        { code: "Meta", change: +3.21 },
+        { code: "Nvidia", change: +4.12 },
+        { code: "Tesla", change: -1.18 }
       ],
       emtia: [
-        "Gümüş", "Petrol", "Platin", "BTC", "Ethereum", "Ripple", "Amerika 10Y Tahvil"
+        { code: "Gümüş", change: +1.28 },
+        { code: "Petrol", change: -0.71 },
+        { code: "Platin", change: +0.55 },
+        { code: "BTC", change: +2.49 },
+        { code: "Ethereum", change: +1.70 },
+        { code: "Ripple", change: -0.05 },
+        { code: "Amerika 10Y Tahvil", change: -0.11 }
       ]
     };
     function renderStockList(type) {
       let html = "";
-      stockLists[type].forEach(s => html += `<li>${s}</li>`);
+      stockLists[type].forEach(s => {
+        let cls = s.change > 0 ? 'change-up' : (s.change < 0 ? 'change-down' : 'change-neutral');
+        let val = s.change > 0 ? '+' : (s.change < 0 ? '' : '');
+        html += `<li>${s.code}<span class="${cls}">${val}${s.change.toFixed(2)}%</span></li>`;
+      });
       document.getElementById("stock-list").innerHTML = html;
     }
 
@@ -198,28 +224,28 @@
       });
     }
 
-    // 3. FULL CIRCLE G A U G E (Araç göstergesi tipi, 5 bölme)
+    // 3. YARIM DAİRE G A U G E (5 bölmeli, iğneli)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
-      ctx.clearRect(0,0,340,340);
+      ctx.clearRect(0,0,410,210);
 
       // Bölme açıları ve renkler
       const ranges = [
-        {from: 0, to: 20, color: "#27ae60"},   // Çok Çekingen (yeşil)
-        {from: 20, to: 40, color: "#95d82e"},  // Çekingen (açık yeşil)
+        {from: 0, to: 20, color: "#f39c12"},   // Çok Çekingen (turuncu)
+        {from: 20, to: 40, color: "#e67e22"},  // Çekingen (turuncu-kahve)
         {from: 40, to: 60, color: "#ffd800"},  // Normal (sarı)
-        {from: 60, to: 80, color: "#e67e22"},  // Hırslı (turuncu)
+        {from: 60, to: 80, color: "#27ae60"},  // Hırslı (yeşil)
         {from: 80, to: 100, color: "#e74c3c"}  // Çok Hırslı (kırmızı)
       ];
-      // Gauge çemberi
-      let radius = 138, cx = 170, cy = 170, width = 38;
-      let start = -0.5*Math.PI;
+      let radius = 95, cx = 205, cy = 205, width = 48;
+      let start = Math.PI, end = 2*Math.PI;
+
       ranges.forEach(r => {
-        let s = start + 2*Math.PI * (r.from/100);
-        let e = start + 2*Math.PI * (r.to/100);
+        let s = start + Math.PI * (r.from/100);
+        let e = start + Math.PI * (r.to/100);
         ctx.beginPath();
-        ctx.arc(cx,cy, radius, s, e, false);
+        ctx.arc(cx, cy, radius, s, e, false);
         ctx.strokeStyle = r.color;
         ctx.lineWidth = width;
         ctx.shadowBlur = 0;
@@ -227,14 +253,14 @@
       });
 
       // İğne
-      let a = start + 2*Math.PI*(val/100);
+      let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(a);
+      ctx.rotate(a - Math.PI/2); // İğne yukarıdan başlasın
       ctx.beginPath();
       ctx.moveTo(0, 10);
       ctx.lineTo(0, -radius+8);
-      ctx.lineWidth = 8;
+      ctx.lineWidth = 9;
       ctx.strokeStyle = "#222";
       ctx.shadowBlur = 10;
       ctx.shadowColor = "#aaa";
@@ -265,7 +291,6 @@
     // 4. KAP HABERLERİ
     async function fetchKapNews() {
       try {
-        // Proxy ile CORS çözümü (deploy ortamında çalışır)
         const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri'));
         const data = await response.json();
         const parser = new DOMParser();
