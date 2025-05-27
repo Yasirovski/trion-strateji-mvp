@@ -62,6 +62,21 @@
     .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
     .news-list a { color: #0a2885; text-decoration: none; }
     .news-list a:hover { text-decoration: underline; }
+    /* Custom Symbol Table */
+    .symbols-table { width: 100%; }
+    .symbols-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin: 5px 0; padding: 7px 8px; border-radius: 8px;
+      background: #f7faff; font-size: 1.07em;
+      font-weight: 600; letter-spacing: .5px;
+      border: 1px solid #e3e8f7;
+      box-shadow: 0 1px 5px #f5f7ff;
+    }
+    .symbols-label { color: #073e7a; min-width: 60px;}
+    .symbols-price { font-family: 'Roboto Mono', monospace; min-width: 60px; text-align: right; }
+    .symbols-chg-pos { color: #24a054; min-width: 60px; text-align: right; }
+    .symbols-chg-neg { color: #e54a41; min-width: 60px; text-align: right; }
+    .symbols-chg-zero { color: #555; min-width: 60px; text-align: right; }
   </style>
 </head>
 <body>
@@ -76,9 +91,12 @@
     <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA TRADINGVIEW MARKET OVERVIEW WIDGET -->
-    <div class="left" id="tv-symbol-list"></div>
-    <!-- ORTA GRAFİK VE GAUGE -->
+    <!-- SOLDA KENDİMİZİN OLUŞTURDUĞU TABLO -->
+    <div class="left" id="custom-symbol-list">
+      <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
+      <div id="symbols-table"></div>
+    </div>
+    <!-- ORTA TRADINGVIEW GRAFİĞİ VE GAUGE -->
     <div class="middle">
       <div id="tv-chart"></div>
       <div class="gauge-area">
@@ -105,49 +123,73 @@
   </div>
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // Sadece 7 sembol! (En büyük/yaygınlar)
-    const tvSymbolLists = {
+    // Finnhub API Key (senin verdiğin)
+    const finnhubToken = 'd0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g';
+
+    // KOD - SEMBOL EŞLEMESİ
+    const symbolMaps = {
       bist: [
-        {s:"BIST:THYAO", d:"THYAO"}, {s:"BIST:AKBNK", d:"AKBNK"}, {s:"BIST:KCHOL", d:"KCHOL"},
-        {s:"BIST:GARAN", d:"GARAN"}, {s:"BIST:BIMAS", d:"BIMAS"}, {s:"BIST:TUPRS", d:"TUPRS"}, {s:"BIST:EREGL", d:"EREGL"}
+        { code: "THYAO.IS", label: "THYAO" },
+        { code: "AKBNK.IS", label: "AKBNK" },
+        { code: "KCHOL.IS", label: "KCHOL" },
+        { code: "GARAN.IS", label: "GARAN" },
+        { code: "BIMAS.IS", label: "BIMAS" },
+        { code: "TUPRS.IS", label: "TUPRS" },
+        { code: "EREGL.IS", label: "EREGL" }
       ],
       nasdaq: [
-        {s: "NASDAQ:AAPL", d:"Apple"}, {s: "NASDAQ:MSFT", d:"Microsoft"}, {s: "NASDAQ:AMZN", d:"Amazon"},
-        {s: "NASDAQ:GOOGL", d:"Google"}, {s: "NASDAQ:META", d:"Meta"}, {s: "NASDAQ:NVDA", d:"Nvidia"}, {s: "NASDAQ:TSLA", d:"Tesla"}
+        { code: "AAPL", label: "Apple" },
+        { code: "MSFT", label: "Microsoft" },
+        { code: "AMZN", label: "Amazon" },
+        { code: "GOOGL", label: "Google" },
+        { code: "META", label: "Meta" },
+        { code: "NVDA", label: "Nvidia" },
+        { code: "TSLA", label: "Tesla" }
       ],
       emtia: [
-        {s: "TVC:SILVER", d:"Gümüş"}, {s: "TVC:PLATINUM", d:"Platin"}, {s: "BINANCE:BTCUSDT", d:"BTC"},
-        {s: "TVC:USOIL", d:"Petrol"}, {s: "TVC:US10Y", d:"10Y Tahvil"}, {s: "BINANCE:ETHUSDT", d:"ETH"}, {s: "TVC:GOLD", d:"Altın"}
+        { code: "XAGUSD", label: "Gümüş" },
+        { code: "XPTUSD", label: "Platin" },
+        { code: "BTCUSD", label: "BTC" },      // Finnhub kripto için: BTCUSD, ETHUSD, XRPUSD
+        { code: "USOIL", label: "Petrol" },    // Finnhub Brent: UKOIL, USOIL
+        { code: "US10Y", label: "10Y Tahvil" },
+        { code: "ETHUSD", label: "ETH" },
+        { code: "XAUUSD", label: "Altın" }
       ]
     };
 
-    function renderSymbolList(type) {
-      document.getElementById("tv-symbol-list").innerHTML = "";
-      let script = document.createElement('script');
-      script.type = "text/javascript";
-      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js";
-      script.async = true;
-      script.innerHTML = JSON.stringify({
-        "colorTheme": "light",
-        "dateRange": "1D",
-        "showChart": false,
-        "locale": "tr",
-        "width": "250",
-        "height": "620",
-        "largeChartUrl": "",
-        "isTransparent": false,
-        "showSymbolLogo": true,
-        "symbolsGroups": [
-          {
-            "name": "",
-            "symbols": tvSymbolLists[type]
-          }
-        ]
-      });
-      document.getElementById("tv-symbol-list").appendChild(script);
+    // ANLIK FİYAT ÇEK
+    async function fetchFinnhub(symbol) {
+      let url = `https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${finnhubToken}`;
+      try {
+        let r = await fetch(url);
+        let d = await r.json();
+        return d.c ? d : null;
+      } catch (e) { return null; }
     }
 
-    // Orta TradingView Grafik
+    // TABLOYU GÜNCELLE
+    async function renderCustomSymbolList(type) {
+      const map = symbolMaps[type];
+      let html = '';
+      for(let s of map) {
+        let data = await fetchFinnhub(s.code);
+        if (data) {
+          let price = (Math.round(data.c*100)/100).toLocaleString('tr-TR');
+          let change = data.dp ? ((data.dp>0?'+':'')+data.dp.toFixed(2)+'%') : '0.00%';
+          let chgClass = (data.dp > 0) ? "symbols-chg-pos" : (data.dp < 0 ? "symbols-chg-neg" : "symbols-chg-zero");
+          html += `<div class="symbols-row">
+            <span class="symbols-label">${s.label}</span>
+            <span class="symbols-price">${price}</span>
+            <span class="${chgClass}">${change}</span>
+          </div>`;
+        } else {
+          html += `<div class="symbols-row"><span class="symbols-label">${s.label}</span><span class="symbols-price" style="color:#888">Veri yok</span><span class="symbols-chg-zero">-</span></div>`;
+        }
+      }
+      document.getElementById("symbols-table").innerHTML = html;
+    }
+
+    // ORTA GRAFİK
     function loadChart(symbol) {
       document.getElementById("tv-chart").innerHTML = "";
       let chartDiv = document.createElement('div');
@@ -238,51 +280,54 @@
     }
 
     // BBC RSS başlıkları kayan bant (çeviri yok!)
-    async function fetchAndShowRSS() {
-      const rss_url = "https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml";
+    async function fetchBBCNewsTR() {
       try {
-        const response = await fetch(rss_url);
-        const data = await response.json();
-        if(!data.items) throw Error("No data");
-        const items = data.items.slice(0, 8);
-        document.getElementById('breaking-news-content').innerHTML =
-          'BBC Business: ' + items.map((item, i) =>
-            `<span>${item.title}</span>`
-          ).join(' <b style="color:#f3ae00;">♦</b> ');
-      } catch (e) {
-        document.getElementById('breaking-news-content').innerText =
-          "Ekonomi haberlerine erişilemiyor.";
+        let url = "https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml";
+        let r = await fetch(url);
+        let d = await r.json();
+        let headlines = d.items.slice(0,10).map(x=>x.title).join(" ♦ ");
+        document.getElementById('breaking-news-content').innerText = headlines;
+      } catch(e) {
+        document.getElementById('breaking-news-content').innerText = "Ekonomi haberlerine erişilemiyor.";
       }
     }
 
-    // BAŞLANGIÇTA
-    renderSymbolList("bist");
+    // BAŞLANGIÇTA: BIST
+    let selectedPanel = "bist";
+    renderCustomSymbolList('bist');
     loadChart("BIST:XU100");
     drawGauge(62);
-    fetchAndShowRSS();
+    fetchBBCNewsTR();
 
-    // BUTONLAR
-    document.getElementById('bistBtn').onclick = () => {
-      renderSymbolList("bist");
+    // Butonlar
+    document.getElementById('bistBtn').onclick = function() {
+      selectedPanel = "bist";
+      renderCustomSymbolList('bist');
       loadChart("BIST:XU100");
+      document.getElementById('gauge-label').innerText = "Açgözlülük Endeksi";
       drawGauge(62);
-      document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      fetchAndShowRSS();
     };
-    document.getElementById('usBtn').onclick = () => {
-      renderSymbolList("nasdaq");
+    document.getElementById('usBtn').onclick = function() {
+      selectedPanel = "nasdaq";
+      renderCustomSymbolList('nasdaq');
       loadChart("NASDAQ:NDX");
-      drawGauge(53);
-      document.getElementById("gauge-label").innerText = "Greed Index";
-      fetchAndShowRSS();
+      document.getElementById('gauge-label').innerText = "Açgözlülük Endeksi";
+      drawGauge(58);
     };
-    document.getElementById('emtiaBtn').onclick = () => {
-      renderSymbolList("emtia");
+    document.getElementById('emtiaBtn').onclick = function() {
+      selectedPanel = "emtia";
+      renderCustomSymbolList('emtia');
       loadChart("TVC:GOLD");
+      document.getElementById('gauge-label').innerText = "VIX";
       drawGauge(41);
-      document.getElementById("gauge-label").innerText = "VIX";
-      fetchAndShowRSS();
     };
+
+    // 60 sn'de bir verileri güncelle
+    setInterval(() => {
+      renderCustomSymbolList(selectedPanel);
+      fetchBBCNewsTR();
+    }, 60000);
+
   </script>
 </body>
 </html>
