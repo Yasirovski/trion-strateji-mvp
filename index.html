@@ -25,7 +25,7 @@
     .breaking-news-content {
       white-space: nowrap; display: inline-block;
       padding-left: 100%;
-      animation: ticker 22s linear infinite;
+      animation: ticker 24s linear infinite;
       font-size: 1.15em; font-weight: 600; color: #000c22;
       letter-spacing: .5px;
     }
@@ -317,17 +317,39 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // 4. BREAKING NEWS TICKER (BloombergHT Son Dakika)
-    async function fetchBloombergBreakingNews() {
+    // 4. BREAKING NEWS TICKER (BBC Business RSS, Türkçeye çevrilecek)
+    async function fetchBBCNewsTranslated() {
       try {
-        const url = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.bloomberght.com/rss/son-dakika';
+        // BBC Business RSS (İngilizce)
+        const url = 'https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml';
         const response = await fetch(url);
         const data = await response.json();
         if(!data.items) throw Error("No data");
-        let items = data.items.slice(0, 12).map(item => item.title);
+
+        // Sadece ilk 5 başlığı al
+        const items = data.items.slice(0, 5).map(item => item.title);
+
+        // Başlıkları topluca Türkçeye çevir (LibreTranslate, ücretsiz ve yavaş çalışır, 5 haberde sıkıntı olmaz)
+        const translations = await Promise.all(items.map(async (text) => {
+          // LibreTranslate demo API (ücretsiz, ağır yükte çalışmaz!)
+          const translateResp = await fetch('https://libretranslate.de/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              q: text,
+              source: "en",
+              target: "tr",
+              format: "text"
+            })
+          });
+          const translated = await translateResp.json();
+          return translated.translatedText || text;
+        }));
+
+        // Bantta göster
         document.getElementById('breaking-news-content').innerHTML =
-          'SON DAKİKA: ' + items.join(' — ');
-      } catch(e) {
+          'SON DAKİKA (BBC): ' + translations.join(' — ');
+      } catch (e) {
         document.getElementById('breaking-news-content').innerText =
           "Ekonomi haberlerine erişilemiyor.";
       }
@@ -337,7 +359,7 @@
     renderSymbolList("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
-    fetchBloombergBreakingNews();
+    fetchBBCNewsTranslated();
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
@@ -345,21 +367,21 @@
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      fetchBloombergBreakingNews();
+      fetchBBCNewsTranslated();
     };
     document.getElementById('usBtn').onclick = () => {
       renderSymbolList("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
-      fetchBloombergBreakingNews();
+      fetchBBCNewsTranslated();
     };
     document.getElementById('emtiaBtn').onclick = () => {
       renderSymbolList("emtia");
       loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
-      fetchBloombergBreakingNews();
+      fetchBBCNewsTranslated();
     };
   </script>
 </body>
