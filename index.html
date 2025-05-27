@@ -141,6 +141,11 @@
       ]
     };
     let currentType = "bist";
+    // TV script gerçekten yüklenene kadar widgetları çağırma!
+    function waitForTVScript(cb) {
+      if (window.TradingView && window.TradingView.MiniWidget) return cb();
+      setTimeout(() => waitForTVScript(cb), 90);
+    }
     function renderTVSymbols(type) {
       currentType = type;
       let html = "";
@@ -153,8 +158,7 @@
         ids.push({id, symbol: s.symbol});
       }
       document.getElementById('symbols-table').innerHTML = html;
-      // TradingView widgetlarını dinamik olarak başlat
-      setTimeout(() => {
+      waitForTVScript(()=>{
         ids.forEach(obj => {
           new window.TradingView.MiniWidget({
             "container_id": obj.id,
@@ -171,7 +175,7 @@
             "largeChartUrl": ""
           });
         });
-      }, 300);
+      });
     }
     renderTVSymbols(currentType);
 
@@ -287,17 +291,15 @@
       else if(val < 80) sectionLabel = sections[3];
       else sectionLabel = sections[4];
       document.getElementById("gauge-section-label").innerText = sectionLabel;
-      score.style.background = ranges[Math.floor(val/20)].color;
-      score.style.color = (val < 60) ? "#124" : "#fff";
     }
     drawGauge(62);
 
-    // BBC RSS başlıkları kayan bant (çeviri yok, hızlı & yasal)
+    // HABERLER - BBC Economy RSS
     async function getBBCNews() {
       try {
-        const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml");
+        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml');
         const data = await res.json();
-        let stories = data.items.slice(0, 9).map(item => item.title);
+        let stories = data.items.slice(0, 10).map(item => item.title);
         document.getElementById("breaking-news-content").innerHTML = stories.map(t => "🔸 " + t).join(" ");
       } catch(e) {
         document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
