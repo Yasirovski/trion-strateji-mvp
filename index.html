@@ -32,6 +32,15 @@
     .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
     .gauge-area { width: 440px; margin: 36px auto 0 auto; text-align: center;}
     .gauge-label { font-weight: bold; font-size: 1.19em; margin-bottom: 12px; color: #222;}
+    .panel-list { width: 100%; margin-top: 10px; }
+    .panel-list table { width: 100%; border-collapse: collapse;}
+    .panel-list th, .panel-list td { padding: 4px 0; text-align: left; font-size: 1.07em;}
+    .panel-list tr { border-bottom: 1px solid #eee;}
+    .panel-list th { font-size: 1.09em; color: #888;}
+    .chg-pos { color: #189600; font-weight: 600;}
+    .chg-neg { color: #c61c1c; font-weight: 600;}
+    .chg-zero { color: #888;}
+    .yahoo-brand { opacity:.8; width: 102px; margin:10px auto 0 auto; display:block;}
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
@@ -58,9 +67,6 @@
     .gauge-labels .l5 { right: 24px; top: 127px;}
     .gauge-score { position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%); font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800; border-radius: 32px; padding: 8px 34px; z-index: 22; box-shadow: 0 2px 10px #ddd; border: 3.5px solid #fff; letter-spacing: 2px;}
     .gauge-section-label { position: absolute; left: 50%; transform: translateX(-50%); width: 98%; text-align: center; bottom: -9px; font-size: 1em; color: #222; font-weight: bold; background: none;}
-    /* Custom TV Widget style */
-    .mini-tv-widget { margin: 4px 0; }
-    .mini-tv-widget .tradingview-widget-container { min-height: 56px; }
   </style>
 </head>
 <body>
@@ -75,13 +81,11 @@
     <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA TRADINGVIEW WIDGETLARI -->
+    <!-- SOLDA YAHOO PANELİ -->
     <div class="left" id="custom-symbol-list">
       <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
-      <div id="symbols-table"></div>
-      <div style="text-align:center;margin-top:10px;">
-        <img src="https://s3.tradingview.com/static/bundles/tradingview_2x.png" alt="TradingView" style="width:110px;opacity:.85">
-      </div>
+      <div class="panel-list" id="symbols-table"></div>
+      <img src="https://s.yimg.com/cv/apiv2/myc/finance/Finance_icon_96x96.png" class="yahoo-brand" alt="Yahoo Finance">
     </div>
     <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE -->
     <div class="middle">
@@ -108,128 +112,99 @@
       <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
     </div>
   </div>
-  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // SYMBOL LİSTELERİ
-    const symbols = {
+    // Sembol dizileri
+    const symbolsList = {
       bist: [
-        { symbol: "BIST:THYAO", name: "THYAO" },
-        { symbol: "BIST:AKBNK", name: "AKBNK" },
-        { symbol: "BIST:KCHOL", name: "KCHOL" },
-        { symbol: "BIST:GARAN", name: "GARAN" },
-        { symbol: "BIST:BIMAS", name: "BIMAS" },
-        { symbol: "BIST:TUPRS", name: "TUPRS" },
-        { symbol: "BIST:EREGL", name: "EREGL" }
+        { sym: "ASELS.IS", name: "ASELS" },
+        { sym: "THYAO.IS", name: "THYAO" },
+        { sym: "AKBNK.IS", name: "AKBNK" },
+        { sym: "KCHOL.IS", name: "KCHOL" },
+        { sym: "GARAN.IS", name: "GARAN" },
+        { sym: "BIMAS.IS", name: "BIMAS" },
+        { sym: "TUPRS.IS", name: "TUPRS" }
       ],
       nasdaq: [
-        { symbol: "NASDAQ:AAPL", name: "Apple" },
-        { symbol: "NASDAQ:MSFT", name: "Microsoft" },
-        { symbol: "NASDAQ:AMZN", name: "Amazon" },
-        { symbol: "NASDAQ:GOOGL", name: "Google" },
-        { symbol: "NASDAQ:META", name: "Meta" },
-        { symbol: "NASDAQ:NVDA", name: "Nvidia" },
-        { symbol: "NASDAQ:TSLA", name: "Tesla" }
+        { sym: "AAPL", name: "Apple" },
+        { sym: "MSFT", name: "Microsoft" },
+        { sym: "AMZN", name: "Amazon" },
+        { sym: "GOOGL", name: "Google" },
+        { sym: "META", name: "Meta" },
+        { sym: "NVDA", name: "Nvidia" },
+        { sym: "TSLA", name: "Tesla" }
       ],
       emtia: [
-        { symbol: "TVC:GOLD", name: "Altın" },        // Gold/US Ounce
-        { symbol: "TVC:SILVER", name: "Gümüş" },      // Silver/US Ounce
-        { symbol: "FOREXCOM:PLATINUM", name: "Platin" },
-        { symbol: "CRYPTOCAP:BTC", name: "BTC" },
-        { symbol: "FOREXCOM:WTI", name: "Petrol" },    // WTI Oil
-        { symbol: "TVC:US10Y", name: "10Y Tahvil" },   // US 10Y Bond
-        { symbol: "CRYPTOCAP:ETH", name: "ETH" }
+        { sym: "SI=F", name: "Gümüş" },     // Silver Futures
+        { sym: "PL=F", name: "Platin" },    // Platinum Futures
+        { sym: "BTC-USD", name: "BTC" },
+        { sym: "CL=F", name: "Petrol" },    // Crude Oil
+        { sym: "GC=F", name: "Altın" },     // Gold Futures
+        { sym: "ETH-USD", name: "Ethereum" },
+        { sym: "US10Y", name: "10Y Tahvil" }
       ]
     };
     let currentType = "bist";
-    // TV script gerçekten yüklenene kadar widgetları çağırma!
-    function waitForTVScript(cb) {
-      if (window.TradingView && window.TradingView.MiniWidget) return cb();
-      setTimeout(() => waitForTVScript(cb), 90);
-    }
-    function renderTVSymbols(type) {
-      currentType = type;
-      let html = "";
-      let ids = [];
-      for(let s of symbols[type]) {
-        const id = "tv_" + s.symbol.replace(/[:.]/g, '');
-        html += `<div class="mini-tv-widget"><div class="tradingview-widget-container">
-          <div id="${id}" style="height:56px;width:100%;"></div>
-        </div></div>`;
-        ids.push({id, symbol: s.symbol});
+    async function fetchYahooPanel(type) {
+      let panel = symbolsList[type];
+      let symbols = panel.map(x => x.sym).join(",");
+      let url = "https://corsproxy.io/?" + encodeURIComponent("https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbols);
+      try {
+        let res = await fetch(url);
+        let data = await res.json();
+        let quotes = data.quoteResponse.result;
+        let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
+        for (let symObj of panel) {
+          let q = quotes.find(x => x.symbol == symObj.sym);
+          if (q) {
+            let price = (q.regularMarketPrice ?? "-");
+            let chg = q.regularMarketChangePercent ?? 0;
+            let chgClass = chg > 0 ? "chg-pos" : chg < 0 ? "chg-neg" : "chg-zero";
+            let pct = chg === "-" ? "" : (chg > 0 ? "+" : "") + chg.toFixed(2) + "%";
+            html += `<tr>
+              <td>${symObj.name}</td>
+              <td>${price}</td>
+              <td class="${chgClass}">${pct}</td>
+            </tr>`;
+          } else {
+            html += `<tr>
+              <td>${symObj.name}</td>
+              <td>-</td>
+              <td class="chg-zero">-</td>
+            </tr>`;
+          }
+        }
+        html += `</table>`;
+        document.getElementById("symbols-table").innerHTML = html;
+      } catch (e) {
+        document.getElementById("symbols-table").innerHTML = "<b>Veri çekilemiyor.</b>";
       }
-      document.getElementById('symbols-table').innerHTML = html;
-      waitForTVScript(()=>{
-        ids.forEach(obj => {
-          new window.TradingView.MiniWidget({
-            "container_id": obj.id,
-            "symbol": obj.symbol,
-            "width": "230",
-            "height": "56",
-            "locale": "tr",
-            "dateRange": "1D",
-            "colorTheme": "light",
-            "trendLineColor": "#37a6ef",
-            "underLineColor": "#e3f2fd",
-            "isTransparent": false,
-            "autosize": false,
-            "largeChartUrl": ""
-          });
-        });
-      });
     }
-    renderTVSymbols(currentType);
+    fetchYahooPanel(currentType);
 
     document.getElementById('bistBtn').onclick = function() {
-      renderTVSymbols('bist');
-      setChart("BIST:XU100");
+      currentType = 'bist';
+      fetchYahooPanel('bist');
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
       this.classList.add('active');
       document.getElementById('usBtn').classList.remove('active');
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('usBtn').onclick = function() {
-      renderTVSymbols('nasdaq');
-      setChart("NASDAQ:NDX");
+      currentType = 'nasdaq';
+      fetchYahooPanel('nasdaq');
       document.getElementById("gauge-label").innerText = "Greed Index";
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('emtiaBtn').onclick = function() {
-      renderTVSymbols('emtia');
-      setChart("TVC:GOLD");
+      currentType = 'emtia';
+      fetchYahooPanel('emtia');
       document.getElementById("gauge-label").innerText = "VIX";
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('usBtn').classList.remove('active');
     };
-
-    // Orta ana TradingView grafik
-    function setChart(symbol) {
-      document.getElementById("tv-chart").innerHTML = "";
-      let chartDiv = document.createElement('div');
-      chartDiv.id = "tradingview_chart";
-      chartDiv.style.width = "700px";
-      chartDiv.style.height = "400px";
-      document.getElementById("tv-chart").appendChild(chartDiv);
-
-      new TradingView.widget({
-        "container_id": "tradingview_chart",
-        "width": 700,
-        "height": 400,
-        "symbol": symbol,
-        "interval": "D",
-        "timezone": "Europe/Istanbul",
-        "theme": "light",
-        "style": "1",
-        "locale": "tr",
-        "toolbar_bg": "#f1f3f6",
-        "hide_top_toolbar": false,
-        "hide_legend": false,
-        "save_image": false
-      });
-    }
-    setChart("BIST:XU100");
 
     // Gauge (Yarım Daire ve Büyük İğne)
     function drawGauge(val = 62) {
