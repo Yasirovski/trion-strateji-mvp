@@ -17,21 +17,11 @@
     }
     .center-buttons button:hover { background: #d3e5ff; }
     .breaking-news-area {
-      width: 82vw; max-width: 1220px; margin: 10px auto 14px auto; overflow: hidden;
-      background: #ffe4a7; border-radius: 8px; border: 1.5px solid #ffd566;
-      height: 42px; display: flex; align-items: center; position: relative;
-      box-shadow: 0 2px 10px #f6e6bc;
-    }
-    .breaking-news-content {
-      white-space: nowrap; display: inline-block;
-      padding-left: 100%;
-      animation: ticker 24s linear infinite;
-      font-size: 1.15em; font-weight: 600; color: #000c22;
-      letter-spacing: .5px;
-    }
-    @keyframes ticker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%);}
+      width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden;
+      background: none; border-radius: 8px; border: none;
+      height: 54px; display: flex; align-items: center; position: relative;
+      box-shadow: none;
+      min-height: 48px;
     }
     .container {
       display: flex; justify-content: center; align-items: flex-start; gap: 32px;
@@ -119,9 +109,13 @@
     <button id="usBtn">Amerika B.</button>
     <button id="emtiaBtn">Emtialar</button>
   </div>
-  <!-- Breaking News Banner -->
+  <!-- Breaking News Widget (TradingView News Timeline) -->
   <div class="breaking-news-area" id="breaking-news">
-    <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
+    <div style="width:100%; min-width: 700px;">
+      <div class="tradingview-widget-container">
+        <div id="tv-news"></div>
+      </div>
+    </div>
   </div>
   <div class="container">
     <!-- SOLDA SABİT ANLIK FİYAT VE DEĞİŞİM LİSTESİ (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST) -->
@@ -219,7 +213,7 @@
       document.getElementById("tv-symbol-list").appendChild(script);
     }
 
-    // 2. Orta TradingView Grafik
+    // Orta TradingView Grafik
     function loadChart(symbol) {
       document.getElementById("tv-chart").innerHTML = "";
       let chartDiv = document.createElement('div');
@@ -245,7 +239,7 @@
       });
     }
 
-    // 3. YARIM DAİRE GAUGE (ÇOK BÜYÜK SİVRİ İĞNE)
+    // Gauge (Yarım Daire ve Büyük İğne)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -317,49 +311,45 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // 4. BREAKING NEWS TICKER (BBC Business RSS, Türkçeye çevrilecek)
-    async function fetchBBCNewsTranslated() {
-      try {
-        // BBC Business RSS (İngilizce)
-        const url = 'https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml';
-        const response = await fetch(url);
-        const data = await response.json();
-        if(!data.items) throw Error("No data");
+    // TradingView News Timeline Widget'ı embed et
+    function renderNewsWidget(type="global") {
+      // type: "bist" "us" "emtia" (habere göre feed değiştirmek için)
+      document.getElementById("tv-news").innerHTML = "";
+      let script = document.createElement('script');
+      script.type = "text/javascript";
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
+      script.async = true;
 
-        // Sadece ilk 5 başlığı al
-        const items = data.items.slice(0, 5).map(item => item.title);
-
-        // Başlıkları topluca Türkçeye çevir (LibreTranslate, ücretsiz ve yavaş çalışır, 5 haberde sıkıntı olmaz)
-        const translations = await Promise.all(items.map(async (text) => {
-          // LibreTranslate demo API (ücretsiz, ağır yükte çalışmaz!)
-          const translateResp = await fetch('https://libretranslate.de/translate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              q: text,
-              source: "en",
-              target: "tr",
-              format: "text"
-            })
-          });
-          const translated = await translateResp.json();
-          return translated.translatedText || text;
-        }));
-
-        // Bantta göster
-        document.getElementById('breaking-news-content').innerHTML =
-          'SON DAKİKA (BBC): ' + translations.join(' — ');
-      } catch (e) {
-        document.getElementById('breaking-news-content').innerText =
-          "Ekonomi haberlerine erişilemiyor.";
+      // feedMode: 'symbol' + symbol, 'market' + market, 'all_symbols'
+      let config = {
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "compact",
+        "width": "1200",
+        "height": "54",
+        "locale": "tr"
+      };
+      if (type === "bist") {
+        config.feedMode = "symbol";
+        config.symbol = "BIST:XU100";
+      } else if (type === "us") {
+        config.feedMode = "market";
+        config.market = "us";
+      } else if (type === "emtia") {
+        config.feedMode = "symbol";
+        config.symbol = "TVC:GOLD";
+      } else {
+        config.feedMode = "all_symbols";
       }
+      script.innerHTML = JSON.stringify(config);
+      document.getElementById("tv-news").appendChild(script);
     }
 
     // BAŞLANGIÇTA
     renderSymbolList("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
-    fetchBBCNewsTranslated();
+    renderNewsWidget("bist");
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
@@ -367,21 +357,21 @@
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      fetchBBCNewsTranslated();
+      renderNewsWidget("bist");
     };
     document.getElementById('usBtn').onclick = () => {
       renderSymbolList("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
-      fetchBBCNewsTranslated();
+      renderNewsWidget("us");
     };
     document.getElementById('emtiaBtn').onclick = () => {
       renderSymbolList("emtia");
       loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
-      fetchBBCNewsTranslated();
+      renderNewsWidget("emtia");
     };
   </script>
 </body>
