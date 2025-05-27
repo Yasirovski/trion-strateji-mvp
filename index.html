@@ -7,95 +7,57 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
     header { font-size: 2em; font-weight: bold; margin: 20px 0 10px 40px; }
-    .center-buttons {
-      display: flex; justify-content: center; gap: 12px; margin-bottom: 6px;
-    }
-    .center-buttons button {
-      font-size: 1em; padding: 9px 22px; border-radius: 8px;
-      background: #f2f2f2; border: 1px solid #ccc; cursor: pointer;
-      transition: background .18s;
-    }
+    .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 6px; }
+    .center-buttons button { font-size: 1em; padding: 9px 22px; border-radius: 8px; background: #f2f2f2; border: 1px solid #ccc; cursor: pointer; transition: background .18s; }
     .center-buttons button:hover { background: #d3e5ff; }
     .breaking-news-area {
       width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden;
-      background: none; border-radius: 8px; border: none;
-      height: 54px; display: flex; align-items: center; position: relative;
-      box-shadow: none;
-      min-height: 48px;
+      background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566;
+      height: 46px; display: flex; align-items: center; position: relative;
+      box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;
     }
-    .container {
-      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
-      width: 100%; max-width: 1500px; margin: 0 auto;
+    .breaking-news-content {
+      white-space: nowrap; display: inline-block;
+      padding-left: 100%;
+      animation: ticker 28s linear infinite;
+      font-size: 1.1em; font-weight: 600; color: #0a1122;
+      letter-spacing: .4px;
     }
-    .left, .right {
-      width: 270px; min-height: 700px; background: #f9f9f9;
-      border-radius: 8px; padding: 8px 4px; box-shadow: 0 2px 10px #eee;
-      display: flex; flex-direction: column; align-items: center;
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%);}
     }
-    .middle {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-    }
-    .gauge-area {
-      width: 440px; margin: 36px auto 0 auto; text-align: center;
-    }
-    .gauge-label {
-      font-weight: bold;
-      font-size: 1.19em;
-      margin-bottom: 12px;
-      color: #222;
-    }
+    .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
+    .left, .right { width: 270px; min-height: 700px; background: #f9f9f9; border-radius: 8px; padding: 8px 4px; box-shadow: 0 2px 10px #eee; display: flex; flex-direction: column; align-items: center;}
+    .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
+    .gauge-area { width: 440px; margin: 36px auto 0 auto; text-align: center;}
+    .gauge-label { font-weight: bold; font-size: 1.19em; margin-bottom: 12px; color: #222;}
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
       .gauge-area { width: 95vw; }
       .breaking-news-area { width: 96vw; }
     }
-    /* Gauge YARIM DAİRE */
-    .gauge {
-      position: relative;
-      width: 410px;
-      height: 210px;
-      margin: 0 auto;
-      background: #fff;
-    }
-    .gauge-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .gauge-labels {
-      position: absolute; width: 100%; height: 100%; top: 0; left: 0;
-      pointer-events: none;
-    }
+    /* Gauge */
+    .gauge { position: relative; width: 410px; height: 210px; margin: 0 auto; background: #fff;}
+    .gauge-canvas { width: 100%; height: 100%; display: block;}
+    .gauge-labels { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;}
     .gauge-labels span {
       position: absolute;
       font-size: 1em;
       font-weight: 600;
       color: #333;
-      width: 82px;
+      width: 68px;
       text-align: center;
-      line-height: 1.13em;
+      line-height: 1.08em;
     }
-    .gauge-labels .l1 { left: 2px; top: 120px;}
-    .gauge-labels .l2 { left: 55px; top: 22px;}
-    .gauge-labels .l3 { left: 163px; top: -9px;}
-    .gauge-labels .l4 { right: 60px; top: 22px;}
-    .gauge-labels .l5 { right: 2px; top: 120px;}
-    .gauge-score {
-      position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%);
-      font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800;
-      border-radius: 32px; padding: 8px 34px; z-index: 22;
-      box-shadow: 0 2px 10px #ddd;
-      border: 3.5px solid #fff;
-      letter-spacing: 2px;
-    }
-    .gauge-section-label {
-      position: absolute; left: 50%; transform: translateX(-50%);
-      width: 98%; text-align: center; bottom: -9px;
-      font-size: 1em; color: #222;
-      font-weight: bold;
-      background: none;
-    }
+    .gauge-labels .l1 { left: 24px; top: 127px;}
+    .gauge-labels .l2 { left: 69px; top: 48px;}
+    .gauge-labels .l3 { left: 171px; top: 18px;}
+    .gauge-labels .l4 { right: 77px; top: 48px;}
+    .gauge-labels .l5 { right: 24px; top: 127px;}
+    .gauge-score { position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%); font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800; border-radius: 32px; padding: 8px 34px; z-index: 22; box-shadow: 0 2px 10px #ddd; border: 3.5px solid #fff; letter-spacing: 2px;}
+    .gauge-section-label { position: absolute; left: 50%; transform: translateX(-50%); width: 98%; text-align: center; bottom: -9px; font-size: 1em; color: #222; font-weight: bold; background: none;}
     .news-title { font-weight: bold; font-size: 1.12em; margin-bottom: 12px; margin-top: 5px; }
     .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
     .news-list a { color: #0a2885; text-decoration: none; }
@@ -109,19 +71,13 @@
     <button id="usBtn">Amerika B.</button>
     <button id="emtiaBtn">Emtialar</button>
   </div>
-  <!-- Breaking News Widget (TradingView News Timeline) -->
+  <!-- Breaking News Banner -->
   <div class="breaking-news-area" id="breaking-news">
-    <div style="width:100%; min-width: 700px;">
-      <div class="tradingview-widget-container">
-        <div id="tv-news"></div>
-      </div>
-    </div>
+    <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA SABİT ANLIK FİYAT VE DEĞİŞİM LİSTESİ (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST) -->
-    <div class="left">
-      <div id="tv-symbol-list"></div>
-    </div>
+    <!-- SOLDA TRADINGVIEW MARKET OVERVIEW WIDGET -->
+    <div class="left" id="tv-symbol-list"></div>
     <!-- ORTA GRAFİK VE GAUGE -->
     <div class="middle">
       <div id="tv-chart"></div>
@@ -144,52 +100,25 @@
     <!-- SAĞDA EKONOMİK TAKVİM -->
     <div class="right">
       <div class="news-title">Ekonomik Takvim</div>
-      <!-- Investing.com Economic Calendar Widget BEGIN -->
       <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
-      <!-- Investing.com Economic Calendar Widget END -->
     </div>
   </div>
-  <!-- TradingView JS -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // SABİT ANLIK LİSTE (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST)
+    // Sadece 7 sembol! (En büyük/yaygınlar)
     const tvSymbolLists = {
-      bist: {
-        symbols: [
-          {s: "BIST:ASELS"},
-          {s: "BIST:GARAN"},
-          {s: "BIST:THYAO"},
-          {s: "BIST:KCHOL"},
-          {s: "BIST:ENKAI"},
-          {s: "BIST:FROTO"},
-          {s: "BIST:BIMAS"},
-          {s: "BIST:AKBNK"},
-          {s: "BIST:TUPRS"}
-        ]
-      },
-      nasdaq: {
-        symbols: [
-          {s: "NASDAQ:AAPL"},
-          {s: "NASDAQ:MSFT"},
-          {s: "NASDAQ:AMZN"},
-          {s: "NASDAQ:GOOGL"},
-          {s: "NASDAQ:META"},
-          {s: "NASDAQ:NVDA"},
-          {s: "NASDAQ:TSLA"}
-        ]
-      },
-      emtia: {
-        symbols: [
-          {s: "TVC:SILVER"},
-          {s: "TVC:USOIL"},
-          {s: "TVC:PLATINUM"},
-          {s: "TVC:GOLD"},
-          {s: "BINANCE:BTCUSDT"},
-          {s: "BINANCE:ETHUSDT"},
-          {s: "BINANCE:XRPUSDT"},
-          {s: "TVC:US10Y"}
-        ]
-      }
+      bist: [
+        {s:"BIST:THYAO", d:"THYAO"}, {s:"BIST:AKBNK", d:"AKBNK"}, {s:"BIST:KCHOL", d:"KCHOL"},
+        {s:"BIST:GARAN", d:"GARAN"}, {s:"BIST:BIMAS", d:"BIMAS"}, {s:"BIST:TUPRS", d:"TUPRS"}, {s:"BIST:EREGL", d:"EREGL"}
+      ],
+      nasdaq: [
+        {s: "NASDAQ:AAPL", d:"Apple"}, {s: "NASDAQ:MSFT", d:"Microsoft"}, {s: "NASDAQ:AMZN", d:"Amazon"},
+        {s: "NASDAQ:GOOGL", d:"Google"}, {s: "NASDAQ:META", d:"Meta"}, {s: "NASDAQ:NVDA", d:"Nvidia"}, {s: "NASDAQ:TSLA", d:"Tesla"}
+      ],
+      emtia: [
+        {s: "TVC:SILVER", d:"Gümüş"}, {s: "TVC:PLATINUM", d:"Platin"}, {s: "BINANCE:BTCUSDT", d:"BTC"},
+        {s: "TVC:USOIL", d:"Petrol"}, {s: "TVC:US10Y", d:"10Y Tahvil"}, {s: "BINANCE:ETHUSDT", d:"ETH"}, {s: "TVC:GOLD", d:"Altın"}
+      ]
     };
 
     function renderSymbolList(type) {
@@ -208,7 +137,12 @@
         "largeChartUrl": "",
         "isTransparent": false,
         "showSymbolLogo": true,
-        "symbols": tvSymbolLists[type].symbols
+        "symbolsGroups": [
+          {
+            "name": "",
+            "symbols": tvSymbolLists[type]
+          }
+        ]
       });
       document.getElementById("tv-symbol-list").appendChild(script);
     }
@@ -244,8 +178,6 @@
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0,0,410,210);
-
-      // Bölme açıları ve renkler
       const ranges = [
         {from: 0, to: 20, color: "#f39c12"},
         {from: 20, to: 40, color: "#e67e22"},
@@ -255,8 +187,6 @@
       ];
       let radius = 95, cx = 205, cy = 205, width = 48;
       let start = Math.PI, end = 2*Math.PI;
-
-      // Dilimler
       ranges.forEach(r => {
         let s = start + Math.PI * (r.from/100);
         let e = start + Math.PI * (r.to/100);
@@ -267,25 +197,23 @@
         ctx.shadowBlur = 0;
         ctx.stroke();
       });
-
       // SİVRİ ÇOK BÜYÜK İĞNE
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(a - Math.PI/2);
       ctx.beginPath();
-      ctx.moveTo(0, 38); // arka uç (daha kalın ve uzun)
-      ctx.lineTo(-19, -radius+10); // sol kenar (daha geniş)
-      ctx.lineTo(0, -radius-50);   // uç (daha uzun)
-      ctx.lineTo(19, -radius+10);  // sağ kenar (daha geniş)
+      ctx.moveTo(0, 38);
+      ctx.lineTo(-19, -radius+10);
+      ctx.lineTo(0, -radius-50);
+      ctx.lineTo(19, -radius+10);
       ctx.closePath();
       ctx.fillStyle = "#111";
       ctx.shadowBlur = 12;
       ctx.shadowColor = "#222";
       ctx.fill();
       ctx.restore();
-
-      // Merkez küçük top (noktası)
+      // Merkez küçük top
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
@@ -293,11 +221,9 @@
       ctx.shadowBlur = 0;
       ctx.fill();
       ctx.restore();
-
       // Değer kutusu
       let score = document.getElementById("gauge-score");
       score.innerText = val;
-
       // Alt etiket
       let sections = ["Çok Çekingen", "Çekingen", "Normal", "Hırslı", "Çok Hırslı"];
       let sectionLabel = "";
@@ -311,45 +237,29 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // TradingView News Timeline Widget'ı embed et
-    function renderNewsWidget(type="global") {
-      // type: "bist" "us" "emtia" (habere göre feed değiştirmek için)
-      document.getElementById("tv-news").innerHTML = "";
-      let script = document.createElement('script');
-      script.type = "text/javascript";
-      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
-      script.async = true;
-
-      // feedMode: 'symbol' + symbol, 'market' + market, 'all_symbols'
-      let config = {
-        "colorTheme": "light",
-        "isTransparent": false,
-        "displayMode": "compact",
-        "width": "1200",
-        "height": "54",
-        "locale": "tr"
-      };
-      if (type === "bist") {
-        config.feedMode = "symbol";
-        config.symbol = "BIST:XU100";
-      } else if (type === "us") {
-        config.feedMode = "market";
-        config.market = "us";
-      } else if (type === "emtia") {
-        config.feedMode = "symbol";
-        config.symbol = "TVC:GOLD";
-      } else {
-        config.feedMode = "all_symbols";
+    // BBC RSS başlıkları kayan bant (çeviri yok!)
+    async function fetchAndShowRSS() {
+      const rss_url = "https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml";
+      try {
+        const response = await fetch(rss_url);
+        const data = await response.json();
+        if(!data.items) throw Error("No data");
+        const items = data.items.slice(0, 8);
+        document.getElementById('breaking-news-content').innerHTML =
+          'BBC Business: ' + items.map((item, i) =>
+            `<span>${item.title}</span>`
+          ).join(' <b style="color:#f3ae00;">♦</b> ');
+      } catch (e) {
+        document.getElementById('breaking-news-content').innerText =
+          "Ekonomi haberlerine erişilemiyor.";
       }
-      script.innerHTML = JSON.stringify(config);
-      document.getElementById("tv-news").appendChild(script);
     }
 
     // BAŞLANGIÇTA
     renderSymbolList("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
-    renderNewsWidget("bist");
+    fetchAndShowRSS();
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
@@ -357,21 +267,21 @@
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      renderNewsWidget("bist");
+      fetchAndShowRSS();
     };
     document.getElementById('usBtn').onclick = () => {
       renderSymbolList("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
-      renderNewsWidget("us");
+      fetchAndShowRSS();
     };
     document.getElementById('emtiaBtn').onclick = () => {
       renderSymbolList("emtia");
       loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
-      renderNewsWidget("emtia");
+      fetchAndShowRSS();
     };
   </script>
 </body>
