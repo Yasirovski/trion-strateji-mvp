@@ -10,23 +10,9 @@
     .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 6px; }
     .center-buttons button { font-size: 1em; padding: 9px 22px; border-radius: 8px; background: #f2f2f2; border: 1px solid #ccc; cursor: pointer; transition: background .18s; }
     .center-buttons button.active, .center-buttons button:active { background: #d3e5ff; font-weight: bold; }
-    .breaking-news-area {
-      width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden;
-      background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566;
-      height: 46px; display: flex; align-items: center; position: relative;
-      box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;
-    }
-    .breaking-news-content {
-      white-space: nowrap; display: inline-block;
-      padding-left: 100%;
-      animation: ticker 28s linear infinite;
-      font-size: 1.1em; font-weight: 600; color: #0a1122;
-      letter-spacing: .4px;
-    }
-    @keyframes ticker {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%);}
-    }
+    .breaking-news-area { width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden; background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566; height: 46px; display: flex; align-items: center; position: relative; box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;}
+    .breaking-news-content { white-space: nowrap; display: inline-block; padding-left: 100%; animation: ticker 28s linear infinite; font-size: 1.1em; font-weight: 600; color: #0a1122; letter-spacing: .4px;}
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%);} }
     .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
     .left, .right { width: 270px; min-height: 700px; background: #f9f9f9; border-radius: 8px; padding: 8px 4px; box-shadow: 0 2px 10px #eee; display: flex; flex-direction: column; align-items: center;}
     .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
@@ -40,26 +26,17 @@
     .chg-pos { color: #189600; font-weight: 600;}
     .chg-neg { color: #c61c1c; font-weight: 600;}
     .chg-zero { color: #888;}
-    .yahoo-brand { opacity:.8; width: 102px; margin:10px auto 0 auto; display:block;}
+    .brand { opacity:.8; width: 102px; margin:10px auto 0 auto; display:block;}
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
       .gauge-area { width: 95vw; }
       .breaking-news-area { width: 96vw; }
     }
-    /* Gauge */
     .gauge { position: relative; width: 410px; height: 210px; margin: 0 auto; background: #fff;}
     .gauge-canvas { width: 100%; height: 100%; display: block;}
     .gauge-labels { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;}
-    .gauge-labels span {
-      position: absolute;
-      font-size: 1em;
-      font-weight: 600;
-      color: #333;
-      width: 68px;
-      text-align: center;
-      line-height: 1.08em;
-    }
+    .gauge-labels span { position: absolute; font-size: 1em; font-weight: 600; color: #333; width: 68px; text-align: center; line-height: 1.08em;}
     .gauge-labels .l1 { left: 24px; top: 127px;}
     .gauge-labels .l2 { left: 69px; top: 48px;}
     .gauge-labels .l3 { left: 171px; top: 18px;}
@@ -81,11 +58,11 @@
     <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA YAHOO PANELİ -->
+    <!-- SOLDA FINNHUB PANELİ -->
     <div class="left" id="custom-symbol-list">
       <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
       <div class="panel-list" id="symbols-table"></div>
-      <img src="https://s.yimg.com/cv/apiv2/myc/finance/Finance_icon_96x96.png" class="yahoo-brand" alt="Yahoo Finance">
+      <img src="https://static.finnhub.io/favicon.ico" class="brand" alt="Finnhub">
     </div>
     <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE -->
     <div class="middle">
@@ -113,16 +90,17 @@
     </div>
   </div>
   <script>
-    // Sembol dizileri
+    const FINNHUB_API = "d0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g"; // <-- Buraya kendi anahtarını yaz
+
     const symbolsList = {
       bist: [
-        { sym: "ASELS.IS", name: "ASELS" },
-        { sym: "THYAO.IS", name: "THYAO" },
-        { sym: "AKBNK.IS", name: "AKBNK" },
-        { sym: "KCHOL.IS", name: "KCHOL" },
-        { sym: "GARAN.IS", name: "GARAN" },
-        { sym: "BIMAS.IS", name: "BIMAS" },
-        { sym: "TUPRS.IS", name: "TUPRS" }
+        { sym: "BIST:ASELS", name: "ASELS" },
+        { sym: "BIST:THYAO", name: "THYAO" },
+        { sym: "BIST:AKBNK", name: "AKBNK" },
+        { sym: "BIST:KCHOL", name: "KCHOL" },
+        { sym: "BIST:GARAN", name: "GARAN" },
+        { sym: "BIST:BIMAS", name: "BIMAS" },
+        { sym: "BIST:TUPRS", name: "TUPRS" }
       ],
       nasdaq: [
         { sym: "AAPL", name: "Apple" },
@@ -134,56 +112,52 @@
         { sym: "TSLA", name: "Tesla" }
       ],
       emtia: [
-        { sym: "SI=F", name: "Gümüş" },     // Silver Futures
-        { sym: "PL=F", name: "Platin" },    // Platinum Futures
-        { sym: "BTC-USD", name: "BTC" },
-        { sym: "CL=F", name: "Petrol" },    // Crude Oil
-        { sym: "GC=F", name: "Altın" },     // Gold Futures
-        { sym: "ETH-USD", name: "Ethereum" },
+        { sym: "BINANCE:BTCUSDT", name: "BTC" },
+        { sym: "BINANCE:ETHUSDT", name: "ETH" },
+        { sym: "OANDA:XAG_USD", name: "Gümüş" }, // Silver
+        { sym: "OANDA:XAU_USD", name: "Altın" }, // Gold
+        { sym: "OANDA:XPT_USD", name: "Platin" }, // Platinum
+        { sym: "OANDA:WTICO_USD", name: "Petrol" }, // WTI Crude
         { sym: "US10Y", name: "10Y Tahvil" }
       ]
     };
     let currentType = "bist";
-    async function fetchYahooPanel(type) {
+
+    async function fetchFinnhubPanel(type) {
       let panel = symbolsList[type];
-      let symbols = panel.map(x => x.sym).join(",");
-      let url = "https://corsproxy.io/?" + encodeURIComponent("https://query1.finance.yahoo.com/v7/finance/quote?symbols=" + symbols);
-      try {
-        let res = await fetch(url);
-        let data = await res.json();
-        let quotes = data.quoteResponse.result;
-        let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
-        for (let symObj of panel) {
-          let q = quotes.find(x => x.symbol == symObj.sym);
-          if (q) {
-            let price = (q.regularMarketPrice ?? "-");
-            let chg = q.regularMarketChangePercent ?? 0;
-            let chgClass = chg > 0 ? "chg-pos" : chg < 0 ? "chg-neg" : "chg-zero";
-            let pct = chg === "-" ? "" : (chg > 0 ? "+" : "") + chg.toFixed(2) + "%";
-            html += `<tr>
-              <td>${symObj.name}</td>
-              <td>${price}</td>
-              <td class="${chgClass}">${pct}</td>
-            </tr>`;
-          } else {
-            html += `<tr>
-              <td>${symObj.name}</td>
-              <td>-</td>
-              <td class="chg-zero">-</td>
-            </tr>`;
-          }
+      let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
+      for (let symObj of panel) {
+        try {
+          // BIST sembollerinde ISIN gibi özel semboller gerekirse https://finnhub.io/docs/api/quote#supported-symbols
+          let url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symObj.sym)}&token=${FINNHUB_API}`;
+          let res = await fetch(url);
+          let data = await res.json();
+          let price = data.c !== undefined ? data.c : "-";
+          let prev = data.pc !== undefined ? data.pc : price;
+          let pct = (price !== "-" && prev && prev != 0) ? ((price - prev) / prev * 100).toFixed(2) : "-";
+          let chgClass = pct > 0 ? "chg-pos" : pct < 0 ? "chg-neg" : "chg-zero";
+          pct = pct === "-" ? "" : (pct > 0 ? "+" : "") + pct + "%";
+          html += `<tr>
+            <td>${symObj.name}</td>
+            <td>${price}</td>
+            <td class="${chgClass}">${pct}</td>
+          </tr>`;
+        } catch {
+          html += `<tr>
+            <td>${symObj.name}</td>
+            <td>-</td>
+            <td class="chg-zero">-</td>
+          </tr>`;
         }
-        html += `</table>`;
-        document.getElementById("symbols-table").innerHTML = html;
-      } catch (e) {
-        document.getElementById("symbols-table").innerHTML = "<b>Veri çekilemiyor.</b>";
       }
+      html += `</table>`;
+      document.getElementById("symbols-table").innerHTML = html;
     }
-    fetchYahooPanel(currentType);
+    fetchFinnhubPanel(currentType);
 
     document.getElementById('bistBtn').onclick = function() {
       currentType = 'bist';
-      fetchYahooPanel('bist');
+      fetchFinnhubPanel('bist');
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
       this.classList.add('active');
       document.getElementById('usBtn').classList.remove('active');
@@ -191,7 +165,7 @@
     };
     document.getElementById('usBtn').onclick = function() {
       currentType = 'nasdaq';
-      fetchYahooPanel('nasdaq');
+      fetchFinnhubPanel('nasdaq');
       document.getElementById("gauge-label").innerText = "Greed Index";
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
@@ -199,14 +173,14 @@
     };
     document.getElementById('emtiaBtn').onclick = function() {
       currentType = 'emtia';
-      fetchYahooPanel('emtia');
+      fetchFinnhubPanel('emtia');
       document.getElementById("gauge-label").innerText = "VIX";
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('usBtn').classList.remove('active');
     };
 
-    // Gauge (Yarım Daire ve Büyük İğne)
+    // Gauge
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -269,18 +243,60 @@
     }
     drawGauge(62);
 
-    // HABERLER - BBC Economy RSS
+    // BBC Economy RSS
     async function getBBCNews() {
+      let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
       try {
-        const res = await fetch('https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml');
-        const data = await res.json();
-        let stories = data.items.slice(0, 10).map(item => item.title);
-        document.getElementById("breaking-news-content").innerHTML = stories.map(t => "🔸 " + t).join(" ");
-      } catch(e) {
+        let res = await fetch(api);
+        let data = await res.json();
+        let stories = data.items.slice(0, 8).map(i => i.title).join(" ♦ ");
+        document.getElementById("breaking-news-content").innerText = stories;
+      } catch {
         document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
       }
     }
     getBBCNews();
+
+    // TRADINGVIEW GRAFİĞİ
+    function renderTVSymbols(type) {
+      let symbol;
+      if(type=="bist") symbol = "BIST:XU100";
+      else if(type=="nasdaq") symbol = "NASDAQ:NDX";
+      else symbol = "TVC:GOLD";
+      let html = `<div class="tv-widget">
+        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_77c5b&symbol=${symbol}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=1&timezone=Europe/Istanbul&studies=[]&hideideas=1&hidevolume=1&toolbarbg=f7f7f7&withdateranges=1&saveimage=0&studies_overrides={}&enabled_features=[]&disabled_features=[]&locale=tr" width="730" height="380" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+      </div>`;
+      document.getElementById("tv-chart").innerHTML = html;
+    }
+    renderTVSymbols(currentType);
+
+    document.getElementById('bistBtn').onclick = function() {
+      currentType = 'bist';
+      fetchFinnhubPanel('bist');
+      renderTVSymbols('bist');
+      document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
+      this.classList.add('active');
+      document.getElementById('usBtn').classList.remove('active');
+      document.getElementById('emtiaBtn').classList.remove('active');
+    };
+    document.getElementById('usBtn').onclick = function() {
+      currentType = 'nasdaq';
+      fetchFinnhubPanel('nasdaq');
+      renderTVSymbols('nasdaq');
+      document.getElementById("gauge-label").innerText = "Greed Index";
+      this.classList.add('active');
+      document.getElementById('bistBtn').classList.remove('active');
+      document.getElementById('emtiaBtn').classList.remove('active');
+    };
+    document.getElementById('emtiaBtn').onclick = function() {
+      currentType = 'emtia';
+      fetchFinnhubPanel('emtia');
+      renderTVSymbols('emtia');
+      document.getElementById("gauge-label").innerText = "VIX";
+      this.classList.add('active');
+      document.getElementById('bistBtn').classList.remove('active');
+      document.getElementById('usBtn').classList.remove('active');
+    };
   </script>
 </body>
 </html>
