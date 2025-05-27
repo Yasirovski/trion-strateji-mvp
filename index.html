@@ -8,7 +8,7 @@
     body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
     header { font-size: 2em; font-weight: bold; margin: 20px 0 10px 40px; }
     .center-buttons {
-      display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 6px;
     }
     .center-buttons button {
       font-size: 1em; padding: 9px 22px; border-radius: 8px;
@@ -16,6 +16,23 @@
       transition: background .18s;
     }
     .center-buttons button:hover { background: #d3e5ff; }
+    .breaking-news-area {
+      width: 82vw; max-width: 1220px; margin: 10px auto 14px auto; overflow: hidden;
+      background: #ffe4a7; border-radius: 8px; border: 1.5px solid #ffd566;
+      height: 42px; display: flex; align-items: center; position: relative;
+      box-shadow: 0 2px 10px #f6e6bc;
+    }
+    .breaking-news-content {
+      white-space: nowrap; display: inline-block;
+      padding-left: 100%;
+      animation: ticker 22s linear infinite;
+      font-size: 1.15em; font-weight: 600; color: #000c22;
+      letter-spacing: .5px;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%);}
+    }
     .container {
       display: flex; justify-content: center; align-items: flex-start; gap: 32px;
       width: 100%; max-width: 1500px; margin: 0 auto;
@@ -37,14 +54,11 @@
       margin-bottom: 12px;
       color: #222;
     }
-    .news-title { font-weight: bold; font-size: 1.12em; margin-bottom: 12px; margin-top: 5px; }
-    .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
-    .news-list a { color: #0a2885; text-decoration: none; }
-    .news-list a:hover { text-decoration: underline; }
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
       .gauge-area { width: 95vw; }
+      .breaking-news-area { width: 96vw; }
     }
     /* Gauge YARIM DAİRE */
     .gauge {
@@ -92,6 +106,10 @@
       font-weight: bold;
       background: none;
     }
+    .news-title { font-weight: bold; font-size: 1.12em; margin-bottom: 12px; margin-top: 5px; }
+    .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
+    .news-list a { color: #0a2885; text-decoration: none; }
+    .news-list a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
@@ -100,6 +118,10 @@
     <button id="bistBtn">Borsa İstanbul</button>
     <button id="usBtn">Amerika B.</button>
     <button id="emtiaBtn">Emtialar</button>
+  </div>
+  <!-- Breaking News Banner -->
+  <div class="breaking-news-area" id="breaking-news">
+    <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
     <!-- SOLDA SABİT ANLIK FİYAT VE DEĞİŞİM LİSTESİ (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST) -->
@@ -125,10 +147,12 @@
         </div>
       </div>
     </div>
-    <!-- SAĞDA HABERLER -->
+    <!-- SAĞDA EKONOMİK TAKVİM -->
     <div class="right">
-      <div class="news-title">Finans Haberleri</div>
-      <div class="news-list" id="news-list"></div>
+      <div class="news-title">Ekonomik Takvim</div>
+      <!-- Investing.com Economic Calendar Widget BEGIN -->
+      <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
+      <!-- Investing.com Economic Calendar Widget END -->
     </div>
   </div>
   <!-- TradingView JS -->
@@ -221,7 +245,7 @@
       });
     }
 
-    // 3. YARIM DAİRE G A U G E (BÜYÜK SİVRİ İĞNE)
+    // 3. YARIM DAİRE GAUGE (ÇOK BÜYÜK SİVRİ İĞNE)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -250,20 +274,20 @@
         ctx.stroke();
       });
 
-      // SİVRİ VE BÜYÜK İĞNE (GERÇEK GÖSTERGE GİBİ)
+      // SİVRİ ÇOK BÜYÜK İĞNE
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(a - Math.PI/2);
       ctx.beginPath();
-      ctx.moveTo(0, 28); // arka uç (daha kalın ve uzun)
-      ctx.lineTo(-13, -radius+22); // sol kenar (daha geniş)
-      ctx.lineTo(0, -radius-38); // uç (daha uzun)
-      ctx.lineTo(13, -radius+22); // sağ kenar (daha geniş)
+      ctx.moveTo(0, 38); // arka uç (daha kalın ve uzun)
+      ctx.lineTo(-19, -radius+10); // sol kenar (daha geniş)
+      ctx.lineTo(0, -radius-50);   // uç (daha uzun)
+      ctx.lineTo(19, -radius+10);  // sağ kenar (daha geniş)
       ctx.closePath();
       ctx.fillStyle = "#111";
-      ctx.shadowBlur = 9;
-      ctx.shadowColor = "#333";
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = "#222";
       ctx.fill();
       ctx.restore();
 
@@ -293,20 +317,19 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // 4. KAP HABERLERİ (YENİ YÖNTEM)
-    async function fetchKapNews() {
+    // 4. BREAKING NEWS TICKER (BloombergHT Son Dakika)
+    async function fetchBloombergBreakingNews() {
       try {
-        const kapUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri';
-        const response = await fetch(kapUrl);
+        const url = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.bloomberght.com/rss/son-dakika';
+        const response = await fetch(url);
         const data = await response.json();
         if(!data.items) throw Error("No data");
-        let html = '';
-        data.items.slice(0, 10).forEach(item => {
-          html += `<div><a href="${item.link}" target="_blank">${item.title}</a></div>`;
-        });
-        document.getElementById('news-list').innerHTML = html;
-      } catch (e) {
-        document.getElementById('news-list').innerHTML = "KAP haberlerine erişilemiyor.";
+        let items = data.items.slice(0, 12).map(item => item.title);
+        document.getElementById('breaking-news-content').innerHTML =
+          'SON DAKİKA: ' + items.join(' — ');
+      } catch(e) {
+        document.getElementById('breaking-news-content').innerText =
+          "Ekonomi haberlerine erişilemiyor.";
       }
     }
 
@@ -314,7 +337,7 @@
     renderSymbolList("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
-    fetchKapNews();
+    fetchBloombergBreakingNews();
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
@@ -322,18 +345,21 @@
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
+      fetchBloombergBreakingNews();
     };
     document.getElementById('usBtn').onclick = () => {
       renderSymbolList("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
+      fetchBloombergBreakingNews();
     };
     document.getElementById('emtiaBtn').onclick = () => {
       renderSymbolList("emtia");
       loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
+      fetchBloombergBreakingNews();
     };
   </script>
 </body>
