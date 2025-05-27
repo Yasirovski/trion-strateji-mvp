@@ -10,7 +10,6 @@
     #sidebar { width: 270px; background:#fff; border-radius:15px; margin:25px 0 0 15px; box-shadow:0 4px 18px #0001; padding:12px; }
     #center { flex: 1; margin: 25px 10px 0 10px; display:flex; flex-direction:column; align-items:center;}
     #rightbar { width: 270px; margin:25px 15px 0 0;}
-    #tv-embed { margin: 0 0 12px 0; }
     .market-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; }
     .market-dot { width:12px; height:12px; border-radius:50%; margin-right:6px; animation:blink 1s infinite alternate; display:inline-block;}
     .market-dot.open { background:#24ce66; animation:none;}
@@ -19,10 +18,9 @@
     .market-table { width:100%; border-collapse:collapse; font-size: 1rem;}
     .market-table td { padding: 3px 7px; }
     .market-table th { text-align:left; padding:2px 7px 2px 0;}
-    .tw-logo { width: 80px; margin-top:16px; opacity:0.6; }
-    .finnhub-logo { width: 100px; margin-top:14px; opacity:0.9; }
+    .tw-logo, .finnhub-logo { width: 80px; margin-top:12px; opacity:0.6; }
     .tab-btns {text-align: center;}
-    .tab-btns button { font-size:1.2rem; padding:7px 22px; margin:0 10px 17px 0; border-radius:10px; border: 1px solid #ccc; background:#fff; cursor:pointer;}
+    .tab-btns button { font-size:1.1rem; padding:7px 18px; margin:0 10px 17px 0; border-radius:10px; border: 1px solid #ccc; background:#fff; cursor:pointer;}
     .tab-btns button.active { background: #d1f9e9; border-color: #24ce66; font-weight:bold;}
     .ticker-bar { width:100%; background: #fffbe7; border-radius:8px; box-shadow:0 2px 8px #0001; margin: 14px 0 12px 0; font-size:1.12rem; padding:7px 18px; color:#444;}
     @media (max-width:1100px) {
@@ -42,114 +40,119 @@
   <div class="ticker-bar" id="ticker-bar">Yükleniyor...</div>
   <div id="main">
     <div id="sidebar">
-      <b style="font-size:1.17em;">Varlıklar</b>
+      <b style="font-size:1.15em;">Varlıklar</b>
       <div id="assets-table" style="margin:12px 0 0 0;">Yükleniyor...</div>
       <img src="https://s3-symbol-logo.tradingview.com/finnhub--big.svg" class="finnhub-logo" style="display:none;" id="finnhub-logo"/>
       <img src="https://s3-symbol-logo.tradingview.com/tradingview.svg" class="tw-logo" style="display:none;" id="tw-logo"/>
     </div>
     <div id="center">
-      <div id="tv-embed"></div>
-      <!-- Gauge veya başka içerik burada -->
-      <div style="height:270px"></div>
+      <div id="main-chart"></div>
+      <div style="height:250px"></div>
     </div>
     <div id="rightbar">
       <div style="background:#fff; border-radius:15px; box-shadow:0 4px 18px #0001; padding:15px;">
-        <b style="font-size:1.2em;">Ekonomik Takvim</b>
+        <b style="font-size:1.1em;">Ekonomik Takvim</b>
         <iframe src="https://sslecal2.investing.com?pairs=8830,8836,8831,8839,936072,8832,8833,8838,8837,8922&theme=lightTheme" width="240" height="420" frameborder="0" allowtransparency="true"></iframe>
       </div>
     </div>
   </div>
 
   <script>
-    // Finnhub API Keyini buraya ekle
+    // Finnhub API KEY
     const FINNHUB_API_KEY = 'd0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g';
 
-    // BIST30 - TradingView Symbol Overview
+    // BIST 30 en büyük 7
     const bistSymbols = [
-      {name:"ASELS", tv:"BIST:ASELS"},
-      {name:"THYAO", tv:"BIST:THYAO"},
-      {name:"AKBNK", tv:"BIST:AKBNK"},
-      {name:"KCHOL", tv:"BIST:KCHOL"},
-      {name:"GARAN", tv:"BIST:GARAN"},
-      {name:"BIMAS", tv:"BIST:BIMAS"},
-      {name:"TUPRS", tv:"BIST:TUPRS"}
+      {name:"ASELS", code:"BIST:ASELS"},
+      {name:"THYAO", code:"BIST:THYAO"},
+      {name:"AKBNK", code:"BIST:AKBNK"},
+      {name:"KCHOL", code:"BIST:KCHOL"},
+      {name:"GARAN", code:"BIST:GARAN"},
+      {name:"BIMAS", code:"BIST:BIMAS"},
+      {name:"TUPRS", code:"BIST:TUPRS"}
     ];
-    // Amerika
+    // Amerika en büyük 7
     const usSymbols = [
-      {name:"Apple", code:"AAPL", market:"NASDAQ"},
-      {name:"Microsoft", code:"MSFT", market:"NASDAQ"},
-      {name:"Amazon", code:"AMZN", market:"NASDAQ"},
-      {name:"Google", code:"GOOGL", market:"NASDAQ"},
-      {name:"Meta", code:"META", market:"NASDAQ"},
-      {name:"Nvidia", code:"NVDA", market:"NASDAQ"},
-      {name:"Tesla", code:"TSLA", market:"NASDAQ"}
+      {name:"Apple", code:"AAPL"},
+      {name:"Microsoft", code:"MSFT"},
+      {name:"Amazon", code:"AMZN"},
+      {name:"Google", code:"GOOGL"},
+      {name:"Meta", code:"META"},
+      {name:"Nvidia", code:"NVDA"},
+      {name:"Tesla", code:"TSLA"}
     ];
     // Emtia
     const emtiaSymbols = [
       {name:"BTC", code:"BINANCE:BTCUSDT", isCrypto:true},
       {name:"ETH", code:"BINANCE:ETHUSDT", isCrypto:true},
-      {name:"Gümüş", tv:"OANDA:XAGUSD"},
-      {name:"Altın", tv:"OANDA:XAUUSD"},
-      {name:"Platin", tv:"OANDA:XPTUSD"},
-      {name:"Petrol", tv:"OANDA:WTICOUSD"},
-      {name:"10Y Tahvil", tv:"TVC:US10Y"}
+      {name:"Gümüş", code:null, tv:"OANDA:XAGUSD"},
+      {name:"Altın", code:null, tv:"OANDA:XAUUSD"},
+      {name:"Platin", code:null, tv:"OANDA:XPTUSD"},
+      {name:"Petrol", code:null, tv:"OANDA:WTICOUSD"},
+      {name:"10Y Tahvil", code:null, tv:"TVC:US10Y"}
     ];
 
-    // -------------------
-    // Panel Güncelleme
-    // -------------------
+    // Panel Fonksiyonları
     function setSidebar(type) {
       document.getElementById("assets-table").innerHTML = "Yükleniyor...";
       document.getElementById("finnhub-logo").style.display = "none";
       document.getElementById("tw-logo").style.display = "none";
+      let html = `<table class="market-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th><th></th></tr>`;
       if(type === "bist") {
-        // TradingView ile göster
-        let html = `<table class="market-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr></table>
-          <iframe src="https://tr.tradingview.com/widgetembed/?frameElementId=tradingview_c37d2&symbol=${bistSymbols[0].tv}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=2&locale=tr&studies=[]&hideideas=1&allow_symbol_change=false&widgetbar=show&height=260" width="100%" height="260" frameborder="0"></iframe>`;
-        document.getElementById("assets-table").innerHTML = html;
         document.getElementById("tw-logo").style.display = "block";
+        bistSymbols.forEach(sym=>{
+          html += `<tr>
+            <td>${sym.name}</td>
+            <td>-</td>
+            <td>-</td>
+            <td><span class="market-dot closed"></span></td>
+          </tr>`;
+        });
+        html += `</table>`;
+        document.getElementById("assets-table").innerHTML = html;
       } else if(type === "us") {
-        // Finnhub ile panel (yasal, ücretsiz, canlı)
-        document.getElementById("assets-table").innerHTML = `<table class="market-table" id="panel-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th><th></th></tr></table>`;
         document.getElementById("finnhub-logo").style.display = "block";
         usSymbols.forEach(sym => {
           fetch(`https://finnhub.io/api/v1/quote?symbol=${sym.code}&token=${FINNHUB_API_KEY}`)
             .then(resp=>resp.json())
             .then(data=>{
-              let tr = document.createElement("tr");
-              let now = new Date();
-              // Market kapanışı (ABD'de 23:00 sonrası kapalı)
-              let marketOpen = now.getUTCHours() >= 13 && now.getUTCHours() < 20; // örnek, daha hassas için bakabilirsin
-              tr.innerHTML = `<td>${sym.name}</td>
-                <td>${data.c}</td>
-                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)}%</td>
-                <td><span class="market-dot ${marketOpen?'open':'closed'}"></span></td>`;
-              document.getElementById("panel-table").appendChild(tr);
+              let marketOpen = data.t && ((Date.now()/1000 - data.t) < 3700); // 1 saatten yeni fiyat varsa açık
+              html += `<tr>
+                <td>${sym.name}</td>
+                <td>${data.c||'-'}</td>
+                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)||'-'}%</td>
+                <td><span class="market-dot ${marketOpen?'open':'closed'}"></span></td>
+              </tr>`;
+              document.getElementById("assets-table").innerHTML = html+"</table>";
             });
         });
       } else {
-        // Emtia - Karışık Finnhub + TradingView
-        document.getElementById("assets-table").innerHTML = `<table class="market-table" id="panel-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th><th></th></tr></table>`;
         document.getElementById("tw-logo").style.display = "block";
+        let pending = emtiaSymbols.length;
         emtiaSymbols.forEach(sym=>{
           if(sym.isCrypto){
             fetch(`https://finnhub.io/api/v1/quote?symbol=${sym.code.replace("BINANCE:","")}&token=${FINNHUB_API_KEY}`)
             .then(resp=>resp.json())
             .then(data=>{
-              let tr = document.createElement("tr");
-              let now = new Date();
-              let marketOpen = true; // kripto her zaman açık
-              tr.innerHTML = `<td>${sym.name}</td>
-                <td>${data.c}</td>
-                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)}%</td>
-                <td><span class="market-dot ${marketOpen?'open':'closed'}"></span></td>`;
-              document.getElementById("panel-table").appendChild(tr);
+              let marketOpen = true;
+              html += `<tr>
+                <td>${sym.name}</td>
+                <td>${data.c||'-'}</td>
+                <td style="color:${data.dp>0?'#18b801':(data.dp<0?'#ea2222':'#888')}">${data.dp>0?'+':''}${data.dp?.toFixed(2)||'-'}%</td>
+                <td><span class="market-dot open"></span></td>
+              </tr>`;
+              pending--;
+              if(pending===0) document.getElementById("assets-table").innerHTML = html+"</table>";
             });
           } else {
-            // TV'den sadece fiyat (isim olarak göster)
-            let tr = document.createElement("tr");
-            tr.innerHTML = `<td>${sym.name}</td><td colspan="3"><i>TradingView'da izleyin</i></td>`;
-            document.getElementById("panel-table").appendChild(tr);
+            html += `<tr>
+              <td>${sym.name}</td>
+              <td>-</td>
+              <td>-</td>
+              <td><span class="market-dot closed"></span></td>
+            </tr>`;
+            pending--;
+            if(pending===0) document.getElementById("assets-table").innerHTML = html+"</table>";
           }
         });
       }
@@ -159,13 +162,13 @@
     function setMainChart(type) {
       let embed;
       if(type==="bist") {
-        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=BIST:XU100&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=BIST:XU100&interval=D&theme=light" width="700" height="380" frameborder="0"></iframe>`;
       } else if(type==="us") {
-        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=NASDAQ:NDX&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=NASDAQ:NDX&interval=D&theme=light" width="700" height="380" frameborder="0"></iframe>`;
       } else {
-        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=OANDA:XAUUSD&interval=D&theme=light" width="730" height="390" frameborder="0"></iframe>`;
+        embed = `<iframe src="https://tr.tradingview.com/chart/?symbol=OANDA:XAUUSD&interval=D&theme=light" width="700" height="380" frameborder="0"></iframe>`;
       }
-      document.getElementById("tv-embed").innerHTML = embed;
+      document.getElementById("main-chart").innerHTML = embed;
     }
 
     // Tab geçişleri
@@ -199,7 +202,7 @@
     fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml")
       .then(res=>res.json())
       .then(data=>{
-        let stories = data.items.slice(0, 8).map(i=>i.title).join(' ♦ ');
+        let stories = data.items.slice(0, 10).map(i=>i.title).join(' ♦ ');
         document.getElementById("ticker-bar").innerHTML = stories;
       })
       .catch(()=>{ document.getElementById("ticker-bar").innerText="Ekonomi haberleri çekilemiyor."; });
