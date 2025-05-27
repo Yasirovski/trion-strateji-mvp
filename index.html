@@ -144,31 +144,34 @@
     function renderTVSymbols(type) {
       currentType = type;
       let html = "";
+      let ids = [];
       for(let s of symbols[type]) {
         const id = "tv_" + s.symbol.replace(/[:.]/g, '');
         html += `<div class="mini-tv-widget"><div class="tradingview-widget-container">
           <div id="${id}" style="height:56px;width:100%;"></div>
-          <script type="text/javascript">
-            new TradingView.MiniWidget({
-              "container_id": "${id}",
-              "symbol": "${s.symbol}",
-              "width": "230",
-              "height": "56",
-              "locale": "tr",
-              "dateRange": "1D",
-              "colorTheme": "light",
-              "trendLineColor": "#37a6ef",
-              "underLineColor": "#e3f2fd",
-              "isTransparent": false,
-              "autosize": false,
-              "largeChartUrl": ""
-            });
-          </script>
         </div></div>`;
+        ids.push({id, symbol: s.symbol});
       }
       document.getElementById('symbols-table').innerHTML = html;
-      // TradingView widget'ın scriptlerini çalıştır:
-      setTimeout(()=>{ if(window.TradingView) window.TradingView.onready && window.TradingView.onready(() => {}); }, 100);
+      // TradingView widgetlarını dinamik olarak başlat
+      setTimeout(() => {
+        ids.forEach(obj => {
+          new window.TradingView.MiniWidget({
+            "container_id": obj.id,
+            "symbol": obj.symbol,
+            "width": "230",
+            "height": "56",
+            "locale": "tr",
+            "dateRange": "1D",
+            "colorTheme": "light",
+            "trendLineColor": "#37a6ef",
+            "underLineColor": "#e3f2fd",
+            "isTransparent": false,
+            "autosize": false,
+            "largeChartUrl": ""
+          });
+        });
+      }, 300);
     }
     renderTVSymbols(currentType);
 
@@ -294,9 +297,9 @@
       try {
         const res = await fetch("https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml");
         const data = await res.json();
-        let stories = data.items.slice(0, 10).map(item => item.title).join("  ◆  ");
-        document.getElementById("breaking-news-content").innerText = stories || "Ekonomi haberlerine erişilemiyor.";
-      } catch (e) {
+        let stories = data.items.slice(0, 9).map(item => item.title);
+        document.getElementById("breaking-news-content").innerHTML = stories.map(t => "🔸 " + t).join(" ");
+      } catch(e) {
         document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
       }
     }
