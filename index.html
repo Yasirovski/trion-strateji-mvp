@@ -3,176 +3,285 @@
 <head>
   <meta charset="UTF-8">
   <title>Trion Strateji</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5776496009950122" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=1100">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #fff;
+    }
+    header {
+      font-size: 2em;
+      font-weight: bold;
+      margin: 20px 0 10px 40px;
+    }
+    .center-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .center-buttons button {
+      font-size: 1em;
+      padding: 9px 22px;
+      border-radius: 8px;
+      background: #f2f2f2;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      transition: background .18s;
+    }
+    .center-buttons button:hover {
+      background: #d3e5ff;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 32px;
+      width: 100%;
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+    .left, .right {
+      width: 270px;
+      min-height: 700px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 2px 10px #eee;
+    }
+    .middle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .gauge-area {
+      width: 360px;
+      margin: 30px auto 0 auto;
+      background: #fff;
+      padding: 10px 0 0 0;
+    }
+    .news-title {
+      font-weight: bold;
+      font-size: 1.12em;
+      margin-bottom: 12px;
+      margin-top: 5px;
+    }
+    .news-list {
+      max-height: 680px;
+      overflow-y: auto;
+      font-size: 0.98em;
+      line-height: 1.5;
+    }
+    .news-list a {
+      color: #0a2885;
+      text-decoration: none;
+    }
+    .news-list a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 1100px) {
+      .container { flex-direction: column; align-items: stretch; }
+      .left, .right, .middle { width: 100%; min-height: unset; }
+      .gauge-area { width: 90vw; }
+    }
+  </style>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Trion Strateji</h1>
-    <nav class="market-nav">
-      <button onclick="switchMarket('BIST')">Borsa İstanbul</button>
-      <button onclick="switchMarket('USA')">Amerika B.</button>
-      <button onclick="switchMarket('CMD')">Emtialar</button>
-    </nav>
-  </header>
-
-  <div class="container">
-    <!-- Sol Sütun: TradingView Symbol List -->
-    <aside class="sidebar">
-      <div id="watchlist-container"></div>
-    </aside>
-
-    <!-- Orta Bölüm: Chart ve Gauge -->
-    <section class="main">
-      <div id="tv-chart"></div>
-      <!-- Google Charts yerine statik gauge (opsiyonel) -->
-      <div id="gauge-text" class="gauge-text">--</div>
-      <div id="rss-feed">
-        <h3>Finans Haberleri</h3>
-        <ul id="news-list"></ul>
-      </div>
-    </section>
-
-    <!-- Sağ Sütun: Reklam -->
-    <aside class="news">
-      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-5776496009950122" data-ad-slot="5878236921" data-ad-format="auto" data-full-width-responsive="true"></ins>
-      <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-    </aside>
+  <header>Trion Strateji</header>
+  <div class="center-buttons">
+    <button id="bistBtn">Borsa İstanbul</button>
+    <button id="usBtn">Amerika B.</button>
+    <button id="emtiaBtn">Emtialar</button>
   </div>
-
-  <footer>
-    <a href="about.html">Hakkında</a> |
-    <a href="contact.html">İletişim</a>
-  </footer>
+  <div class="container">
+    <!-- SOLDA HİSSE TAKİPÇİSİ -->
+    <div class="left">
+      <div id="symbol-widget"></div>
+    </div>
+    <!-- ORTA GRAFİK VE GAUGE -->
+    <div class="middle">
+      <div id="tv-chart"></div>
+      <div class="gauge-area">
+        <canvas id="myGauge" width="360" height="180"></canvas>
+      </div>
+    </div>
+    <!-- SAĞDA HABERLER -->
+    <div class="right">
+      <div class="news-title">Finans Haberleri</div>
+      <div class="news-list" id="news-list">
+        <!-- KAP haberleri otomatik gelecek -->
+      </div>
+    </div>
+  </div>
+  <!-- TradingView GRAFİK -->
+  <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
-    const lists = {
-      BIST: {
-        widget: {
-          "symbolsGroups": [{
-            "name": "BIST30",
-            "symbols": [
-              {"name":"AKBNK.IS","display":"AKBNK"}, {"name":"ARCLK.IS","display":"ARCLK"}
-              /* ... diğer BIST30 ... */
-            ]
-          }],
-          "showSymbolLogo": true,
-          "colorTheme":"light",
-          "isTransparent":false,
-          "locale":"tr"
-        },
-        chartSymbol: "BIST:XU100",
-        gaugeURL: "/.netlify/functions/get-greed-bist"
-      },
-      USA: {
-        widget: {
-          "symbolsGroups": [{
-            "name": "NASDAQ Top10",
-            "symbols": [
-              {"name":"AAPL","display":"AAPL"}, {"name":"MSFT","display":"MSFT"}
-              /* ... diğer ... */
-            ]
-          }],
-          "showSymbolLogo": true,
-          "colorTheme":"light",
-          "isTransparent":false,
-          "locale":"en"
-        },
-        chartSymbol: "NASDAQ:NDX",
-        gaugeURL: "/.netlify/functions/get-greed-usa"
-      },
-      CMD: {
-        widget: {
-          "symbolsGroups": [{
-            "name": "Emtialar",
-            "symbols": [
-              {"name":"OANDA:XAUUSD","display":"Altın"}, {"name":"OANDA:XAGUSD","display":"Gümüş"}, {"name":"COINBASE:BTCUSD","display":"BTC"}
-            ]
-          }],
-          "showSymbolLogo": true,
-          "colorTheme":"light",
-          "isTransparent":false,
-          "locale":"en"
-        },
-        chartSymbol: "OANDA:XAUUSD",
-        gaugeURL: "/.netlify/functions/get-greed-cmd"
-      }
+    // Semboller
+    const symbols = {
+      bist: [
+        ["BIST 30", "BIST:XU030"],
+        ["THYAO", "BIST:THYAO"],
+        ["ASELS", "BIST:ASELS"],
+        ["EREGL", "BIST:EREGL"]
+      ],
+      nasdaq: [
+        ["AAPL", "NASDAQ:AAPL"],
+        ["MSFT", "NASDAQ:MSFT"],
+        ["NVDA", "NASDAQ:NVDA"],
+        ["TSLA", "NASDAQ:TSLA"]
+      ],
+      emtia: [
+        ["Altın", "TVC:GOLD"],
+        ["Platin", "TVC:PLATINUM"],
+        ["BTC/USD", "BINANCE:BTCUSDT"]
+      ]
+    };
+    const charts = {
+      bist: "BIST:XU100",
+      nasdaq: "NASDAQ:NDX",
+      emtia: "TVC:GOLD"
     };
 
-    function loadWatchlist(market) {
-      const container = document.getElementById('watchlist-container');
-      container.innerHTML = '<div class="tradingview-widget-container"><div id="symbol-list"></div></div>';
-      new TradingView.widget({
+    // Symbol Overview Widget
+    function loadSymbolWidget(symbolsArr) {
+      document.getElementById("symbol-widget").innerHTML = "";
+      let script = document.createElement('script');
+      script.type = "text/javascript";
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        "symbols": symbolsArr,
         "width": "100%",
-        "height": 600,
-        "symbol": "",
-        "interval": "D",
-        "timezone": "Etc/UTC",
-        "theme": "light",
-        "style": "1",
-        "locale": lists[market].widget.locale,
-        "toolbar_bg": "#f1f3f6",
-        "enable_publishing": false,
-        "hide_side_toolbar": false,
-        "allow_symbol_change": true,
-        "details": true,
-        "studies": [],
-        "container_id": "symbol-list",
-        ...lists[market].widget
+        "height": "510",
+        "locale": "tr",
+        "colorTheme": "light",
+        "isTransparent": false,
+        "showVolume": true,
+        "showChart": true
       });
+      document.getElementById("symbol-widget").appendChild(script);
     }
 
-    function loadChart(market) {
-      const container = document.getElementById('tv-chart'); container.innerHTML = '';
+    // TradingView Ana Grafik
+    function loadChart(symbol) {
+      document.getElementById("tv-chart").innerHTML = "";
+      let chartDiv = document.createElement('div');
+      chartDiv.id = "tradingview_chart";
+      chartDiv.style.width = "700px";
+      chartDiv.style.height = "400px";
+      document.getElementById("tv-chart").appendChild(chartDiv);
+
       new TradingView.widget({
-        "width": "100%",
-        "height": "60vh",
-        "symbol": lists[market].chartSymbol,
+        "container_id": "tradingview_chart",
+        "width": 700,
+        "height": 400,
+        "symbol": symbol,
         "interval": "D",
         "timezone": "Europe/Istanbul",
         "theme": "light",
         "style": "1",
         "locale": "tr",
         "toolbar_bg": "#f1f3f6",
-        "container_id": "tv-chart"
+        "hide_top_toolbar": false,
+        "hide_legend": false,
+        "save_image": false
       });
     }
 
-    function loadGauge(market) {
-      fetch(lists[market].gaugeURL)
-        .then(res => res.json())
-        .then(d => document.getElementById('gauge-text').textContent = Math.round(d.value))
-        .catch(() => document.getElementById('gauge-text').textContent = '0');
+    // GAUGE (Chart.js yarım daire)
+    let gaugeChart;
+    function drawGauge(val = 62) {
+      if (gaugeChart) gaugeChart.destroy();
+      const ctx = document.getElementById('myGauge').getContext('2d');
+      gaugeChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          datasets: [{
+            data: [val, 100 - val],
+            backgroundColor: [
+              val < 33 ? "#ff8d00" : (val < 66 ? "#ffd800" : "#27ae60"),
+              "#eee"
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          rotation: -90 * (Math.PI / 180),
+          circumference: 180 * (Math.PI / 180),
+          cutout: '75%',
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: false }
+          }
+        },
+        plugins: [{
+          id: 'gaugeText',
+          afterDraw: function(chart) {
+            let width = chart.width,
+                height = chart.height,
+                ctx = chart.ctx;
+            ctx.restore();
+            ctx.font = 'bold 38px Arial';
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "#222";
+            ctx.textAlign = "center";
+            ctx.fillText(val, width/2, height - 55);
+            ctx.font = '18px Arial';
+            ctx.fillStyle = "#444";
+            ctx.fillText("%", width/2 + 50, height - 58);
+            ctx.save();
+          }
+        }]
+      });
     }
 
-    // RSS
-    (function(){
-      const ul = document.getElementById('news-list');
-      fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent('https://rss.investing.com/top-news.rss'))
-        .then(r=>r.json()).then(d=>{
-          ul.innerHTML = '';
-          d.items.slice(0,5).forEach(i=>{
-            const li = document.createElement('li');
-            li.innerHTML = `<a href="${i.link}" target="_blank">${i.title}</a>`;
-            ul.appendChild(li);
-          });
+    // KAP HABERLERİNİ ÇEK
+    async function fetchKapNews() {
+      try {
+        const response = await fetch('https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri');
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, "application/xml");
+        const items = Array.from(xml.querySelectorAll('item')).slice(0, 12);
+        let html = '';
+        items.forEach(item => {
+          const title = item.querySelector('title').textContent;
+          const link = item.querySelector('link').textContent;
+          html += `<div><a href="${link}" target="_blank">${title}</a></div>`;
         });
-    })();
-
-    function switchMarket(m) {
-      loadWatchlist(m);
-      loadChart(m);
-      loadGauge(m);
+        document.getElementById('news-list').innerHTML = html;
+      } catch (e) {
+        document.getElementById('news-list').innerHTML = "KAP haberlerine erişilemiyor.";
+      }
     }
 
-    // load TradingView script
-    const tvScript = document.createElement('script');
-    tvScript.src = 'https://s3.tradingview.com/tv.js';
-    tvScript.onload = () => switchMarket('BIST');
-    document.head.appendChild(tvScript);
+    // BAŞLANGIÇTA YÜKLE
+    loadSymbolWidget(symbols.bist);
+    loadChart(charts.bist);
+    drawGauge(62);
+    fetchKapNews();
+
+    // BUTONLARA TIKLANINCA
+    document.getElementById('bistBtn').onclick = () => {
+      loadSymbolWidget(symbols.bist);
+      loadChart(charts.bist);
+      drawGauge(62); // BIST için gauge değerini değiştir
+    };
+    document.getElementById('usBtn').onclick = () => {
+      loadSymbolWidget(symbols.nasdaq);
+      loadChart(charts.nasdaq);
+      drawGauge(73); // Amerika için gauge değerini değiştir
+    };
+    document.getElementById('emtiaBtn').onclick = () => {
+      loadSymbolWidget(symbols.emtia);
+      loadChart(charts.emtia);
+      drawGauge(48); // Emtia için gauge değerini değiştir
+    };
   </script>
 </body>
 </html>
