@@ -5,122 +5,37 @@
   <title>Trion Strateji</title>
   <meta name="viewport" content="width=1100">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #fff;
-    }
-    header {
-      font-size: 2em;
-      font-weight: bold;
-      margin: 20px 0 10px 40px;
-    }
+    body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
+    header { font-size: 2em; font-weight: bold; margin: 20px 0 10px 40px; }
     .center-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 16px;
+      display: flex; justify-content: center; gap: 12px; margin-bottom: 16px;
     }
     .center-buttons button {
-      font-size: 1em;
-      padding: 9px 22px;
-      border-radius: 8px;
-      background: #f2f2f2;
-      border: 1px solid #ccc;
-      cursor: pointer;
+      font-size: 1em; padding: 9px 22px; border-radius: 8px;
+      background: #f2f2f2; border: 1px solid #ccc; cursor: pointer;
       transition: background .18s;
     }
-    .center-buttons button:hover {
-      background: #d3e5ff;
-    }
+    .center-buttons button:hover { background: #d3e5ff; }
     .container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 32px;
-      width: 100%;
-      max-width: 1500px;
-      margin: 0 auto;
+      display: flex; justify-content: center; align-items: flex-start; gap: 32px;
+      width: 100%; max-width: 1500px; margin: 0 auto;
     }
     .left, .right {
-      width: 260px;
-      min-height: 700px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      padding: 16px;
-      box-shadow: 0 2px 10px #eee;
+      width: 270px; min-height: 700px; background: #f9f9f9;
+      border-radius: 8px; padding: 12px; box-shadow: 0 2px 10px #eee;
     }
     .middle {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
     }
     .gauge-area {
-      width: 390px;
-      margin: 30px auto 0 auto;
-      background: #fff;
-      padding: 10px 0 0 0;
-      text-align: center;
+      width: 410px; margin: 28px auto 0 auto; background: #fff;
+      padding: 8px 0 0 0; text-align: center;
     }
-    .gauge-label {
-      font-weight: bold;
-      font-size: 1.1em;
-      margin-bottom: 2px;
-      color: #222;
-    }
-    .news-title {
-      font-weight: bold;
-      font-size: 1.12em;
-      margin-bottom: 12px;
-      margin-top: 5px;
-    }
-    .news-list {
-      max-height: 680px;
-      overflow-y: auto;
-      font-size: 0.98em;
-      line-height: 1.5;
-    }
-    .news-list a {
-      color: #0a2885;
-      text-decoration: none;
-    }
-    .news-list a:hover {
-      text-decoration: underline;
-    }
-    .stock-list-table {
-      width: 100%;
-      border-collapse: collapse;
-      background: #fff;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 0;
-      font-size: 1em;
-      box-shadow: 0 2px 8px #f2f2f2;
-    }
-    .stock-list-table th, .stock-list-table td {
-      padding: 8px 6px;
-      text-align: left;
-    }
-    .stock-list-table tr {
-      border-bottom: 1px solid #f0f0f0;
-    }
-    .stock-list-table tr:last-child {
-      border-bottom: none;
-    }
-    .stock-list-table th {
-      background: #f7f7fa;
-      color: #434343;
-      font-weight: bold;
-      font-size: 1em;
-      border-bottom: 2px solid #eee;
-    }
-    .stock-list-table td {
-      color: #1c1c1c;
-      font-size: 1em;
-    }
-    .stock-up { color: #27ae60; font-weight: bold;}
-    .stock-down { color: #e74c3c; font-weight: bold;}
+    .gauge-label { font-weight: bold; font-size: 1.13em; margin-bottom: 2px; color: #222; }
+    .news-title { font-weight: bold; font-size: 1.12em; margin-bottom: 12px; margin-top: 5px; }
+    .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
+    .news-list a { color: #0a2885; text-decoration: none; }
+    .news-list a:hover { text-decoration: underline; }
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
@@ -137,66 +52,59 @@
     <button id="emtiaBtn">Emtialar</button>
   </div>
   <div class="container">
-    <!-- SOLDA HİSSE TAKİPÇİSİ -->
+    <!-- SOLDA GRAFİK MODÜLÜ -->
     <div class="left">
-      <div id="stock-list"></div>
+      <div id="symbol-widget"></div>
     </div>
     <!-- ORTA GRAFİK VE GAUGE -->
     <div class="middle">
       <div id="tv-chart"></div>
       <div class="gauge-area">
         <div class="gauge-label" id="gauge-label">Endeks Gücü</div>
-        <canvas id="myGauge" width="380" height="210"></canvas>
+        <canvas id="myGauge" width="400" height="210"></canvas>
       </div>
     </div>
     <!-- SAĞDA HABERLER -->
     <div class="right">
       <div class="news-title">Finans Haberleri</div>
-      <div class="news-list" id="news-list">
-        <!-- KAP haberleri otomatik gelecek -->
-      </div>
+      <div class="news-list" id="news-list"></div>
     </div>
   </div>
-  <!-- TradingView GRAFİK -->
+  <!-- TradingView JS -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // 1) Hisse Listeleri (Demo: Gerçek fiyatları apiden çekmek için ayrı bir backend gerek!)
-    const stockLists = {
-      bist: [
-        { name: "BIST 30", code: "XU030", price: "10.290", change: "-1.23%", dir: "down" },
-        { name: "THYAO", code: "THYAO", price: "312,70", change: "+0.50%", dir: "up" },
-        { name: "ASELSAN", code: "ASELS", price: "85,00", change: "-0.19%", dir: "down" },
-        { name: "EREGLİ", code: "EREGL", price: "48,60", change: "+0.91%", dir: "up" }
-      ],
-      nasdaq: [
-        { name: "Apple", code: "AAPL", price: "194.30", change: "-1.2%", dir: "down" },
-        { name: "Microsoft", code: "MSFT", price: "418.65", change: "+1.1%", dir: "up" },
-        { name: "Nvidia", code: "NVDA", price: "1,150.25", change: "+2.8%", dir: "up" },
-        { name: "Tesla", code: "TSLA", price: "178.23", change: "-0.8%", dir: "down" }
-      ],
-      emtia: [
-        { name: "Altın", code: "GOLD", price: "2,343", change: "+0.4%", dir: "up" },
-        { name: "Platin", code: "PLATINUM", price: "1,057", change: "-0.2%", dir: "down" },
-        { name: "Bitcoin", code: "BTCUSD", price: "67,100", change: "+1.7%", dir: "up" }
-      ]
-    };
-
-    function renderStockList(type) {
-      let list = stockLists[type];
-      let html = `<table class="stock-list-table">
-        <tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
-      for (const s of list) {
-        html += `<tr>
-          <td>${s.name}</td>
-          <td>${s.price}</td>
-          <td class="${s.dir === 'up' ? 'stock-up' : 'stock-down'}">${s.change}</td>
-        </tr>`;
+    // ---- 1. SOLDAKİ GRAFİK MODÜLÜ (Symbol Overview Widget) ----
+    const widgets = {
+      bist: {
+        symbols: [["BIST 100", "BIST:XU100"], ["BIST 30", "BIST:XU030"], ["THYAO", "BIST:THYAO"], ["ASELS", "BIST:ASELS"]],
+      },
+      nasdaq: {
+        symbols: [["NASDAQ 100", "NASDAQ:NDX"], ["Apple", "NASDAQ:AAPL"], ["Microsoft", "NASDAQ:MSFT"], ["Nvidia", "NASDAQ:NVDA"]],
+      },
+      emtia: {
+        symbols: [["Altın", "TVC:GOLD"], ["Platin", "TVC:PLATINUM"], ["BTC/USD", "BINANCE:BTCUSDT"]],
       }
-      html += `</table>`;
-      document.getElementById("stock-list").innerHTML = html;
+    };
+    function loadSymbolWidget(type) {
+      document.getElementById("symbol-widget").innerHTML = "";
+      let script = document.createElement('script');
+      script.type = "text/javascript";
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-overview.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        symbols: widgets[type].symbols,
+        width: "100%",
+        height: "510",
+        locale: "tr",
+        colorTheme: "light",
+        isTransparent: false,
+        showVolume: true,
+        showChart: true
+      });
+      document.getElementById("symbol-widget").appendChild(script);
     }
 
-    // 2) TradingView Grafik
+    // ---- 2. ORTA GRAFİK (Ana Grafik) ----
     function loadChart(symbol) {
       document.getElementById("tv-chart").innerHTML = "";
       let chartDiv = document.createElement('div');
@@ -222,18 +130,18 @@
       });
     }
 
-    // 3) Gauge: İğneli, renkli ve metinli (Chart.js + needle plugin)
-    // Needle eklentisi:
+    // ---- 3. YARIM DAİRE GAUGE, RENKLİ ve İĞNELİ ----
+    // Kırmızı (0-33), Sarı (33-66), Yeşil (66-100)
     const gaugeNeedle = {
       id: 'needle',
       afterDatasetDraw(chart, args, options) {
-        const { ctx, chartArea: {width, height, left, top} } = chart;
-        const value = chart.data.datasets[0].data[0];
+        const value = chart.data.datasets[0].value;
         const angle = Math.PI * (1 - value/100);
         const cx = chart.getDatasetMeta(0).data[0].x;
         const cy = chart.getDatasetMeta(0).data[0].y;
-        const r = chart.getDatasetMeta(0).data[0].outerRadius * 0.9;
+        const r = chart.getDatasetMeta(0).data[0].outerRadius * 0.93;
 
+        const ctx = chart.ctx;
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(angle);
@@ -244,47 +152,56 @@
         ctx.strokeStyle = "#222";
         ctx.stroke();
         ctx.beginPath();
-        ctx.arc(0,0,10,0,2*Math.PI);
+        ctx.arc(0,0,9,0,2*Math.PI);
         ctx.fillStyle="#222";
         ctx.fill();
         ctx.restore();
 
-        // Metin
+        // Değer ortada
         ctx.save();
-        ctx.font = 'bold 34px Arial';
+        ctx.font = 'bold 30px Arial';
         ctx.textAlign = 'center';
         ctx.fillStyle = "#222";
-        ctx.fillText(value+"%", cx, cy+45);
-        ctx.font = '15px Arial';
+        ctx.fillText(value+"%", cx, cy+54);
+        ctx.font = '17px Arial';
         ctx.fillStyle = "#444";
-        ctx.fillText("0%", cx-130, cy+70);
-        ctx.fillText("50%", cx, cy-125);
-        ctx.fillText("100%", cx+130, cy+70);
+        ctx.fillText("0%", cx-160, cy+63);
+        ctx.fillText("50%", cx, cy-130);
+        ctx.fillText("100%", cx+160, cy+63);
         ctx.restore();
       }
     };
-
     let gaugeChart;
     function drawGauge(val = 62) {
       if (gaugeChart) gaugeChart.destroy();
+      let bg = [
+        val <= 33 ? "#e74c3c" : "#eee",
+        val > 33 && val <= 66 ? "#f7b731" : "#eee",
+        val > 66 ? "#27ae60" : "#eee"
+      ];
+      // Gauge 3 renkli, kalan gri
+      let data = [
+        Math.min(val,33),
+        Math.max(0, Math.min(val-33,33)),
+        Math.max(0, Math.min(val-66,34)),
+        100-val
+      ];
       const ctx = document.getElementById('myGauge').getContext('2d');
       gaugeChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
+          labels: ["Kırmızı", "Sarı", "Yeşil", "Boş"],
           datasets: [{
-            data: [val, 50-val/2, 50-val/2],
-            backgroundColor: [
-              val < 50 ? "#f8ae40" : "#31c75c",
-              "#e84545",
-              "#e0e0e0"
-            ],
+            data: data,
+            value: val,
+            backgroundColor: [bg[0], bg[1], bg[2], "#e0e0e0"],
             borderWidth: 0
           }]
         },
         options: {
           rotation: -Math.PI,
           circumference: Math.PI,
-          cutout: "68%",
+          cutout: "70%",
           plugins: {
             legend: { display: false },
             tooltip: { enabled: false }
@@ -294,10 +211,10 @@
       });
     }
 
-    // 4) KAP HABERLERİ
+    // ---- 4. KAP HABERLERİ (fetch) ----
     async function fetchKapNews() {
       try {
-        // !!! CORS KISITI: Netlify/Vercel gibi bir yerde deploy edince çalışır.
+        // Proxy ile CORS çözümü (deploy ortamında çalışır)
         const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri'));
         const data = await response.json();
         const parser = new DOMParser();
@@ -315,27 +232,27 @@
       }
     }
 
-    // Başlangıçta yükle
-    renderStockList("bist");
+    // --- İLK YÜKLEME
+    loadSymbolWidget('bist');
     loadChart("BIST:XU100");
     drawGauge(62);
     fetchKapNews();
 
-    // Butonlar
+    // --- BUTONLARA GÖRE DEĞİŞTİR
     document.getElementById('bistBtn').onclick = () => {
-      renderStockList("bist");
+      loadSymbolWidget('bist');
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Endeks Gücü";
     };
     document.getElementById('usBtn').onclick = () => {
-      renderStockList("nasdaq");
+      loadSymbolWidget('nasdaq');
       loadChart("NASDAQ:NDX");
       drawGauge(81);
       document.getElementById("gauge-label").innerText = "NASDAQ Greed Meter";
     };
     document.getElementById('emtiaBtn').onclick = () => {
-      renderStockList("emtia");
+      loadSymbolWidget('emtia');
       loadChart("TVC:GOLD");
       drawGauge(49);
       document.getElementById("gauge-label").innerText = "Emtia Momentum";
