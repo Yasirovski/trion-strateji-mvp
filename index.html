@@ -22,7 +22,7 @@
     }
     .left, .right {
       width: 250px; min-height: 700px; background: #f9f9f9;
-      border-radius: 8px; padding: 16px 10px; box-shadow: 0 2px 10px #eee;
+      border-radius: 8px; padding: 16px 7px; box-shadow: 0 2px 10px #eee;
     }
     .middle {
       flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -40,30 +40,6 @@
     .news-list { max-height: 680px; overflow-y: auto; font-size: 0.98em; line-height: 1.5; }
     .news-list a { color: #0a2885; text-decoration: none; }
     .news-list a:hover { text-decoration: underline; }
-    .stock-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      width: 98%;
-    }
-    .stock-list li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 10px 8px 13px;
-      margin: 0 0 7px 0;
-      font-size: 1.08em;
-      background: #fff;
-      border-radius: 7px;
-      box-shadow: 0 2px 8px #eee;
-      font-weight: bold;
-      color: #124;
-      border-left: 6px solid #d3e5ff;
-      letter-spacing: .5px;
-    }
-    .stock-list .change-up { color: #27ae60; font-weight: bold;}
-    .stock-list .change-down { color: #e74c3c; font-weight: bold;}
-    .stock-list .change-neutral { color: #777; }
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
@@ -125,9 +101,9 @@
     <button id="emtiaBtn">Emtialar</button>
   </div>
   <div class="container">
-    <!-- SOLDA TAKİPÇİ LİSTE -->
+    <!-- SOLDA ANLIK TAKİPÇİ LİSTE (TRADINGVIEW SYMBOL TICKER) -->
     <div class="left">
-      <ul class="stock-list" id="stock-list"></ul>
+      <div id="tv-symbol-ticker"></div>
     </div>
     <!-- ORTA GRAFİK VE GAUGE -->
     <div class="middle">
@@ -157,46 +133,59 @@
   <!-- TradingView JS -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // 1. Sol: Liste ve değişim
-    const stockLists = {
-      bist: [
-        { code: "ASELS", change: +2.15 },
-        { code: "GARAN", change: -1.13 },
-        { code: "THYAO", change: +0.87 },
-        { code: "KCHOL", change: +0.05 },
-        { code: "ENKAI", change: -0.44 },
-        { code: "FROTO", change: +1.33 },
-        { code: "BIMAS", change: -2.51 },
-        { code: "AKBNK", change: +0.01 },
-        { code: "TUPRS", change: 0.00 }
-      ],
-      nasdaq: [
-        { code: "Apple", change: +2.10 },
-        { code: "Microsoft", change: -0.31 },
-        { code: "Amazon", change: +0.96 },
-        { code: "Alphabet", change: -0.82 },
-        { code: "Meta", change: +3.21 },
-        { code: "Nvidia", change: +4.12 },
-        { code: "Tesla", change: -1.18 }
-      ],
-      emtia: [
-        { code: "Gümüş", change: +1.28 },
-        { code: "Petrol", change: -0.71 },
-        { code: "Platin", change: +0.55 },
-        { code: "BTC", change: +2.49 },
-        { code: "Ethereum", change: +1.70 },
-        { code: "Ripple", change: -0.05 },
-        { code: "Amerika 10Y Tahvil", change: -0.11 }
-      ]
+    // 1. TRADINGVIEW SYMBOL TICKER (sol anlık fiyatlar)
+    const tvTickers = {
+      bist: {
+        symbols: [
+          {proName: "BIST:ASELS", title: "ASELS"},
+          {proName: "BIST:GARAN", title: "GARAN"},
+          {proName: "BIST:THYAO", title: "THYAO"},
+          {proName: "BIST:KCHOL", title: "KCHOL"},
+          {proName: "BIST:ENKAI", title: "ENKAI"},
+          {proName: "BIST:FROTO", title: "FROTO"},
+          {proName: "BIST:BIMAS", title: "BIMAS"},
+          {proName: "BIST:AKBNK", title: "AKBNK"},
+          {proName: "BIST:TUPRS", title: "TUPRS"}
+        ]
+      },
+      nasdaq: {
+        symbols: [
+          {proName: "NASDAQ:AAPL", title: "Apple"},
+          {proName: "NASDAQ:MSFT", title: "Microsoft"},
+          {proName: "NASDAQ:AMZN", title: "Amazon"},
+          {proName: "NASDAQ:GOOGL", title: "Alphabet"},
+          {proName: "NASDAQ:META", title: "Meta"},
+          {proName: "NASDAQ:NVDA", title: "Nvidia"},
+          {proName: "NASDAQ:TSLA", title: "Tesla"}
+        ]
+      },
+      emtia: {
+        symbols: [
+          {proName: "TVC:SILVER", title: "Gümüş"},
+          {proName: "TVC:USOIL", title: "Petrol"},
+          {proName: "TVC:PLATINUM", title: "Platin"},
+          {proName: "BINANCE:BTCUSDT", title: "BTC"},
+          {proName: "BINANCE:ETHUSDT", title: "Ethereum"},
+          {proName: "BINANCE:XRPUSDT", title: "Ripple"},
+          {proName: "TVC:US10Y", title: "Amerika 10Y Tahvil"}
+        ]
+      }
     };
-    function renderStockList(type) {
-      let html = "";
-      stockLists[type].forEach(s => {
-        let cls = s.change > 0 ? 'change-up' : (s.change < 0 ? 'change-down' : 'change-neutral');
-        let val = s.change > 0 ? '+' : (s.change < 0 ? '' : '');
-        html += `<li>${s.code}<span class="${cls}">${val}${s.change.toFixed(2)}%</span></li>`;
+    function renderTicker(type) {
+      document.getElementById("tv-symbol-ticker").innerHTML = "";
+      let script = document.createElement('script');
+      script.type = "text/javascript";
+      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js";
+      script.async = true;
+      script.innerHTML = JSON.stringify({
+        "symbols": tvTickers[type].symbols,
+        "showSymbolLogo": true,
+        "colorTheme": "light",
+        "isTransparent": false,
+        "displayMode": "regular",
+        "locale": "tr"
       });
-      document.getElementById("stock-list").innerHTML = html;
+      document.getElementById("tv-symbol-ticker").appendChild(script);
     }
 
     // 2. Orta TradingView Grafik
@@ -225,7 +214,7 @@
       });
     }
 
-    // 3. YARIM DAİRE G A U G E (5 bölmeli, iğneli, merkezi top nokta)
+    // 3. YARIM DAİRE G A U G E (5 bölmeli, iğneli)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -233,15 +222,16 @@
 
       // Bölme açıları ve renkler
       const ranges = [
-        {from: 0, to: 20, color: "#f39c12"},   // Çok Çekingen (turuncu)
-        {from: 20, to: 40, color: "#e67e22"},  // Çekingen (turuncu-kahve)
-        {from: 40, to: 60, color: "#ffd800"},  // Normal (sarı)
-        {from: 60, to: 80, color: "#27ae60"},  // Hırslı (yeşil)
-        {from: 80, to: 100, color: "#e74c3c"}  // Çok Hırslı (kırmızı)
+        {from: 0, to: 20, color: "#f39c12"},
+        {from: 20, to: 40, color: "#e67e22"},
+        {from: 40, to: 60, color: "#ffd800"},
+        {from: 60, to: 80, color: "#27ae60"},
+        {from: 80, to: 100, color: "#e74c3c"}
       ];
       let radius = 95, cx = 205, cy = 205, width = 48;
       let start = Math.PI, end = 2*Math.PI;
 
+      // Dilimler
       ranges.forEach(r => {
         let s = start + Math.PI * (r.from/100);
         let e = start + Math.PI * (r.to/100);
@@ -253,23 +243,29 @@
         ctx.stroke();
       });
 
-      // İğne
+      // İğne (SİVRİ ÜÇGEN)
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
-      ctx.rotate(a - Math.PI/2); // İğne yukarıdan başlasın
+      ctx.rotate(a - Math.PI/2);
       ctx.beginPath();
-      ctx.moveTo(0, 16);
-      ctx.lineTo(0, -radius+8);
-      ctx.lineWidth = 11;
-      ctx.strokeStyle = "#222";
+      ctx.moveTo(0, 8);
+      ctx.lineTo(-9, -radius+18);
+      ctx.lineTo(0, -radius-13);
+      ctx.lineTo(9, -radius+18);
+      ctx.closePath();
+      ctx.fillStyle = "#212121";
+      ctx.shadowBlur = 7;
+      ctx.shadowColor = "#666";
+      ctx.fill();
+      ctx.restore();
+
+      // Merkez küçük top (noktası)
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
+      ctx.fillStyle = "#222";
       ctx.shadowBlur = 0;
-      ctx.lineCap = "round";
-      ctx.stroke();
-      // Merkez noktası
-      ctx.beginPath();
-      ctx.arc(0,0,15,0,2*Math.PI);
-      ctx.fillStyle="#555";
       ctx.fill();
       ctx.restore();
 
@@ -311,27 +307,27 @@
     }
 
     // BAŞLANGIÇTA
-    renderStockList("bist");
+    renderTicker("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
     fetchKapNews();
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
-      renderStockList("bist");
+      renderTicker("bist");
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
     };
     document.getElementById('usBtn').onclick = () => {
-      renderStockList("nasdaq");
+      renderTicker("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
     };
     document.getElementById('emtiaBtn').onclick = () => {
-      renderStockList("emtia");
-      loadChart("TVC:GOLD"); // ARTIK ALTIN!
+      renderTicker("emtia");
+      loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
     };
