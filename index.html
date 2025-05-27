@@ -221,7 +221,7 @@
       });
     }
 
-    // 3. YARIM DAİRE G A U G E (Sivri iğneli)
+    // 3. YARIM DAİRE G A U G E (BÜYÜK SİVRİ İĞNE)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -250,20 +250,20 @@
         ctx.stroke();
       });
 
-      // SİVRİ İĞNE (GERÇEK GÖSTERGE GİBİ)
+      // SİVRİ VE BÜYÜK İĞNE (GERÇEK GÖSTERGE GİBİ)
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(a - Math.PI/2);
       ctx.beginPath();
-      ctx.moveTo(0, 24); // arka uc
-      ctx.lineTo(-7, -radius+12);
-      ctx.lineTo(0, -radius-24);
-      ctx.lineTo(7, -radius+12);
+      ctx.moveTo(0, 28); // arka uç (daha kalın ve uzun)
+      ctx.lineTo(-13, -radius+22); // sol kenar (daha geniş)
+      ctx.lineTo(0, -radius-38); // uç (daha uzun)
+      ctx.lineTo(13, -radius+22); // sağ kenar (daha geniş)
       ctx.closePath();
       ctx.fillStyle = "#111";
-      ctx.shadowBlur = 5;
-      ctx.shadowColor = "#222";
+      ctx.shadowBlur = 9;
+      ctx.shadowColor = "#333";
       ctx.fill();
       ctx.restore();
 
@@ -293,19 +293,16 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // 4. KAP HABERLERİ
+    // 4. KAP HABERLERİ (YENİ YÖNTEM)
     async function fetchKapNews() {
       try {
-        const response = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri'));
+        const kapUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://www.kap.org.tr/tr/rss/son-dakika-bildirimleri';
+        const response = await fetch(kapUrl);
         const data = await response.json();
-        const parser = new DOMParser();
-        const xml = parser.parseFromString(data.contents, "application/xml");
-        const items = Array.from(xml.querySelectorAll('item')).slice(0, 12);
+        if(!data.items) throw Error("No data");
         let html = '';
-        items.forEach(item => {
-          const title = item.querySelector('title').textContent;
-          const link = item.querySelector('link').textContent;
-          html += `<div><a href="${link}" target="_blank">${title}</a></div>`;
+        data.items.slice(0, 10).forEach(item => {
+          html += `<div><a href="${item.link}" target="_blank">${item.title}</a></div>`;
         });
         document.getElementById('news-list').innerHTML = html;
       } catch (e) {
