@@ -24,16 +24,15 @@
   </header>
 
   <div class="container">
-    <!-- Sol Sütun: Watchlist modülü -->
+    <!-- Sol Sütun: Watchlist -->
     <aside class="sidebar" id="watchlist"></aside>
 
-    <!-- Orta Bölüm: Chart ve Gauge -->
+    <!-- Orta Bölüm: Chart + Gauge + Haberler -->
     <section class="main">
       <div id="tv-chart"></div>
       <div id="gauge-container">
         <svg id="gauge-svg"></svg>
       </div>
-      <!-- Haber başlığı -->
       <div id="rss-feed">
         <h3>Finans Haberleri</h3>
         <ul id="news-list"></ul>
@@ -62,32 +61,34 @@
       BIST: {
         wl: [
           { description: "AKBNK", proName: "BIST:AKBNK" },
-          /* ... diğer BIST30 sembolleri ... */
+          { description: "ARCLK", proName: "BIST:ARCLK" }
+          // ... diğer BIST30 sembolleri
         ],
         chartSymbol: "BIST:XU100",
-        gaugeURL: "./.netlify/functions/get-greed-bist"
+        gaugeURL: "/.netlify/functions/get-greed-bist"
       },
       USA: {
         wl: [
           { description: "AAPL", proName: "NASDAQ:AAPL" },
-          /* ... NASDAQ TOP10 ... */
+          { description: "MSFT", proName: "NASDAQ:MSFT" }
+          // ... NASDAQ TOP10
         ],
         chartSymbol: "NASDAQ:NDX",
-        gaugeURL: "./.netlify/functions/get-greed-usa"
+        gaugeURL: "/.netlify/functions/get-greed-usa"
       },
       CMD: {
         wl: [
           { description: "XAUUSD", proName: "OANDA:XAUUSD" },
-          { description: "XAGUSD", proName: "OANDA:XAGUSD" },
-          { description: "BTCUSD", proName: "COINBASE:BTCUSD" }
+          { description: "XAGUSD", proName: "OANDA:XAGUSD" }
+          // ... diğer emtialar
         ],
         chartSymbol: "OANDA:XAUUSD",
-        gaugeURL: "./.netlify/functions/get-greed-cmd"
+        gaugeURL: "/.netlify/functions/get-greed-cmd"
       }
     };
 
     function loadWatchlist(market) {
-      const c = document.getElementById('watchlist'); c.innerHTML='';
+      const c = document.getElementById('watchlist'); c.innerHTML = '';
       const script = document.createElement('script');
       script.src = "https://s3.tradingview.com/external-embedding/embed-widget-symbol-list.js";
       script.async = true;
@@ -95,26 +96,22 @@
         symbols: config[market].wl,
         showSymbolLogo: true,
         colorTheme: "light",
-        isTransparent: false,
         locale: "tr"
       });
       c.appendChild(script);
     }
 
     function loadChart(market) {
-      const c = document.getElementById('tv-chart'); c.innerHTML='';
+      const c = document.getElementById('tv-chart'); c.innerHTML = '';
       const script = document.createElement('script');
       script.src = "https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
       script.async = true;
       script.innerHTML = JSON.stringify({
         symbol: config[market].chartSymbol,
         interval: "D",
-        timezone: "Europe/Istanbul",
         theme: "light",
         style: "1",
         locale: "tr",
-        toolbar_bg: "#f1f3f6",
-        allow_symbol_change: false,
         container_id: "tv-chart"
       });
       c.appendChild(script);
@@ -122,63 +119,79 @@
 
     function drawSVGGauge(value) {
       const svg = document.getElementById('gauge-svg');
-      const w=svg.clientWidth, h=svg.clientHeight;
-      const cx=w/2, cy=h, r=Math.min(cx,cy);
-      svg.innerHTML=''; const ns="http://www.w3.org/2000/svg";
+      const w = svg.clientWidth, h = svg.clientHeight;
+      const cx = w/2, cy = h, r = Math.min(cx, cy) - 10;
+      svg.innerHTML = '';
+      const ns = "http://www.w3.org/2000/svg";
       function polarToCartesian(angle) {
-        const a=(angle-90)*Math.PI/180;
-        return { x: cx + r*Math.cos(a), y: cy + r*Math.sin(a) };
+        const a = (angle - 90) * Math.PI/180;
+        return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
       }
-      function describeArc(start,end) {
-        const p1=polarToCartesian(end), p2=polarToCartesian(start);
-        const largeArc=end-start>180?1:0;
+      function describeArc(start, end) {
+        const p1 = polarToCartesian(end);
+        const p2 = polarToCartesian(start);
+        const largeArc = end - start > 180 ? 1 : 0;
         return `M ${p1.x} ${p1.y} A ${r} ${r} 0 ${largeArc} 0 ${p2.x} ${p2.y}`;
       }
-      const bg=document.createElementNS(ns,'path');
-      bg.setAttribute('d',describeArc(180,0));
-      bg.setAttribute('fill','none'); bg.setAttribute('stroke','#ddd'); bg.setAttribute('stroke-width',20);
+      // Background arc
+      const bg = document.createElementNS(ns, 'path');
+      bg.setAttribute('d', describeArc(180, 0));
+      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', '#eee'); bg.setAttribute('stroke-width', 20);
       svg.appendChild(bg);
-      [[180,225,'red'],[225,315,'orange'],[315,360,'green']].forEach(([s,e,c])=>{
-        const p=document.createElementNS(ns,'path');
-        p.setAttribute('d',describeArc(s,e)); p.setAttribute('fill','none');
+      // Color segments
+      [[180,225,'#e74c3c'], [225,315,'#f1c40f'], [315,360,'#2ecc71']].forEach(([s,e,c]) => {
+        const p = document.createElementNS(ns,'path');
+        p.setAttribute('d', describeArc(s,e)); p.setAttribute('fill','none');
         p.setAttribute('stroke',c); p.setAttribute('stroke-width',20);
         svg.appendChild(p);
       });
-      const angle=180+(value/100)*180;
-      const ne=polarToCartesian(angle);
-      const nl=document.createElementNS(ns,'line');
-      nl.setAttribute('x1',cx); nl.setAttribute('y1',cy);
-      nl.setAttribute('x2',ne.x); nl.setAttribute('y2',ne.y);
-      nl.setAttribute('stroke','#333'); nl.setAttribute('stroke-width',4);
-      svg.appendChild(nl);
-      const dot=document.createElementNS(ns,'circle');
-      dot.setAttribute('cx',cx); dot.setAttribute('cy',cy); dot.setAttribute('r',6); dot.setAttribute('fill','#333');
+      // Needle
+      const angle = 180 + (value / 100) * 180;
+      const ne = polarToCartesian(angle);
+      const needle = document.createElementNS(ns,'line');
+      needle.setAttribute('x1',cx); needle.setAttribute('y1',cy);
+      needle.setAttribute('x2',ne.x); needle.setAttribute('y2',ne.y);
+      needle.setAttribute('stroke','#333'); needle.setAttribute('stroke-width',3);
+      svg.appendChild(needle);
+      // Center dot
+      const dot = document.createElementNS(ns,'circle');
+      dot.setAttribute('cx',cx); dot.setAttribute('cy',cy); dot.setAttribute('r',5); dot.setAttribute('fill','#333');
       svg.appendChild(dot);
-      const txt=document.createElementNS(ns,'text');
-      txt.setAttribute('x',cx); txt.setAttribute('y',cy-10);
-      txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','24'); txt.textContent=value;
-      svg.appendChild(txt);
+      // Value text
+      const text = document.createElementNS(ns,'text');
+      text.setAttribute('x',cx); text.setAttribute('y',cy-15); text.setAttribute('text-anchor','middle'); text.setAttribute('font-size','20');
+      text.textContent = value;
+      svg.appendChild(text);
     }
 
     function loadGauge(market) {
       fetch(config[market].gaugeURL)
-        .then(r=>r.json()).then(d=>drawSVGGauge(Math.round(d.value)))
-        .catch(_=>drawSVGGauge(0));
+        .then(res => res.json())
+        .then(d => drawSVGGauge(Math.min(Math.max(Math.round(d.value),0),100)))
+        .catch(_ => drawSVGGauge(0));
     }
 
     (function loadRSS() {
-      const RSS_URL='https://rss.investing.com/top-news.rss';
-      fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(RSS_URL))
-        .then(r=>r.json()).then(d=>{
-          const ul=document.getElementById('news-list');
-          d.items.slice(0,5).forEach(i=>{
-            const li=document.createElementNS(ns,'li');li.innerHTML=`<a href="${i.link}" target="_blank">${i.title}</a>`;ul.appendChild(li);
+      const RSS_URL = 'https://rss.investing.com/top-news.rss';
+      fetch('https://api.rss2json.com/v1/api.json?rss_url=' + encodeURIComponent(RSS_URL))
+        .then(r => r.json())
+        .then(data => {
+          const ul = document.getElementById('news-list'); ul.innerHTML = '';
+          data.items.slice(0,5).forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a>`;
+            ul.appendChild(li);
           });
         }).catch(console.error);
     })();
 
-    function switchMarket(m) { loadWatchlist(m); loadChart(m); loadGauge(m);}    
-    window.onload=() => switchMarket('BIST');
+    function switchMarket(market) {
+      loadWatchlist(market);
+      loadChart(market);
+      loadGauge(market);
+    }
+
+    window.onload = () => switchMarket('BIST');
   </script>
 </body>
 </html>
