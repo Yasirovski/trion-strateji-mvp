@@ -18,10 +18,21 @@
     .center-buttons button:hover { background: #d3e5ff; }
     .breaking-news-area {
       width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden;
-      background: none; border-radius: 8px; border: none;
-      height: 54px; display: flex; align-items: center; position: relative;
-      box-shadow: none;
-      min-height: 48px;
+      background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566;
+      height: 46px; display: flex; align-items: center; position: relative;
+      box-shadow: 0 2px 10px #f6e6bc;
+      min-height: 44px;
+    }
+    .breaking-news-content {
+      white-space: nowrap; display: inline-block;
+      padding-left: 100%;
+      animation: ticker 28s linear infinite;
+      font-size: 1.1em; font-weight: 600; color: #0a1122;
+      letter-spacing: .4px;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%);}
     }
     .container {
       display: flex; justify-content: center; align-items: flex-start; gap: 32px;
@@ -109,13 +120,9 @@
     <button id="usBtn">Amerika B.</button>
     <button id="emtiaBtn">Emtialar</button>
   </div>
-  <!-- Breaking News Widget (TradingView News Timeline) -->
+  <!-- Breaking News Banner -->
   <div class="breaking-news-area" id="breaking-news">
-    <div style="width:100%; min-width: 700px;">
-      <div class="tradingview-widget-container">
-        <div id="tv-news"></div>
-      </div>
-    </div>
+    <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
     <!-- SOLDA SABİT ANLIK FİYAT VE DEĞİŞİM LİSTESİ (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST) -->
@@ -144,50 +151,35 @@
     <!-- SAĞDA EKONOMİK TAKVİM -->
     <div class="right">
       <div class="news-title">Ekonomik Takvim</div>
-      <!-- Investing.com Economic Calendar Widget BEGIN -->
       <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
-      <!-- Investing.com Economic Calendar Widget END -->
     </div>
   </div>
-  <!-- TradingView JS -->
   <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
   <script>
-    // SABİT ANLIK LİSTE (TRADINGVIEW MARKET OVERVIEW/SYMBOL LIST)
+    // Sadece BIST30 Şirketleri!
     const tvSymbolLists = {
       bist: {
         symbols: [
-          {s: "BIST:ASELS"},
-          {s: "BIST:GARAN"},
-          {s: "BIST:THYAO"},
-          {s: "BIST:KCHOL"},
-          {s: "BIST:ENKAI"},
-          {s: "BIST:FROTO"},
-          {s: "BIST:BIMAS"},
-          {s: "BIST:AKBNK"},
-          {s: "BIST:TUPRS"}
+          {s:"BIST:AKBNK"}, {s:"BIST:ALARK"}, {s:"BIST:ARCLK"}, {s:"BIST:ASELS"},
+          {s:"BIST:ASTOR"}, {s:"BIST:BIMAS"}, {s:"BIST:DOAS"}, {s:"BIST:EKGYO"},
+          {s:"BIST:ENKAI"}, {s:"BIST:EREGL"}, {s:"BIST:FROTO"}, {s:"BIST:GARAN"},
+          {s:"BIST:GUBRF"}, {s:"BIST:HEKTS"}, {s:"BIST:KCHOL"}, {s:"BIST:KORDS"},
+          {s:"BIST:KOZAA"}, {s:"BIST:KOZAL"}, {s:"BIST:MAVI"}, {s:"BIST:ODAS"},
+          {s:"BIST:PETKM"}, {s:"BIST:PGSUS"}, {s:"BIST:SAHOL"}, {s:"BIST:SASA"},
+          {s:"BIST:SISE"}, {s:"BIST:SMRTG"}, {s:"BIST:TAVHL"}, {s:"BIST:TCELL"},
+          {s:"BIST:THYAO"}, {s:"BIST:TUPRS"}
         ]
       },
       nasdaq: {
         symbols: [
-          {s: "NASDAQ:AAPL"},
-          {s: "NASDAQ:MSFT"},
-          {s: "NASDAQ:AMZN"},
-          {s: "NASDAQ:GOOGL"},
-          {s: "NASDAQ:META"},
-          {s: "NASDAQ:NVDA"},
-          {s: "NASDAQ:TSLA"}
+          {s: "NASDAQ:AAPL"}, {s: "NASDAQ:MSFT"}, {s: "NASDAQ:AMZN"},
+          {s: "NASDAQ:GOOGL"}, {s: "NASDAQ:META"}, {s: "NASDAQ:NVDA"}, {s: "NASDAQ:TSLA"}
         ]
       },
       emtia: {
         symbols: [
-          {s: "TVC:SILVER"},
-          {s: "TVC:USOIL"},
-          {s: "TVC:PLATINUM"},
-          {s: "TVC:GOLD"},
-          {s: "BINANCE:BTCUSDT"},
-          {s: "BINANCE:ETHUSDT"},
-          {s: "BINANCE:XRPUSDT"},
-          {s: "TVC:US10Y"}
+          {s: "TVC:SILVER"}, {s: "TVC:USOIL"}, {s: "TVC:PLATINUM"}, {s: "TVC:GOLD"},
+          {s: "BINANCE:BTCUSDT"}, {s: "BINANCE:ETHUSDT"}, {s: "BINANCE:XRPUSDT"}, {s: "TVC:US10Y"}
         ]
       }
     };
@@ -244,8 +236,6 @@
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
       ctx.clearRect(0,0,410,210);
-
-      // Bölme açıları ve renkler
       const ranges = [
         {from: 0, to: 20, color: "#f39c12"},
         {from: 20, to: 40, color: "#e67e22"},
@@ -255,8 +245,6 @@
       ];
       let radius = 95, cx = 205, cy = 205, width = 48;
       let start = Math.PI, end = 2*Math.PI;
-
-      // Dilimler
       ranges.forEach(r => {
         let s = start + Math.PI * (r.from/100);
         let e = start + Math.PI * (r.to/100);
@@ -267,25 +255,23 @@
         ctx.shadowBlur = 0;
         ctx.stroke();
       });
-
       // SİVRİ ÇOK BÜYÜK İĞNE
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(a - Math.PI/2);
       ctx.beginPath();
-      ctx.moveTo(0, 38); // arka uç (daha kalın ve uzun)
-      ctx.lineTo(-19, -radius+10); // sol kenar (daha geniş)
-      ctx.lineTo(0, -radius-50);   // uç (daha uzun)
-      ctx.lineTo(19, -radius+10);  // sağ kenar (daha geniş)
+      ctx.moveTo(0, 38);
+      ctx.lineTo(-19, -radius+10);
+      ctx.lineTo(0, -radius-50);
+      ctx.lineTo(19, -radius+10);
       ctx.closePath();
       ctx.fillStyle = "#111";
       ctx.shadowBlur = 12;
       ctx.shadowColor = "#222";
       ctx.fill();
       ctx.restore();
-
-      // Merkez küçük top (noktası)
+      // Merkez küçük top
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
@@ -293,11 +279,9 @@
       ctx.shadowBlur = 0;
       ctx.fill();
       ctx.restore();
-
       // Değer kutusu
       let score = document.getElementById("gauge-score");
       score.innerText = val;
-
       // Alt etiket
       let sections = ["Çok Çekingen", "Çekingen", "Normal", "Hırslı", "Çok Hırslı"];
       let sectionLabel = "";
@@ -311,45 +295,46 @@
       score.style.color = (val < 60) ? "#124" : "#fff";
     }
 
-    // TradingView News Timeline Widget'ı embed et
-    function renderNewsWidget(type="global") {
-      // type: "bist" "us" "emtia" (habere göre feed değiştirmek için)
-      document.getElementById("tv-news").innerHTML = "";
-      let script = document.createElement('script');
-      script.type = "text/javascript";
-      script.src = "https://s3.tradingview.com/external-embedding/embed-widget-timeline.js";
-      script.async = true;
-
-      // feedMode: 'symbol' + symbol, 'market' + market, 'all_symbols'
-      let config = {
-        "colorTheme": "light",
-        "isTransparent": false,
-        "displayMode": "compact",
-        "width": "1200",
-        "height": "54",
-        "locale": "tr"
-      };
-      if (type === "bist") {
-        config.feedMode = "symbol";
-        config.symbol = "BIST:XU100";
-      } else if (type === "us") {
-        config.feedMode = "market";
-        config.market = "us";
-      } else if (type === "emtia") {
-        config.feedMode = "symbol";
-        config.symbol = "TVC:GOLD";
-      } else {
-        config.feedMode = "all_symbols";
+    // BBC RSS + LibreTranslate ile TÜRKÇE KAYAN HABER BANDI
+    async function fetchAndTranslateRSS() {
+      const rss_url = "https://api.rss2json.com/v1/api.json?rss_url=http://feeds.bbci.co.uk/news/business/rss.xml";
+      try {
+        const response = await fetch(rss_url);
+        const data = await response.json();
+        if(!data.items) throw Error("No data");
+        // Sadece ilk 6 başlık
+        const items = data.items.slice(0, 6);
+        // Türkçeye çevir
+        const translations = await Promise.all(items.map(async (item) => {
+          const translateResp = await fetch('https://libretranslate.de/translate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              q: item.title,
+              source: "en",
+              target: "tr",
+              format: "text"
+            })
+          });
+          const translated = await translateResp.json();
+          return translated.translatedText || item.title;
+        }));
+        // Bandı oluştur
+        document.getElementById('breaking-news-content').innerHTML =
+          'SON DAKİKA (BBC): ' + translations.map((txt, i) =>
+            `<span>${txt}</span>`
+          ).join(' <b style="color:#f3ae00;">♦</b> ');
+      } catch (e) {
+        document.getElementById('breaking-news-content').innerText =
+          "Ekonomi haberlerine erişilemiyor.";
       }
-      script.innerHTML = JSON.stringify(config);
-      document.getElementById("tv-news").appendChild(script);
     }
 
     // BAŞLANGIÇTA
     renderSymbolList("bist");
     loadChart("BIST:XU100");
     drawGauge(62);
-    renderNewsWidget("bist");
+    fetchAndTranslateRSS();
 
     // BUTONLAR
     document.getElementById('bistBtn').onclick = () => {
@@ -357,21 +342,21 @@
       loadChart("BIST:XU100");
       drawGauge(62);
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
-      renderNewsWidget("bist");
+      fetchAndTranslateRSS();
     };
     document.getElementById('usBtn').onclick = () => {
       renderSymbolList("nasdaq");
       loadChart("NASDAQ:NDX");
       drawGauge(53);
       document.getElementById("gauge-label").innerText = "Greed Index";
-      renderNewsWidget("us");
+      fetchAndTranslateRSS(); // Aynı haberler
     };
     document.getElementById('emtiaBtn').onclick = () => {
       renderSymbolList("emtia");
       loadChart("TVC:GOLD");
       drawGauge(41);
       document.getElementById("gauge-label").innerText = "VIX";
-      renderNewsWidget("emtia");
+      fetchAndTranslateRSS(); // Aynı haberler
     };
   </script>
 </body>
