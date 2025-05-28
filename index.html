@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <title>Trion Strateji</title>
-  <meta name="viewport" content="width=1100">
+  <meta name="viewport" content="width=1200">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f9fafd;}
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: #f9fafd;
+    }
     header {
       font-size: 2.1em;
       font-weight: bold;
-      margin: 12px 0 6px 0;
+      margin: 18px 0 7px 0;
       display: flex;
       align-items: center;
       gap: 18px;
-      padding-left: 44px;
+      padding-left: 40px;
     }
     .brand-logo { height: 60px; width: auto; border-radius: 14px; background: none;}
     .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 7px; }
@@ -31,29 +35,65 @@
       color: #19386e;
     }
     .breaking-news-area {
-      width: 83vw; max-width: 1220px;
-      margin: 10px auto 18px auto; overflow: hidden;
-      background: #fff7d8; border-radius: 11px; border: 1.5px solid #ffd566;
-      height: 46px; display: flex; align-items: center; position: relative;
-      box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;
+      width: 86vw;
+      max-width: 1200px;
+      margin: 10px auto 18px auto;
+      background: #fff7d8;
+      border-radius: 11px;
+      border: 1.5px solid #ffd566;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      position: relative;
+      box-shadow: 0 2px 10px #f6e6bc;
+      min-height: 44px;
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-left: 18px;
     }
     .breaking-news-content {
-      white-space: nowrap; display: inline-block; padding-left: 100%;
-      animation: ticker 37.3s linear infinite;
-      font-size: 1.13em; font-weight: 600; color: #1e232a; letter-spacing: .32px;
+      white-space: nowrap;
+      font-size: 1.13em;
+      font-weight: 600;
+      color: #1e232a;
+      letter-spacing: .32px;
+      animation: ticker 40s linear infinite;
     }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%);} }
-    .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
+    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-70%);} }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 22px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      margin-top: 13px;
+    }
     .left, .right {
-      width: 290px; min-height: 700px;
-      background: #fffffffa; border-radius: 14px; padding: 16px 8px 10px 8px;
-      box-shadow: 0 2px 18px #f0f2f6;
-      display: flex; flex-direction: column; align-items: center;
+      width: 270px;
+      min-height: 690px;
+      background: #fffffffa;
+      border-radius: 12px;
+      padding: 17px 6px 12px 6px;
+      box-shadow: 0 2px 12px #f0f2f6;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      top: 12px;
+      left: 0;
     }
-    .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
+    .middle {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 0;
+    }
     .panel-title { font-weight:600; font-size:1.13em; margin-bottom:10px; color:#233459; letter-spacing:.06em;}
-    /* TradingView-style TABLE */
-    .tv-table { width: 97%; border-collapse: separate; border-spacing: 0 3px;}
+    .tv-table { width: 96%; border-collapse: separate; border-spacing: 0 3px;}
     .tv-table th, .tv-table td {
       padding: 6.5px 0; text-align: left;
       font-size: 1.12em; font-family: 'Segoe UI', Arial, sans-serif;
@@ -72,7 +112,7 @@
     @keyframes blink {0%{opacity:.7;} 50%{opacity:.25;} 100%{opacity:.7;}}
     .brand { opacity:.82; width: 120px; margin:10px auto 0 auto; display:block;}
     /* Gauge */
-    .gauge-area { width: 440px; margin: 36px auto 0 auto; text-align: center;}
+    .gauge-area { width: 420px; margin: 36px auto 0 auto; text-align: center;}
     .gauge-label { font-weight: bold; font-size: 1.19em; margin-bottom: 12px; color: #222;}
     .gauge { position: relative; width: 410px; height: 210px; margin: 0 auto; background: #fff;}
     .gauge-canvas { width: 100%; height: 100%; display: block;}
@@ -101,13 +141,19 @@
     .eco-imp-2 { border-left-color: #ff9800;}
     .eco-imp-3 { border-left-color: #d9343a;}
     /* Twitter Card Style */
-    .tweets-area { width: 100%; max-width: 1250px; margin: 54px auto 32px auto;}
-    .tweets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px 18px; }
+    .tweets-area { width: 100%; max-width: 1200px; margin: 54px auto 32px auto;}
+    .tweets-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 28px 18px;
+      justify-content: center;
+    }
     .tweet-card {
       border: 1.6px solid #e3e7f1; border-radius: 18px; box-shadow: 0 3px 18px #eef0f9;
       background: #fffffffa; padding: 18px 23px 12px 23px;
       min-height: 160px; position: relative; transition: box-shadow .16s, border .16s;
       display: flex; flex-direction: column; gap: 7px; cursor: pointer;
+      margin: 0 auto;
       max-width: 99vw;
     }
     .tweet-card:hover { box-shadow: 0 4px 26px #e0e3f6; border-color: #b0cdf6; }
@@ -128,6 +174,11 @@
     .tweet-stat svg { width:20px;height:20px;fill:#8a8b99;}
     .tweet-likes { color: #eab308; }
     /* Responsive */
+    @media (max-width: 1250px) {
+      .container { gap: 5px; max-width: 98vw;}
+      .tweets-area { max-width: 98vw; }
+      .gauge-area { width: 97vw;}
+    }
     @media (max-width: 1100px) {
       .container { flex-direction: column; align-items: stretch; }
       .left, .right, .middle { width: 100%; min-height: unset; }
@@ -202,7 +253,7 @@
       if(now.getHours() === 0 && now.getMinutes() < 2) location.reload();
     }, 60000);
 
-    // SOL PANEL (Dummy veri, BIST 30 ve diğerleri için API bağlanınca güncelle)
+    // Sol panel dummy tablo (canlı veri yok, API bağlanınca düzenlenecek)
     const symbolsList = {
       bist: [
         { sym: "ASELS.IS", name: "ASELS" },
@@ -347,20 +398,19 @@
     }
     drawGauge(62);
 
-    // BREAKING NEWS (BBC) - AKICI KAYAN
+    // Breaking News (BBC)
     async function getBBCNews() {
       let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
       try {
         let res = await fetch(api);
         let data = await res.json();
-        let stories = data.items.slice(0, 8).map(i => i.title).join(" ♦ ");
+        let stories = data.items.slice(0, 10).map(i => i.title).join(" ♦ ");
         document.getElementById("breaking-news-content").innerText = stories;
       } catch {
         document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
       }
     }
     getBBCNews();
-    setInterval(getBBCNews, 5*60*1000);
 
     // TradingView Grafik
     function renderTVSymbols(type) {
@@ -375,7 +425,7 @@
     }
     renderTVSymbols(currentType);
 
-    // Ekonomik Takvim (TradingEconomics)
+    // ----- Ekonomik Takvim (NATIVE / TradingEconomics) -----
     async function fetchCalendar() {
       let today = new Date();
       let yyyy = today.getFullYear();
@@ -405,7 +455,7 @@
     }
     fetchCalendar();
 
-    // Tweet Threshold ve Kart Sistemi (dummy örnek veri ile)
+    // ----- Tweet Card Stili -----
     const tweetThresholds = [
       {user:"@realDonaldTrump", like:250000, avatar:"https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg", disp:"Donald J. Trump"},
       {user:"@RTErdogan", like:10000, avatar:"https://pbs.twimg.com/profile_images/1364584858124802050/TsUlnWt5_400x400.jpg", disp:"Recep Tayyip Erdoğan"},
@@ -419,7 +469,6 @@
       {user:"@steve_hanke", like:100, avatar:"https://pbs.twimg.com/profile_images/1618587801350094849/iIxeEOMr_400x400.jpg", disp:"Steve Hanke"},
       {user:"@Vivek4real_", like:3000, avatar:"https://pbs.twimg.com/profile_images/1646318491343652864/DTm-dTNS_400x400.jpg", disp:"Vivek"}
     ];
-    // Dummy Tweet verisi (canlı için API ile otomatik doldurulacak)
     const tweets = [
       {user:"@realDonaldTrump", text:"THE ONE, BIG, BEAUTIFUL BILL” has PASSED the House of Representatives! ...", likes:255000, date:"2025-05-28T13:45:00Z", stats:{reply:37000, rt:62000, like:357000, view:51000000}},
       {user:"@elonmusk", text:"AI will change everything.", likes:200000, date:"2025-05-28T10:11:00Z", stats:{reply:4000, rt:12000, like:200000, view:5000000}},
@@ -488,6 +537,7 @@
       });
     }
     renderTweets();
+    setInterval(renderTweets, 10000); // 10 saniyede bir kontrol et (canlı veri ile değiştirilmeli)
   </script>
 </body>
 </html>
