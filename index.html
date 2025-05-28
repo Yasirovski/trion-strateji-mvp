@@ -48,6 +48,22 @@
     .dot-open {background: #4cb04c; opacity:0.95;}
     .dot-closed {background: #e93e3e; opacity:0.95;}
     @keyframes blink {0%{opacity:.7;} 50%{opacity:.2;} 100%{opacity:.7;}}
+    /* Tweet grid */
+    .tweets-area { width: 100%; max-width: 1280px; margin: 54px auto 32px auto;}
+    .tweets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px 18px; }
+    .tweet-card { border: 1.3px solid #eee; border-radius: 11px; box-shadow: 0 2px 10px #f3f3f3; background: #fafbfc; padding: 13px 14px; min-height: 122px; position: relative; }
+    .tweet-header { font-weight: bold; font-size: 1.09em; margin-bottom: 6px; color: #27366a;}
+    .tweet-meta { font-size: 0.96em; color: #8a8b99; margin-bottom: 7px;}
+    .tweet-body { font-size: 1.14em; color: #1a1a1a;}
+    .tweet-likes { position: absolute; bottom: 11px; right: 18px; font-size: 0.98em; color: #eab308;}
+    .tweet-username { color: #1570ef; }
+    .tweet-time { color: #888; font-size: 0.91em;}
+    /* Ekonomik takvim */
+    .calendar-list { font-size: 1.01em; line-height: 1.22; margin-top: 8px; }
+    .calendar-item { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee;}
+    .calendar-imp-high { color: #c61c1c; font-weight: bold;}
+    .calendar-imp-med { color: #ff9800; }
+    .calendar-imp-low { color: #888;}
   </style>
 </head>
 <body>
@@ -62,7 +78,7 @@
     <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA FINNHUB PANELİ -->
+    <!-- SOLDA PANEL -->
     <div class="left" id="custom-symbol-list">
       <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
       <div class="panel-list" id="symbols-table"></div>
@@ -86,18 +102,20 @@
           <div class="gauge-section-label" id="gauge-section-label"></div>
         </div>
       </div>
+      <!-- Tweet alanı buraya eklendi! -->
+      <div class="tweets-area">
+        <div style="font-size:1.16em; font-weight:bold; margin-bottom:14px; color:#27366a;">Piyasayı Etkileyen Tweet'ler</div>
+        <div class="tweets-grid" id="tweets-grid"></div>
+      </div>
     </div>
     <!-- SAĞDA EKONOMİK TAKVİM -->
     <div class="right">
-      <div class="news-title">Ekonomik Takvim</div>
-      <iframe src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32" width="255" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
+      <div class="news-title" style="margin-bottom:8px;">Ekonomik Takvim (Bugün)</div>
+      <div id="eco-calendar"></div>
     </div>
   </div>
   <script>
-    // Finnhub API KEY
-    const FINNHUB_API = "d0qrbs1r01qn4tjepe30d0qrbs1r01qn4tjepe3g"; // <-- Buraya kendi anahtarını yaz
-
-    // Sembol Listeleri
+    // ----- Sembol Listeleri ve Panel Çekimi -----
     const symbolsList = {
       bist: [
         { sym: "ASELS.IS", name: "ASELS" },
@@ -118,64 +136,69 @@
         { sym: "TSLA", name: "Tesla" }
       ],
       emtia: [
-        { sym: "BINANCE:BTCUSDT", name: "BTC" },
-        { sym: "BINANCE:ETHUSDT", name: "ETH" },
-        { sym: "OANDA:XAG_USD", name: "Gümüş" },
-        { sym: "OANDA:XAU_USD", name: "Altın" },
-        { sym: "OANDA:XPT_USD", name: "Platin" },
-        { sym: "OANDA:WTICO_USD", name: "Petrol" },
+        { sym: "BTC-USD", name: "BTC" },
+        { sym: "ETH-USD", name: "ETH" },
+        { sym: "XAGUSD=X", name: "Gümüş" },
+        { sym: "XAUUSD=X", name: "Altın" },
+        { sym: "XPTUSD=X", name: "Platin" },
+        { sym: "CL=F", name: "Petrol" },
         { sym: "US10Y", name: "10Y Tahvil" }
       ]
     };
     let currentType = "bist";
 
-    // Market açık/kapalı (Sadece örnek)
+    // Piyasa açık mı?
     function isMarketOpen(symbol, type) {
-      // Finnhub "t" değeri (timestamp) ile US hisseleri için açık, Türkiye için yerel saatten pratik bakılır, burada basit simülasyon:
       let hour = new Date().getUTCHours();
       if(type === 'bist') return hour >= 7 && hour <= 14; // BIST UTC 10:00-17:00 civarı
       if(type === 'nasdaq') return hour >= 13 && hour <= 20; // ABD UTC 16:30-23:00 civarı
-      if(type === 'emtia') return true; // Çoğu 24 saat, burada hep açık gösterelim
+      if(type === 'emtia') return true;
       return false;
     }
 
-    async function fetchFinnhubPanel(type) {
-      let panel = symbolsList[type];
+    // Yahoo Finance ile fiyat çekimi (BIST ve Emtia dahil!)
+    async function fetchPanel(type) {
+      const panel = symbolsList[type];
       let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
+      let symbolStr = panel.map(x => x.sym).join(",");
+      let yahooApi = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolStr}`;
+      let dataYahoo = {};
+      try {
+        let res = await fetch(yahooApi);
+        let js = await res.json();
+        js.quoteResponse.result.forEach((d) => {
+          dataYahoo[d.symbol] = d;
+        });
+      } catch (e) {}
       for (let symObj of panel) {
-        try {
-          let url = `https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(symObj.sym)}&token=${FINNHUB_API}`;
-          let res = await fetch(url);
-          let data = await res.json();
-          let price = data.c !== undefined ? data.c : "-";
-          let prev = data.pc !== undefined ? data.pc : price;
-          let pct = (price !== "-" && prev && prev != 0) ? ((price - prev) / prev * 100).toFixed(2) : "-";
-          let chgClass = pct > 0 ? "chg-pos" : pct < 0 ? "chg-neg" : "chg-zero";
-          pct = pct === "-" ? "" : (pct > 0 ? "+" : "") + pct + "%";
-          // Market açık mı simgesi
-          let dotClass = isMarketOpen(symObj.sym, type) ? "dot-open" : "dot-closed";
-          let marketDot = `<span class="market-dot ${dotClass}"></span>`;
-          html += `<tr>
-            <td>${marketDot}${symObj.name}</td>
-            <td>${price}</td>
-            <td class="${chgClass}">${pct}</td>
-          </tr>`;
-        } catch {
-          html += `<tr>
-            <td>${symObj.name}</td>
-            <td>-</td>
-            <td class="chg-zero">-</td>
-          </tr>`;
+        let price = "-";
+        let pct = "-";
+        let chgClass = "chg-zero";
+        let dotClass = isMarketOpen(symObj.sym, type) ? "dot-open" : "dot-closed";
+        let marketDot = `<span class="market-dot ${dotClass}"></span>`;
+        let d = dataYahoo[symObj.sym];
+        if (d && d.regularMarketPrice !== undefined) {
+          price = d.regularMarketPrice;
+          if (d.regularMarketPreviousClose && d.regularMarketPreviousClose !== 0) {
+            let pctN = ((price - d.regularMarketPreviousClose) / d.regularMarketPreviousClose * 100).toFixed(2);
+            chgClass = pctN > 0 ? "chg-pos" : pctN < 0 ? "chg-neg" : "chg-zero";
+            pct = (pctN > 0 ? "+" : "") + pctN + "%";
+          }
         }
+        html += `<tr>
+          <td>${marketDot}${symObj.name}</td>
+          <td>${price}</td>
+          <td class="${chgClass}">${pct}</td>
+        </tr>`;
       }
       html += `</table>`;
       document.getElementById("symbols-table").innerHTML = html;
     }
-    fetchFinnhubPanel(currentType);
 
+    // ----- Panel Butonları -----
     document.getElementById('bistBtn').onclick = function() {
       currentType = 'bist';
-      fetchFinnhubPanel('bist');
+      fetchPanel('bist');
       renderTVSymbols('bist');
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
       this.classList.add('active');
@@ -184,7 +207,7 @@
     };
     document.getElementById('usBtn').onclick = function() {
       currentType = 'nasdaq';
-      fetchFinnhubPanel('nasdaq');
+      fetchPanel('nasdaq');
       renderTVSymbols('nasdaq');
       document.getElementById("gauge-label").innerText = "Greed Index";
       this.classList.add('active');
@@ -193,7 +216,7 @@
     };
     document.getElementById('emtiaBtn').onclick = function() {
       currentType = 'emtia';
-      fetchFinnhubPanel('emtia');
+      fetchPanel('emtia');
       renderTVSymbols('emtia');
       document.getElementById("gauge-label").innerText = "VIX";
       this.classList.add('active');
@@ -201,7 +224,10 @@
       document.getElementById('usBtn').classList.remove('active');
     };
 
-    // Gauge
+    // İlk yüklemede BIST
+    fetchPanel(currentType);
+
+    // ----- Gauge -----
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -225,7 +251,6 @@
         ctx.shadowBlur = 0;
         ctx.stroke();
       });
-      // SİVRİ ÇOK BÜYÜK İĞNE
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
@@ -241,7 +266,6 @@
       ctx.shadowColor = "#222";
       ctx.fill();
       ctx.restore();
-      // Merkez küçük top
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
@@ -249,10 +273,8 @@
       ctx.shadowBlur = 0;
       ctx.fill();
       ctx.restore();
-      // Değer kutusu
       let score = document.getElementById("gauge-score");
       score.innerText = val;
-      // Alt etiket
       let sections = ["Çok Çekingen", "Çekingen", "Normal", "Hırslı", "Çok Hırslı"];
       let sectionLabel = "";
       if(val < 20) sectionLabel = sections[0];
@@ -264,7 +286,7 @@
     }
     drawGauge(62);
 
-    // BBC Economy RSS
+    // ----- Breaking News (BBC) -----
     async function getBBCNews() {
       let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
       try {
@@ -278,7 +300,7 @@
     }
     getBBCNews();
 
-    // TRADINGVIEW GRAFİĞİ
+    // ----- TradingView Grafik -----
     function renderTVSymbols(type) {
       let symbol;
       if(type=="bist") symbol = "BIST:XU100";
@@ -290,6 +312,90 @@
       document.getElementById("tv-chart").innerHTML = html;
     }
     renderTVSymbols(currentType);
+
+    // ----- Ekonomik Takvim (TradingEconomics) -----
+    async function fetchCalendar() {
+      // TradingEconomics demo API (her zaman bugünün etkinliğini verir)
+      let today = new Date();
+      let yyyy = today.getFullYear();
+      let mm = String(today.getMonth() + 1).padStart(2, '0');
+      let dd = String(today.getDate()).padStart(2, '0');
+      let dateStr = `${yyyy}-${mm}-${dd}`;
+      let url = `https://api.tradingeconomics.com/calendar/country/all?d1=${dateStr}&d2=${dateStr}&c=guest:guest`;
+      try {
+        let res = await fetch(url);
+        let data = await res.json();
+        let html = '<div class="calendar-list">';
+        if (data.length == 0) html += "<div>Bugün için etkinlik yok.</div>";
+        data.forEach(ev => {
+          let impClass = ev.Importance == 3 ? "calendar-imp-high" : (ev.Importance == 2 ? "calendar-imp-med" : "calendar-imp-low");
+          html += `<div class="calendar-item"><span class="${impClass}">${ev.Country || ''} ${ev.Event || ''}</span><br>
+            <span>${ev.Date.split("T")[1].slice(0,5)}</span> - <span>${ev.Actual || ''}</span>
+          </div>`;
+        });
+        html += '</div>';
+        document.getElementById("eco-calendar").innerHTML = html;
+      } catch {
+        document.getElementById("eco-calendar").innerHTML = "<div>Ekonomik takvime erişilemiyor.</div>";
+      }
+    }
+    fetchCalendar();
+
+    // ----- Tweet Listesi -----
+    const tweetThresholds = [
+      {user:"@realDonaldTrump", like:250000},
+      {user:"@RTErdogan", like:10000},
+      {user:"@catturd2", like:20000},
+      {user:"@memetsimsek", like:300},
+      {user:"@TuncSatiroglu", like:1500},
+      {user:"laplace2011", like:500},
+      {user:"@elonmusk", like:100000},
+      {user:"@NasdaqTurk", like:50},
+      {user:"@charliebilello", like:420},
+      {user:"@steve_hanke", like:100},
+      {user:"@Vivek4real_", like:3000}
+    ];
+    // Tweetler örnek, canlıda Twitter API'dan çekerken threshold kontrolü burada olacak
+    const tweets = [
+      {user:"@realDonaldTrump", name:"Donald J. Trump", text:"The stock market is hitting ALL TIME HIGHS!", likes:255000, date:"2025-05-28T13:45:00Z"},
+      {user:"@elonmusk", name:"Elon Musk", text:"AI will change everything.", likes:200000, date:"2025-05-28T10:11:00Z"},
+      {user:"@memetsimsek", name:"Mehmet Şimşek", text:"Enflasyonla mücadelede kararlıyız.", likes:830, date:"2025-05-28T07:09:00Z"},
+      {user:"@RTErdogan", name:"Recep Tayyip Erdoğan", text:"Türkiye büyümeye devam ediyor!", likes:13500, date:"2025-05-27T19:14:00Z"},
+      {user:"@catturd2", name:"Catturd", text:"Markets are acting insane today.", likes:25000, date:"2025-05-28T12:22:00Z"},
+      {user:"@charliebilello", name:"Charlie Bilello", text:"S&P500 hits a new record.", likes:530, date:"2025-05-28T09:00:00Z"},
+      {user:"laplace2011", name:"Laplace", text:"Bayesian inference for markets is fun.", likes:600, date:"2025-05-27T21:10:00Z"},
+      {user:"@NasdaqTurk", name:"Nasdaq Türk", text:"Nasdaq Türkiye yatırımcıları için kritik seviye: 17000", likes:100, date:"2025-05-28T11:18:00Z"},
+      {user:"@steve_hanke", name:"Steve Hanke", text:"Hyperinflation remains a threat.", likes:180, date:"2025-05-27T16:00:00Z"},
+      {user:"@TuncSatiroglu", name:"Tunç Şatıroğlu", text:"Altın için yılın fırsatı mı geliyor?", likes:1800, date:"2025-05-28T09:00:00Z"}
+    ];
+
+    function filterTweets() {
+      // 24 saat filtre ve threshold+öncelik
+      const now = new Date();
+      let list = [];
+      for(let prio of tweetThresholds){
+        let t = tweets.filter(tw => tw.user === prio.user && tw.likes >= prio.like && ((now - new Date(tw.date))/(1000*3600)) < 24);
+        if (t.length) list.push(t[0]);
+      }
+      return list;
+    }
+    function renderTweets() {
+      let tlist = filterTweets();
+      let grid = document.getElementById('tweets-grid');
+      grid.innerHTML = '';
+      tlist.forEach(tw => {
+        let dateObj = new Date(tw.date);
+        let dt = dateObj.toLocaleDateString("tr-TR",{month:"2-digit",day:"2-digit"})+" "+dateObj.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+        grid.innerHTML += `
+          <div class="tweet-card">
+            <div class="tweet-header"><span class="tweet-username">${tw.user}</span> <span style="font-size:0.95em; color:#888;">${tw.name}</span></div>
+            <div class="tweet-meta"><span class="tweet-time">${dt}</span></div>
+            <div class="tweet-body">${tw.text}</div>
+            <div class="tweet-likes">❤ ${tw.likes.toLocaleString("tr-TR")}</div>
+          </div>`;
+      });
+    }
+    renderTweets();
 
   </script>
 </body>
