@@ -5,20 +5,16 @@
   <title>Trion Strateji</title>
   <meta name="viewport" content="width=1100">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f9fafd;}
     header {
-      font-size: 2.1em;
-      font-weight: bold;
-      margin: 12px 0 6px 0;
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      padding-left: 44px;
+      display: flex; align-items: center; gap: 16px;
+      font-size: 2.05em; font-weight: bold;
+      margin: 16px 0 6px 0; padding-left: 32px;
+      letter-spacing: .04em;
     }
-    .brand-logo { height: 60px; width: auto; border-radius: 14px; background: none;}
+    .brand-logo { height: 55px; width: auto; border-radius: 14px; background: none;}
     .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 7px; }
     .center-buttons button {
       font-size: 1.07em; font-weight: 500; padding: 9px 28px;
@@ -32,17 +28,24 @@
     }
     .breaking-news-area {
       width: 83vw; max-width: 1220px;
-      margin: 10px auto 18px auto; overflow: hidden;
+      margin: 10px auto 18px auto;
+      overflow: hidden;
       background: #fff7d8; border-radius: 11px; border: 1.5px solid #ffd566;
       height: 46px; display: flex; align-items: center; position: relative;
       box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;
     }
     .breaking-news-content {
-      white-space: nowrap; display: inline-block; padding-left: 100%;
-      animation: ticker 37.3s linear infinite;
+      padding: 0 18px;
       font-size: 1.13em; font-weight: 600; color: #1e232a; letter-spacing: .32px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      /* Hareket yok, yazı çoksa ... ile biter */
     }
-    @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%);} }
+    @media (max-width: 800px) {
+      .breaking-news-content { font-size:1em; padding: 0 6px;}
+    }
     .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
     .left, .right {
       width: 290px; min-height: 700px;
@@ -140,7 +143,7 @@
 </head>
 <body>
   <header>
-    <img src="/mnt/data/ce14e35d-8ffa-48f3-834b-c486a26be01c.png" alt="Trion Capital" class="brand-logo">
+    <img src="ce14e35d-8ffa-48f3-834b-c486a26be01c.png" alt="Trion Capital" class="brand-logo">
     Trion Strateji
   </header>
   <div class="center-buttons">
@@ -374,7 +377,7 @@
     }
     renderTVSymbols(currentType);
 
-    // ----- Ekonomik Takvim (NATIVE / TradingEconomics) -----
+    // Ekonomik Takvim (NATIVE / TradingEconomics)
     async function fetchCalendar() {
       let today = new Date();
       let yyyy = today.getFullYear();
@@ -404,14 +407,15 @@
     }
     fetchCalendar();
 
-    // ----- Tweet Card Stili -----
+    // Tweet Card Stili
+    const defaultAvatar = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
     const tweetThresholds = [
       {user:"@realDonaldTrump", like:250000, avatar:"https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg", disp:"Donald J. Trump"},
       {user:"@RTErdogan", like:10000, avatar:"https://pbs.twimg.com/profile_images/1364584858124802050/TsUlnWt5_400x400.jpg", disp:"Recep Tayyip Erdoğan"},
       {user:"@catturd2", like:20000, avatar:"https://pbs.twimg.com/profile_images/1619407957409474561/MEN7-LpD_400x400.jpg", disp:"Catturd"},
       {user:"@memetsimsek", like:300, avatar:"https://pbs.twimg.com/profile_images/1613924388975042560/tP9vGcfu_400x400.jpg", disp:"Mehmet Şimşek"},
       {user:"@TuncSatiroglu", like:1500, avatar:"https://pbs.twimg.com/profile_images/1593433663674290176/ZYwbl4pF_400x400.jpg", disp:"Tunç Şatıroğlu"},
-      {user:"laplace2011", like:500, avatar:"https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png", disp:"Laplace"},
+      {user:"laplace2011", like:500, avatar:defaultAvatar, disp:"Laplace"},
       {user:"@elonmusk", like:100000, avatar:"https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg", disp:"Elon Musk"},
       {user:"@NasdaqTurk", like:50, avatar:"https://pbs.twimg.com/profile_images/1278217956535611392/ClW-RhS8_400x400.jpg", disp:"Nasdaq Türk"},
       {user:"@charliebilello", like:420, avatar:"https://pbs.twimg.com/profile_images/1324739583522471938/Kt4PDT1p_400x400.jpg", disp:"Charlie Bilello"},
@@ -436,7 +440,7 @@
       for(let prio of tweetThresholds){
         let t = tweets.filter(tw => tw.user === prio.user && tw.likes >= prio.like && ((now - new Date(tw.date))/(1000*3600)) < 24);
         if (t.length) {
-          t[0].avatar = prio.avatar;
+          t[0].avatar = prio.avatar || defaultAvatar;
           t[0].name = prio.disp;
           list.push(t[0]);
         }
@@ -450,10 +454,11 @@
       tlist.forEach(tw => {
         let dateObj = new Date(tw.date);
         let dt = dateObj.toLocaleDateString("tr-TR",{month:"2-digit",day:"2-digit"})+" "+dateObj.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
+        let avatar = tw.avatar || defaultAvatar;
         grid.innerHTML += `
           <div class="tweet-card">
             <div class="tweet-header">
-              <img src="${tw.avatar}" alt="${tw.name}" class="tweet-avatar">
+              <img src="${avatar}" alt="${tw.name}" class="tweet-avatar" onerror="this.onerror=null;this.src='${defaultAvatar}';">
               <div class="tweet-userbox">
                 <div class="tweet-username-row">
                   <span class="tweet-username">${tw.name}</span>
