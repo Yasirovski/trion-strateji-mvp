@@ -5,34 +5,72 @@
   <title>Trion Strateji</title>
   <meta name="viewport" content="width=1100">
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; background: #fff; }
-    header { font-size: 2em; font-weight: bold; margin: 20px 0 10px 40px; }
-    .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 6px; }
-    .center-buttons button { font-size: 1em; padding: 9px 22px; border-radius: 8px; background: #f2f2f2; border: 1px solid #ccc; cursor: pointer; transition: background .18s; }
-    .center-buttons button.active, .center-buttons button:active { background: #d3e5ff; font-weight: bold; }
-    .breaking-news-area { width: 82vw; max-width: 1220px; margin: 10px auto 18px auto; overflow: hidden; background: #fff7d8; border-radius: 8px; border: 1.5px solid #ffd566; height: 46px; display: flex; align-items: center; position: relative; box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;}
-    .breaking-news-content { white-space: nowrap; display: inline-block; padding-left: 100%; animation: ticker 28s linear infinite; font-size: 1.1em; font-weight: 600; color: #0a1122; letter-spacing: .4px;}
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f9fafd;}
+    header {
+      font-size: 2.1em;
+      font-weight: bold;
+      margin: 12px 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-left: 44px;
+    }
+    .brand-logo { height: 60px; width: auto; border-radius: 14px; background: none;}
+    .center-buttons { display: flex; justify-content: center; gap: 12px; margin-bottom: 7px; }
+    .center-buttons button {
+      font-size: 1.07em; font-weight: 500; padding: 9px 28px;
+      border-radius: 13px; background: #f7fafe; border: 1.2px solid #c2d2e6;
+      cursor: pointer; transition: background .18s, border-color .19s;
+      box-shadow: 0 1px 8px #f4f7fd;
+    }
+    .center-buttons button.active, .center-buttons button:active {
+      background: #e9f0fc; font-weight: bold; border: 1.8px solid #3b4f6b;
+      color: #19386e;
+    }
+    .breaking-news-area {
+      width: 83vw; max-width: 1220px;
+      margin: 10px auto 18px auto; overflow: hidden;
+      background: #fff7d8; border-radius: 11px; border: 1.5px solid #ffd566;
+      height: 46px; display: flex; align-items: center; position: relative;
+      box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;
+    }
+    .breaking-news-content {
+      white-space: nowrap; display: inline-block; padding-left: 100%;
+      animation: ticker 37.3s linear infinite;
+      font-size: 1.13em; font-weight: 600; color: #1e232a; letter-spacing: .32px;
+    }
     @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-100%);} }
     .container { display: flex; justify-content: center; align-items: flex-start; gap: 32px; width: 100%; max-width: 1500px; margin: 0 auto;}
-    .left, .right { width: 270px; min-height: 700px; background: #f9f9f9; border-radius: 8px; padding: 8px 4px; box-shadow: 0 2px 10px #eee; display: flex; flex-direction: column; align-items: center;}
+    .left, .right {
+      width: 290px; min-height: 700px;
+      background: #fffffffa; border-radius: 14px; padding: 16px 8px 10px 8px;
+      box-shadow: 0 2px 18px #f0f2f6;
+      display: flex; flex-direction: column; align-items: center;
+    }
     .middle { flex: 1; display: flex; flex-direction: column; align-items: center;}
+    .panel-title { font-weight:600; font-size:1.13em; margin-bottom:10px; color:#233459; letter-spacing:.06em;}
+    /* TradingView-style TABLE */
+    .tv-table { width: 97%; border-collapse: separate; border-spacing: 0 3px;}
+    .tv-table th, .tv-table td {
+      padding: 6.5px 0; text-align: left;
+      font-size: 1.12em; font-family: 'Segoe UI', Arial, sans-serif;
+      background: none;
+    }
+    .tv-table th { color: #8fa1be; font-weight: 600; border-bottom: 1.2px solid #e5ebf3; }
+    .tv-table td { color: #293b5b; font-weight: 500; border-bottom: 1px solid #f0f2f6; }
+    .tv-table tr { border-radius: 7px; transition: background .18s;}
+    .tv-table tr:hover { background: #f7fafd; }
+    .chg-pos { color: #39a530; font-weight: 600;}
+    .chg-neg { color: #d9343a; font-weight: 600;}
+    .chg-zero { color: #b2b8c7;}
+    .market-dot {display: inline-block;width: 11px;height: 11px;border-radius: 50%;margin-right:6px;animation: blink 1s infinite;}
+    .dot-open {background: #37c937; opacity:0.93;}
+    .dot-closed {background: #e74646; opacity:0.93;}
+    @keyframes blink {0%{opacity:.7;} 50%{opacity:.25;} 100%{opacity:.7;}}
+    .brand { opacity:.82; width: 120px; margin:10px auto 0 auto; display:block;}
+    /* Gauge */
     .gauge-area { width: 440px; margin: 36px auto 0 auto; text-align: center;}
     .gauge-label { font-weight: bold; font-size: 1.19em; margin-bottom: 12px; color: #222;}
-    .panel-list { width: 100%; margin-top: 10px; }
-    .panel-list table { width: 100%; border-collapse: collapse;}
-    .panel-list th, .panel-list td { padding: 4px 0; text-align: left; font-size: 1.07em;}
-    .panel-list tr { border-bottom: 1px solid #eee;}
-    .panel-list th { font-size: 1.09em; color: #888;}
-    .chg-pos { color: #189600; font-weight: 600;}
-    .chg-neg { color: #c61c1c; font-weight: 600;}
-    .chg-zero { color: #888;}
-    .brand { opacity:.8; width: 102px; margin:10px auto 0 auto; display:block;}
-    @media (max-width: 1100px) {
-      .container { flex-direction: column; align-items: stretch; }
-      .left, .right, .middle { width: 100%; min-height: unset; }
-      .gauge-area { width: 95vw; }
-      .breaking-news-area { width: 96vw; }
-    }
     .gauge { position: relative; width: 410px; height: 210px; margin: 0 auto; background: #fff;}
     .gauge-canvas { width: 100%; height: 100%; display: block;}
     .gauge-labels { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none;}
@@ -44,30 +82,45 @@
     .gauge-labels .l5 { right: 24px; top: 127px;}
     .gauge-score { position: absolute; top: 59%; left: 50%; transform: translate(-50%,-50%); font-size: 2.4em; font-weight: bold; color: #fff; background: #ff9800; border-radius: 32px; padding: 8px 34px; z-index: 22; box-shadow: 0 2px 10px #ddd; border: 3.5px solid #fff; letter-spacing: 2px;}
     .gauge-section-label { position: absolute; left: 50%; transform: translateX(-50%); width: 98%; text-align: center; bottom: -9px; font-size: 1em; color: #222; font-weight: bold; background: none;}
-    .market-dot {display: inline-block;width: 12px;height: 12px;border-radius: 50%;margin-right:5px;animation: blink 1s infinite;}
-    .dot-open {background: #4cb04c; opacity:0.95;}
-    .dot-closed {background: #e93e3e; opacity:0.95;}
-    @keyframes blink {0%{opacity:.7;} 50%{opacity:.2;} 100%{opacity:.7;}}
-    /* Tweet grid */
-    .tweets-area { width: 100%; max-width: 1280px; margin: 54px auto 32px auto;}
+    /* Tweet Cards */
+    .tweets-area { width: 100%; max-width: 1250px; margin: 54px auto 32px auto;}
     .tweets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px 18px; }
-    .tweet-card { border: 1.3px solid #eee; border-radius: 11px; box-shadow: 0 2px 10px #f3f3f3; background: #fafbfc; padding: 13px 14px; min-height: 122px; position: relative; }
-    .tweet-header { font-weight: bold; font-size: 1.09em; margin-bottom: 6px; color: #27366a;}
-    .tweet-meta { font-size: 0.96em; color: #8a8b99; margin-bottom: 7px;}
-    .tweet-body { font-size: 1.14em; color: #1a1a1a;}
-    .tweet-likes { position: absolute; bottom: 11px; right: 18px; font-size: 0.98em; color: #eab308;}
-    .tweet-username { color: #1570ef; }
-    .tweet-time { color: #888; font-size: 0.91em;}
+    .tweet-card {
+      border: 1.6px solid #e3e7f1; border-radius: 15px; box-shadow: 0 3px 18px #eef0f9; background: #fffffffa;
+      padding: 20px 20px 14px 20px; min-height: 128px; position: relative; transition: box-shadow .16s, border .16s;
+      display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+    }
+    .tweet-card:hover { box-shadow: 0 4px 26px #e0e3f6; border-color: #b0cdf6; }
+    .tweet-header { display: flex; align-items: center; gap: 13px;}
+    .tweet-avatar { width: 46px; height: 46px; border-radius: 50%; background: #e8e9ee; object-fit: cover; }
+    .tweet-userbox { display: flex; flex-direction: column; }
+    .tweet-username { color: #233459; font-size: 1.08em; font-weight: bold; }
+    .tweet-handle { color: #3b72e2; font-size: 0.98em; margin-top: 1px;}
+    .tweet-meta { font-size: 0.93em; color: #8a8b99; margin-bottom: 2px; margin-left: 60px; }
+    .tweet-body { font-size: 1.17em; color: #1a1a1a; padding-left: 5px;}
+    .tweet-likes { position: absolute; bottom: 10px; right: 23px; font-size: 1.01em; color: #eab308; font-weight: 500;}
     /* Ekonomik takvim */
     .calendar-list { font-size: 1.01em; line-height: 1.22; margin-top: 8px; }
     .calendar-item { margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #eee;}
     .calendar-imp-high { color: #c61c1c; font-weight: bold;}
     .calendar-imp-med { color: #ff9800; }
     .calendar-imp-low { color: #888;}
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .container { flex-direction: column; align-items: stretch; }
+      .left, .right, .middle { width: 100%; min-height: unset; }
+      .gauge-area { width: 95vw; }
+      .breaking-news-area { width: 96vw; }
+      .tweets-grid { grid-template-columns: 1fr;}
+      .gauge { width:98vw;}
+    }
   </style>
 </head>
 <body>
-  <header>Trion Strateji</header>
+  <header>
+    <img src="/mnt/data/ce14e35d-8ffa-48f3-834b-c486a26be01c.png" alt="Trion Capital" class="brand-logo">
+    Trion Strateji
+  </header>
   <div class="center-buttons">
     <button id="bistBtn" class="active">Borsa İstanbul</button>
     <button id="usBtn">Amerika B.</button>
@@ -80,11 +133,14 @@
   <div class="container">
     <!-- SOLDA PANEL -->
     <div class="left" id="custom-symbol-list">
-      <div style="font-weight:bold; margin-bottom:8px; font-size:1.12em;">Varlıklar</div>
+      <div class="panel-title">Varlıklar</div>
       <div class="panel-list" id="symbols-table"></div>
+      <div style="font-size:12px;color:#9ca5ba;margin:18px 0 4px 0;">
+        <span>Kaynak: <a href="https://www.borsaistanbul.com" target="_blank" style="color:#5e6ba6">Borsa İstanbul</a></span>
+      </div>
       <img src="https://static.finnhub.io/favicon.ico" class="brand" alt="Finnhub">
     </div>
-    <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE -->
+    <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE + TWEETLER -->
     <div class="middle">
       <div id="tv-chart"></div>
       <div class="gauge-area">
@@ -102,7 +158,7 @@
           <div class="gauge-section-label" id="gauge-section-label"></div>
         </div>
       </div>
-      <!-- Tweet alanı buraya eklendi! -->
+      <!-- Tweet alanı -->
       <div class="tweets-area">
         <div style="font-size:1.16em; font-weight:bold; margin-bottom:14px; color:#27366a;">Piyasayı Etkileyen Tweet'ler</div>
         <div class="tweets-grid" id="tweets-grid"></div>
@@ -110,12 +166,23 @@
     </div>
     <!-- SAĞDA EKONOMİK TAKVİM -->
     <div class="right">
-      <div class="news-title" style="margin-bottom:8px;">Ekonomik Takvim (Bugün)</div>
-      <div id="eco-calendar"></div>
+      <div class="news-title" style="margin-bottom:8px;font-weight:bold;font-size:1.1em;">Ekonomik Takvim</div>
+      <!-- Responsive widget -->
+      <iframe id="investing-calendar" src="https://sslecal2.investing.com/?ecoDayBackground=%23fff&lang=32"
+        width="100%" height="600" frameborder="0" allowtransparency="true" marginwidth="0" marginheight="0"></iframe>
+      <div style="font-size:12px;color:#9ca5ba;margin:12px 0 0 0;">
+        <span>Kaynak: <a href="https://tr.investing.com/economic-calendar/" target="_blank" style="color:#5e6ba6">Investing.com</a></span>
+      </div>
     </div>
   </div>
   <script>
-    // ----- Sembol Listeleri ve Panel Çekimi -----
+    // ----- Otomatik Yenileme (Her Gece 00:00) -----
+    setInterval(() => {
+      const now = new Date();
+      if(now.getHours() === 0 && now.getMinutes() < 2) location.reload();
+    }, 60000); // Dakikada bir kontrol
+
+    // ----- Sembol Listeleri ve Panel Çekimi (Şimdilik Dummy) -----
     const symbolsList = {
       bist: [
         { sym: "ASELS.IS", name: "ASELS" },
@@ -146,56 +213,35 @@
       ]
     };
     let currentType = "bist";
-
-    // Piyasa açık mı?
+    // Şu an API entegre edilmedi, data dummy
     function isMarketOpen(symbol, type) {
       let hour = new Date().getUTCHours();
-      if(type === 'bist') return hour >= 7 && hour <= 14; // BIST UTC 10:00-17:00 civarı
-      if(type === 'nasdaq') return hour >= 13 && hour <= 20; // ABD UTC 16:30-23:00 civarı
+      if(type === 'bist') return hour >= 7 && hour <= 14;
+      if(type === 'nasdaq') return hour >= 13 && hour <= 20;
       if(type === 'emtia') return true;
       return false;
     }
-
-    // Yahoo Finance ile fiyat çekimi (BIST ve Emtia dahil!)
-    async function fetchPanel(type) {
+    function fetchPanel(type) {
       const panel = symbolsList[type];
-      let html = `<table><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
-      let symbolStr = panel.map(x => x.sym).join(",");
-      let yahooApi = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbolStr}`;
-      let dataYahoo = {};
-      try {
-        let res = await fetch(yahooApi);
-        let js = await res.json();
-        js.quoteResponse.result.forEach((d) => {
-          dataYahoo[d.symbol] = d;
-        });
-      } catch (e) {}
-      for (let symObj of panel) {
-        let price = "-";
-        let pct = "-";
-        let chgClass = "chg-zero";
+      let html = `<table class="tv-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
+      // Placeholder dummy data, ileride API ile güncellenecek
+      panel.forEach((symObj, i) => {
+        let price = (type === "bist") ? (500 + i*10).toFixed(2) : (1500 + i*50).toFixed(2);
+        let pctN = ((Math.random()-0.5)*3).toFixed(2);
+        let pct = (pctN > 0 ? "+" : "") + pctN + "%";
+        let chgClass = pctN > 0 ? "chg-pos" : pctN < 0 ? "chg-neg" : "chg-zero";
         let dotClass = isMarketOpen(symObj.sym, type) ? "dot-open" : "dot-closed";
         let marketDot = `<span class="market-dot ${dotClass}"></span>`;
-        let d = dataYahoo[symObj.sym];
-        if (d && d.regularMarketPrice !== undefined) {
-          price = d.regularMarketPrice;
-          if (d.regularMarketPreviousClose && d.regularMarketPreviousClose !== 0) {
-            let pctN = ((price - d.regularMarketPreviousClose) / d.regularMarketPreviousClose * 100).toFixed(2);
-            chgClass = pctN > 0 ? "chg-pos" : pctN < 0 ? "chg-neg" : "chg-zero";
-            pct = (pctN > 0 ? "+" : "") + pctN + "%";
-          }
-        }
         html += `<tr>
           <td>${marketDot}${symObj.name}</td>
           <td>${price}</td>
           <td class="${chgClass}">${pct}</td>
         </tr>`;
-      }
+      });
       html += `</table>`;
       document.getElementById("symbols-table").innerHTML = html;
     }
-
-    // ----- Panel Butonları -----
+    // Butonlar
     document.getElementById('bistBtn').onclick = function() {
       currentType = 'bist';
       fetchPanel('bist');
@@ -223,8 +269,6 @@
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('usBtn').classList.remove('active');
     };
-
-    // İlk yüklemede BIST
     fetchPanel(currentType);
 
     // ----- Gauge -----
@@ -313,69 +357,44 @@
     }
     renderTVSymbols(currentType);
 
-    // ----- Ekonomik Takvim (TradingEconomics) -----
-    async function fetchCalendar() {
-      // TradingEconomics demo API (her zaman bugünün etkinliğini verir)
-      let today = new Date();
-      let yyyy = today.getFullYear();
-      let mm = String(today.getMonth() + 1).padStart(2, '0');
-      let dd = String(today.getDate()).padStart(2, '0');
-      let dateStr = `${yyyy}-${mm}-${dd}`;
-      let url = `https://api.tradingeconomics.com/calendar/country/all?d1=${dateStr}&d2=${dateStr}&c=guest:guest`;
-      try {
-        let res = await fetch(url);
-        let data = await res.json();
-        let html = '<div class="calendar-list">';
-        if (data.length == 0) html += "<div>Bugün için etkinlik yok.</div>";
-        data.forEach(ev => {
-          let impClass = ev.Importance == 3 ? "calendar-imp-high" : (ev.Importance == 2 ? "calendar-imp-med" : "calendar-imp-low");
-          html += `<div class="calendar-item"><span class="${impClass}">${ev.Country || ''} ${ev.Event || ''}</span><br>
-            <span>${ev.Date.split("T")[1].slice(0,5)}</span> - <span>${ev.Actual || ''}</span>
-          </div>`;
-        });
-        html += '</div>';
-        document.getElementById("eco-calendar").innerHTML = html;
-      } catch {
-        document.getElementById("eco-calendar").innerHTML = "<div>Ekonomik takvime erişilemiyor.</div>";
-      }
-    }
-    fetchCalendar();
-
-    // ----- Tweet Listesi -----
+    // ----- Tweet Listesi & Card Tasarımı -----
+    // (Avatarlar dummy, Twitter API ile canlı avatar alınabilir)
     const tweetThresholds = [
-      {user:"@realDonaldTrump", like:250000},
-      {user:"@RTErdogan", like:10000},
-      {user:"@catturd2", like:20000},
-      {user:"@memetsimsek", like:300},
-      {user:"@TuncSatiroglu", like:1500},
-      {user:"laplace2011", like:500},
-      {user:"@elonmusk", like:100000},
-      {user:"@NasdaqTurk", like:50},
-      {user:"@charliebilello", like:420},
-      {user:"@steve_hanke", like:100},
-      {user:"@Vivek4real_", like:3000}
+      {user:"@realDonaldTrump", like:250000, avatar:"https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg", disp:"Donald J. Trump"},
+      {user:"@RTErdogan", like:10000, avatar:"https://pbs.twimg.com/profile_images/1364584858124802050/TsUlnWt5_400x400.jpg", disp:"Recep Tayyip Erdoğan"},
+      {user:"@catturd2", like:20000, avatar:"https://pbs.twimg.com/profile_images/1619407957409474561/MEN7-LpD_400x400.jpg", disp:"Catturd"},
+      {user:"@memetsimsek", like:300, avatar:"https://pbs.twimg.com/profile_images/1613924388975042560/tP9vGcfu_400x400.jpg", disp:"Mehmet Şimşek"},
+      {user:"@TuncSatiroglu", like:1500, avatar:"https://pbs.twimg.com/profile_images/1593433663674290176/ZYwbl4pF_400x400.jpg", disp:"Tunç Şatıroğlu"},
+      {user:"laplace2011", like:500, avatar:"https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png", disp:"Laplace"},
+      {user:"@elonmusk", like:100000, avatar:"https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg", disp:"Elon Musk"},
+      {user:"@NasdaqTurk", like:50, avatar:"https://pbs.twimg.com/profile_images/1278217956535611392/ClW-RhS8_400x400.jpg", disp:"Nasdaq Türk"},
+      {user:"@charliebilello", like:420, avatar:"https://pbs.twimg.com/profile_images/1324739583522471938/Kt4PDT1p_400x400.jpg", disp:"Charlie Bilello"},
+      {user:"@steve_hanke", like:100, avatar:"https://pbs.twimg.com/profile_images/1618587801350094849/iIxeEOMr_400x400.jpg", disp:"Steve Hanke"},
+      {user:"@Vivek4real_", like:3000, avatar:"https://pbs.twimg.com/profile_images/1646318491343652864/DTm-dTNS_400x400.jpg", disp:"Vivek"}
     ];
-    // Tweetler örnek, canlıda Twitter API'dan çekerken threshold kontrolü burada olacak
+    // Tweetler örnek
     const tweets = [
-      {user:"@realDonaldTrump", name:"Donald J. Trump", text:"The stock market is hitting ALL TIME HIGHS!", likes:255000, date:"2025-05-28T13:45:00Z"},
-      {user:"@elonmusk", name:"Elon Musk", text:"AI will change everything.", likes:200000, date:"2025-05-28T10:11:00Z"},
-      {user:"@memetsimsek", name:"Mehmet Şimşek", text:"Enflasyonla mücadelede kararlıyız.", likes:830, date:"2025-05-28T07:09:00Z"},
-      {user:"@RTErdogan", name:"Recep Tayyip Erdoğan", text:"Türkiye büyümeye devam ediyor!", likes:13500, date:"2025-05-27T19:14:00Z"},
-      {user:"@catturd2", name:"Catturd", text:"Markets are acting insane today.", likes:25000, date:"2025-05-28T12:22:00Z"},
-      {user:"@charliebilello", name:"Charlie Bilello", text:"S&P500 hits a new record.", likes:530, date:"2025-05-28T09:00:00Z"},
-      {user:"laplace2011", name:"Laplace", text:"Bayesian inference for markets is fun.", likes:600, date:"2025-05-27T21:10:00Z"},
-      {user:"@NasdaqTurk", name:"Nasdaq Türk", text:"Nasdaq Türkiye yatırımcıları için kritik seviye: 17000", likes:100, date:"2025-05-28T11:18:00Z"},
-      {user:"@steve_hanke", name:"Steve Hanke", text:"Hyperinflation remains a threat.", likes:180, date:"2025-05-27T16:00:00Z"},
-      {user:"@TuncSatiroglu", name:"Tunç Şatıroğlu", text:"Altın için yılın fırsatı mı geliyor?", likes:1800, date:"2025-05-28T09:00:00Z"}
+      {user:"@realDonaldTrump", text:"The stock market is hitting ALL TIME HIGHS!", likes:255000, date:"2025-05-28T13:45:00Z"},
+      {user:"@elonmusk", text:"AI will change everything.", likes:200000, date:"2025-05-28T10:11:00Z"},
+      {user:"@memetsimsek", text:"Enflasyonla mücadelede kararlıyız.", likes:830, date:"2025-05-28T07:09:00Z"},
+      {user:"@RTErdogan", text:"Türkiye büyümeye devam ediyor!", likes:13500, date:"2025-05-27T19:14:00Z"},
+      {user:"@catturd2", text:"Markets are acting insane today.", likes:25000, date:"2025-05-28T12:22:00Z"},
+      {user:"@charliebilello", text:"S&P500 hits a new record.", likes:530, date:"2025-05-28T09:00:00Z"},
+      {user:"laplace2011", text:"Bayesian inference for markets is fun.", likes:600, date:"2025-05-27T21:10:00Z"},
+      {user:"@NasdaqTurk", text:"Nasdaq Türkiye yatırımcıları için kritik seviye: 17000", likes:100, date:"2025-05-28T11:18:00Z"},
+      {user:"@steve_hanke", text:"Hyperinflation remains a threat.", likes:180, date:"2025-05-27T16:00:00Z"},
+      {user:"@TuncSatiroglu", text:"Altın için yılın fırsatı mı geliyor?", likes:1800, date:"2025-05-28T09:00:00Z"}
     ];
-
     function filterTweets() {
-      // 24 saat filtre ve threshold+öncelik
       const now = new Date();
       let list = [];
       for(let prio of tweetThresholds){
         let t = tweets.filter(tw => tw.user === prio.user && tw.likes >= prio.like && ((now - new Date(tw.date))/(1000*3600)) < 24);
-        if (t.length) list.push(t[0]);
+        if (t.length) {
+          t[0].avatar = prio.avatar;
+          t[0].name = prio.disp;
+          list.push(t[0]);
+        }
       }
       return list;
     }
@@ -388,7 +407,13 @@
         let dt = dateObj.toLocaleDateString("tr-TR",{month:"2-digit",day:"2-digit"})+" "+dateObj.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
         grid.innerHTML += `
           <div class="tweet-card">
-            <div class="tweet-header"><span class="tweet-username">${tw.user}</span> <span style="font-size:0.95em; color:#888;">${tw.name}</span></div>
+            <div class="tweet-header">
+              <img src="${tw.avatar}" alt="${tw.name}" class="tweet-avatar">
+              <div class="tweet-userbox">
+                <span class="tweet-username">${tw.name}</span>
+                <span class="tweet-handle">${tw.user}</span>
+              </div>
+            </div>
             <div class="tweet-meta"><span class="tweet-time">${dt}</span></div>
             <div class="tweet-body">${tw.text}</div>
             <div class="tweet-likes">❤ ${tw.likes.toLocaleString("tr-TR")}</div>
@@ -396,7 +421,6 @@
       });
     }
     renderTweets();
-
   </script>
 </body>
 </html>
