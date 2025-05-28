@@ -4,163 +4,29 @@
   <meta charset="UTF-8">
   <title>Trion Strateji</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      background: #f9fafd;
-      overflow-x: hidden !important;
-    }
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      min-height: 100vh;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 2.05em;
-      font-weight: bold;
-      margin: 18px 0 10px 0;
-      padding-left: 34px;
-      letter-spacing: .04em;
-      height: 70px;
-    }
-    .brand-logo {
-      height: 56px;
-      width: auto;
-      border-radius: 14px;
-      background: none;
-      object-fit: contain;
-    }
-    .center-buttons {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 12px;
-    }
-    .center-buttons button {
-      font-size: 1.11em;
-      font-weight: 500;
-      padding: 9px 28px;
-      border-radius: 13px;
-      background: #f7fafe;
-      border: 1.2px solid #c2d2e6;
-      cursor: pointer;
-      transition: background .18s, border-color .19s;
-      box-shadow: 0 1px 8px #f4f7fd;
-    }
-    .center-buttons button.active,
-    .center-buttons button:active {
-      background: #e9f0fc;
-      font-weight: bold;
-      border: 1.8px solid #3b4f6b;
-      color: #19386e;
-    }
+    html, body { height: 100%; margin: 0; padding: 0; background: #f9fafd; overflow-x: hidden !important; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh; }
+    header { display: flex; align-items: center; gap: 18px; font-size: 2.05em; font-weight: bold; margin: 18px 0 10px 0; padding-left: 34px; letter-spacing: .04em; height: 70px; }
+    .brand-logo { height: 56px; width: auto; border-radius: 14px; background: none; object-fit: contain; }
+    .center-buttons { display: flex; justify-content: center; gap: 16px; margin-bottom: 12px; }
+    .center-buttons button { font-size: 1.11em; font-weight: 500; padding: 9px 28px; border-radius: 13px; background: #f7fafe; border: 1.2px solid #c2d2e6; cursor: pointer; transition: background .18s, border-color .19s; box-shadow: 0 1px 8px #f4f7fd; }
+    .center-buttons button.active, .center-buttons button:active { background: #e9f0fc; font-weight: bold; border: 1.8px solid #3b4f6b; color: #19386e; }
     /* Breaking news area */
-    .breaking-news-area {
-      width: 88vw;
-      max-width: 1280px;
-      margin: 12px auto 22px auto;
-      overflow: hidden;
-      background: #fff7d8;
-      border-radius: 11px;
-      border: 1.5px solid #ffd566;
-      height: 46px;
-      display: flex;
-      align-items: center;
-      position: relative;
-      box-shadow: 0 2px 10px #f6e6bc;
-      min-height: 44px;
-    }
-    .breaking-news-content {
-      font-size: 1.13em;
-      font-weight: 600;
-      color: #1e232a;
-      letter-spacing: .32px;
-      white-space: nowrap;
-      overflow: hidden;
-      width: 100%;
-      animation: ticker 34s linear infinite;
-      display: inline-block;
-      padding-left: 100%;
-    }
-    @keyframes ticker {
-      0% { transform: translateX(0);}
-      100% { transform: translateX(-100%);}
-    }
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 36px;
-      width: 100%;
-      max-width: 1560px;
-      margin: 0 auto 40px auto;
-      min-height: 740px;
-    }
-    .left, .right {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 2px 14px #ebecf3;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 700px;
-    }
-    .left {
-      width: 320px;
-      min-width: 270px;
-      padding: 22px 18px 16px 18px;
-      font-size: 1.09em;
-    }
-    .right {
-      width: 320px;
-      min-width: 270px;
-      padding: 18px 12px 16px 12px;
-      font-size: 1.08em;
-    }
-    .middle {
-      flex: 1;
-      min-width: 350px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .panel-title {
-      font-weight: 700;
-      font-size: 1.22em;
-      margin-bottom: 13px;
-      color: #233459;
-      letter-spacing: .04em;
-    }
-    /* TradingView-style TABLE */
-    .tv-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0 4px;
-      font-size: 1.09em;
-    }
-    .tv-table th,
-    .tv-table td {
-      padding: 7px 0;
-      text-align: left;
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: none;
-    }
-    .tv-table th {
-      color: #8fa1be;
-      font-weight: 700;
-      border-bottom: 1.2px solid #e5ebf3;
-    }
-    .tv-table td {
-      color: #293b5b;
-      font-weight: 500;
-      border-bottom: 1px solid #f0f2f6;
-    }
+    .breaking-news-area { width: 88vw; max-width: 1280px; margin: 12px auto 22px auto; overflow: hidden; background: #fff7d8; border-radius: 11px; border: 1.5px solid #ffd566; height: 46px; display: flex; align-items: center; position: relative; box-shadow: 0 2px 10px #f6e6bc; min-height: 44px;}
+    .breaking-news-content { font-size: 1.13em; font-weight: 600; color: #1e232a; letter-spacing: .32px; white-space: nowrap; overflow: hidden; width: 100%; animation: ticker 34s linear infinite; display: inline-block; padding-left: 100%; }
+    @keyframes ticker { 0% { transform: translateX(0);} 100% { transform: translateX(-100%);} }
+    .container { display: flex; justify-content: center; align-items: flex-start; gap: 36px; width: 100%; max-width: 1560px; margin: 0 auto 40px auto; min-height: 740px; }
+    .left, .right { background: #fff; border-radius: 14px; box-shadow: 0 2px 14px #ebecf3; display: flex; flex-direction: column; align-items: center; min-height: 700px; }
+    .left { width: 320px; min-width: 270px; padding: 22px 18px 16px 18px; font-size: 1.09em; }
+    .right { width: 320px; min-width: 270px; padding: 18px 12px 16px 12px; font-size: 1.08em; }
+    .middle { flex: 1; min-width: 350px; display: flex; flex-direction: column; align-items: center; }
+    .panel-title { font-weight: 700; font-size: 1.22em; margin-bottom: 13px; color: #233459; letter-spacing: .04em; }
+    .tv-table { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: 1.09em; }
+    .tv-table th, .tv-table td { padding: 7px 0; text-align: left; font-family: 'Segoe UI', Arial, sans-serif; background: none; }
+    .tv-table th { color: #8fa1be; font-weight: 700; border-bottom: 1.2px solid #e5ebf3; }
+    .tv-table td { color: #293b5b; font-weight: 500; border-bottom: 1px solid #f0f2f6; }
     .tv-table tr { border-radius: 8px; transition: background .18s;}
     .tv-table tr:hover { background: #f7fafd; }
     .chg-pos { color: #39a530; font-weight: 600;}
@@ -187,11 +53,7 @@
     .gauge-section-label { position: absolute; left: 50%; transform: translateX(-50%); width: 98%; text-align: center; bottom: -9px; font-size: 1em; color: #222; font-weight: bold; background: none;}
     /* Economic Calendar */
     .eco-calendar-list { width: 99%; margin: 0 auto; font-size: 1.08em; padding: 0;}
-    .eco-calendar-item {
-      display: flex; flex-direction: column; background: #f7fafd; border-radius: 9px;
-      margin-bottom: 8px; padding: 8px 11px 7px 11px; box-shadow: 0 1.5px 6px #eef1f7;
-      border-left: 4px solid #1b3556;
-    }
+    .eco-calendar-item { display: flex; flex-direction: column; background: #f7fafd; border-radius: 9px; margin-bottom: 8px; padding: 8px 11px 7px 11px; box-shadow: 0 1.5px 6px #eef1f7; border-left: 4px solid #1b3556; }
     .eco-head { display: flex; gap:7px; align-items: center; font-weight:600; color:#2a4062;}
     .eco-time { color:#b65d11; font-size:.98em; font-weight:700;}
     .eco-country { font-weight:500; color:#8fa1be;}
@@ -201,15 +63,10 @@
     .eco-imp-2 { border-left-color: #ff9800;}
     .eco-imp-3 { border-left-color: #d9343a;}
     /* Twitter Card Style */
-    .tweets-area { width: 100%; max-width: 1250px; margin: 54px auto 32px auto;}
-    .tweets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px 18px; }
-    .tweet-card {
-      border: 1.6px solid #e3e7f1; border-radius: 18px; box-shadow: 0 3px 18px #eef0f9;
-      background: #fffffffa; padding: 18px 23px 12px 23px;
-      min-height: 160px; position: relative; transition: box-shadow .16s, border .16s;
-      display: flex; flex-direction: column; gap: 7px; cursor: pointer;
-      max-width: 99vw;
-    }
+    .tweets-area { width: 100%; max-width: 1250px; margin: 54px auto 32px auto; display: flex; flex-direction: column; align-items: center; }
+    .tweets-title { font-size:1.16em; font-weight:bold; margin-bottom:14px; color:#27366a; text-align:center;}
+    .tweets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px 18px; justify-content: center; margin:0 auto;}
+    .tweet-card { border: 1.6px solid #e3e7f1; border-radius: 18px; box-shadow: 0 3px 18px #eef0f9; background: #fffffffa; padding: 18px 23px 12px 23px; min-height: 160px; position: relative; transition: box-shadow .16s, border .16s; display: flex; flex-direction: column; gap: 7px; cursor: pointer; max-width: 99vw; }
     .tweet-card:hover { box-shadow: 0 4px 26px #e0e3f6; border-color: #b0cdf6; }
     .tweet-header { display: flex; align-items: center; gap: 11px;}
     .tweet-avatar { width: 46px; height: 46px; border-radius: 50%; background: #e8e9ee; object-fit: cover; }
@@ -220,14 +77,10 @@
     .tweet-dot { margin:0 3px; font-size:1.4em; color: #b2b8c7;}
     .tweet-date { color: #687684; font-size: 0.99em;}
     .tweet-body { font-size: 1.19em; color: #202327; padding: 2px 2px 5px 2px; }
-    .tweet-stats {
-      display: flex; gap:30px; align-items: center;
-      font-size:1.02em; color: #8a8b99; margin-top:8px; margin-left:2px;
-    }
+    .tweet-stats { display: flex; gap:30px; align-items: center; font-size:1.02em; color: #8a8b99; margin-top:8px; margin-left:2px; }
     .tweet-stat { display:flex; align-items:center; gap:6px; color:#8a8b99;}
     .tweet-stat svg { width:20px;height:20px;fill:#8a8b99;}
     .tweet-likes { color: #eab308; }
-    /* Responsive */
     @media (max-width: 1200px) {
       .container { flex-direction: column; align-items: stretch; gap:22px;}
       .left, .right, .middle { width: 100%; min-width:unset; }
@@ -245,8 +98,8 @@
 </head>
 <body>
   <header>
-    <img src="ce14e35d-8ffa-48f3-834b-c486a26be01c.png" alt="Trion Capital" class="brand-logo">
-    Trion Capital&nbsp;&nbsp;Trion Strateji
+    <!-- Amblemi burada kullanabilirsin, ör: <img src="..." alt="Logo" class="brand-logo"> -->
+    Trion Strateji
   </header>
   <div class="center-buttons">
     <button id="bistBtn" class="active">Borsa İstanbul</button>
@@ -258,7 +111,7 @@
     <div class="breaking-news-content" id="breaking-news-content">Yükleniyor...</div>
   </div>
   <div class="container">
-    <!-- SOLDA PANEL -->
+    <!-- SOL PANEL -->
     <div class="left" id="custom-symbol-list">
       <div class="panel-title">Varlıklar</div>
       <div class="panel-list" id="symbols-table"></div>
@@ -267,7 +120,7 @@
       </div>
       <img src="https://static.finnhub.io/favicon.ico" class="brand" alt="Finnhub">
     </div>
-    <!-- ORTA TRADINGVIEW ANA GRAFİK + GAUGE + TWEETLER -->
+    <!-- ORTA PANEL -->
     <div class="middle">
       <div id="tv-chart"></div>
       <div class="gauge-area">
@@ -287,11 +140,11 @@
       </div>
       <!-- Tweet alanı -->
       <div class="tweets-area">
-        <div style="font-size:1.16em; font-weight:bold; margin-bottom:14px; color:#27366a;">Piyasayı Etkileyen Tweet'ler</div>
+        <div class="tweets-title">Piyasayı Etkileyen Tweet'ler</div>
         <div class="tweets-grid" id="tweets-grid"></div>
       </div>
     </div>
-    <!-- SAĞDA EKONOMİK TAKVİM -->
+    <!-- SAĞ PANEL -->
     <div class="right">
       <div class="news-title" style="margin-bottom:8px;font-weight:bold;font-size:1.1em;">Ekonomik Takvim (Bugün)</div>
       <div id="eco-calendar"></div>
@@ -307,66 +160,165 @@
       if(now.getHours() === 0 && now.getMinutes() < 2) location.reload();
     }, 60000);
 
-    // Sol panel dummy tablo (canlı veri yok, API bağlanınca düzenlenecek)
-    const symbolsList = {
-      bist: [
-        { sym: "ASELS.IS", name: "ASELS" },
-        { sym: "THYAO.IS", name: "THYAO" },
-        { sym: "AKBNK.IS", name: "AKBNK" },
-        { sym: "KCHOL.IS", name: "KCHOL" },
-        { sym: "GARAN.IS", name: "GARAN" },
-        { sym: "BIMAS.IS", name: "BIMAS" },
-        { sym: "TUPRS.IS", name: "TUPRS" }
-      ],
-      nasdaq: [
-        { sym: "AAPL", name: "Apple" },
-        { sym: "MSFT", name: "Microsoft" },
-        { sym: "AMZN", name: "Amazon" },
-        { sym: "GOOGL", name: "Google" },
-        { sym: "META", name: "Meta" },
-        { sym: "NVDA", name: "Nvidia" },
-        { sym: "TSLA", name: "Tesla" }
-      ],
-      emtia: [
-        { sym: "BTC-USD", name: "BTC" },
-        { sym: "ETH-USD", name: "ETH" },
-        { sym: "XAGUSD=X", name: "Gümüş" },
-        { sym: "XAUUSD=X", name: "Altın" },
-        { sym: "XPTUSD=X", name: "Platin" },
-        { sym: "CL=F", name: "Petrol" },
-        { sym: "US10Y", name: "10Y Tahvil" }
-      ]
-    };
-    let currentType = "bist";
-    function isMarketOpen(symbol, type) {
-      let hour = new Date().getUTCHours();
-      if(type === 'bist') return hour >= 7 && hour <= 14;
-      if(type === 'nasdaq') return hour >= 13 && hour <= 20;
-      if(type === 'emtia') return true;
-      return false;
+    // Breaking News (BBC, akıcı)
+    async function getBBCNews() {
+      let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
+      try {
+        let res = await fetch(api);
+        let data = await res.json();
+        let stories = data.items.slice(0, 8).map(i => i.title).join(" ♦ ");
+        document.getElementById("breaking-news-content").innerText = stories;
+      } catch {
+        document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
+      }
     }
-    function fetchPanel(type) {
-      const panel = symbolsList[type];
-      let html = `<table class="tv-table"><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
-      panel.forEach((symObj, i) => {
-        let price = (type === "bist") ? (500 + i*10).toFixed(2) : (1500 + i*50).toFixed(2);
-        let pctN = ((Math.random()-0.5)*3).toFixed(2);
-        let pct = (pctN > 0 ? "+" : "") + pctN + "%";
-        let chgClass = pctN > 0 ? "chg-pos" : pctN < 0 ? "chg-neg" : "chg-zero";
-        let dotClass = isMarketOpen(symObj.sym, type) ? "dot-open" : "dot-closed";
-        let marketDot = `<span class="market-dot ${dotClass}"></span>`;
+    getBBCNews();
+
+    // Tweet kartları canlı (her 2 sn)
+    async function fetchTweetsRealTime() {
+      try {
+        // API: örneğin https://your-tweet-api-endpoint.com/api/tweets
+        let res = await fetch("/api/tweets"); // Kendi backendine uyarlayabilirsin!
+        let data = await res.json();
+        renderTweets(data);
+      } catch {
+        // Dummy fallback örnek
+        const data = [
+          {user:"@realDonaldTrump", text:"THE ONE, BIG, BEAUTIFUL BILL PASSED!", likes:255000, date:"2025-05-28T13:45:00Z", stats:{reply:37000, rt:62000, like:357000, view:51000000}, avatar:"https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg", disp:"Donald J. Trump"},
+          {user:"@elonmusk", text:"AI will change everything.", likes:210000, date:"2025-05-28T10:11:00Z", stats:{reply:4000, rt:12000, like:200000, view:5000000}, avatar:"https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg", disp:"Elon Musk"}
+        ];
+        renderTweets(data);
+      }
+    }
+    function renderTweets(tweets=[]) {
+      let grid = document.getElementById("tweets-grid");
+      if (!tweets.length) { grid.innerHTML = "<div style='padding:24px;text-align:center;color:#aaa;'>Son 24 saatte piyasayı etkileyen twit bulunamadı.</div>"; return; }
+      grid.innerHTML = tweets.map(tw => `
+        <div class="tweet-card">
+          <div class="tweet-header">
+            <img src="${tw.avatar || ''}" class="tweet-avatar" onerror="this.src='https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png'">
+            <div class="tweet-userbox">
+              <div class="tweet-username-row">
+                <span class="tweet-username">${tw.disp || ""}</span>
+                <span class="tweet-handle">${tw.user || ""}</span>
+              </div>
+              <span class="tweet-date">${(new Date(tw.date)).toLocaleString("tr-TR", {hour12:false, year:"2-digit", month:"2-digit", day:"2-digit", hour:"2-digit", minute:"2-digit"})}</span>
+            </div>
+          </div>
+          <div class="tweet-body">${tw.text}</div>
+          <div class="tweet-stats">
+            <span class="tweet-stat">
+              <svg viewBox="0 0 24 24"><g><path d="M2.242 19.759a.999.999 0 0 1-.948-1.32l1.335-3.34a7.39 7.39 0 0 1-1.11-3.796c0-2.098.871-4.047 2.218-5.52C9.365 5.836 12.366 4.625 15.364 3.112a1 1 0 1 1 .895 1.788c-2.728 1.365-5.457 2.651-8.058 4.116a5.38 5.38 0 0 0-1.61 4.143c0 .86.217 1.7.594 2.453a1 1 0 0 1-.47 1.383z"></path></g></svg>
+              ${tw.stats?.reply?.toLocaleString("tr-TR") || "0"}
+            </span>
+            <span class="tweet-stat">
+              <svg viewBox="0 0 24 24"><g><path d="M23 3a1 1 0 0 1 0 2h-2.09A10.97 10.97 0 0 1 21 12c0 5.06-3.935 9-9 9a9 9 0 0 1-8.999-9A9 9 0 0 1 12 3a1 1 0 0 1 0 2 7 7 0 1 0 7 7c0-1.08-.262-2.102-.72-3H19a1 1 0 1 1 0 2h-2.78A10.93 10.93 0 0 1 12 19c4.411 0 8-3.134 8-7.001a7.982 7.982 0 0 0-.524-2.732A1 1 0 1 1 23 3z"></path></g></svg>
+              ${tw.stats?.rt?.toLocaleString("tr-TR") || "0"}
+            </span>
+            <span class="tweet-stat tweet-likes">
+              <svg viewBox="0 0 24 24"><g><path d="M12 21.638h-.01C9.14 21.59 1.35 14.857 1.35 8.478c0-3.032 2.343-5.478 5.375-5.478 2.183 0 3.949 1.286 4.747 3.057.798-1.771 2.564-3.057 4.747-3.057 3.032 0 5.375 2.446 5.375 5.478 0 6.379-7.79 13.112-10.65 13.16z"></path></g></svg>
+              ${tw.stats?.like?.toLocaleString("tr-TR") || tw.likes.toLocaleString("tr-TR")}
+            </span>
+            <span class="tweet-stat">
+              <svg viewBox="0 0 24 24"><g><path d="M8 21c-1.104 0-2-.895-2-2h16a2 2 0 0 1-2 2H8zM19 5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11zm-4 6h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0-2z"></path></g></svg>
+              ${tw.stats?.view?.toLocaleString("tr-TR") || ""}
+            </span>
+          </div>
+        </div>
+      `).join("");
+    }
+    fetchTweetsRealTime();
+    setInterval(fetchTweetsRealTime, 2000);
+
+    // TradingView tablosu (dummy embed)
+    function renderTVSymbols(type) {
+      let symbol;
+      if(type=="bist") symbol = "BIST:XU100";
+      else if(type=="nasdaq") symbol = "NASDAQ:NDX";
+      else symbol = "TVC:GOLD";
+      let html = `<div class="tv-widget">
+        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_77c5b&symbol=${symbol}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=1&timezone=Europe/Istanbul&studies=[]&hideideas=1&hidevolume=1&toolbarbg=f7f7f7&withdateranges=1&saveimage=0&studies_overrides={}&enabled_features=[]&disabled_features=[]&locale=tr" width="730" height="380" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
+      </div>`;
+      document.getElementById("tv-chart").innerHTML = html;
+    }
+    renderTVSymbols("bist");
+
+    // Ekonomik Takvim (TradingEconomics) - sadece bugünün verisi
+    async function fetchEcoCalendar() {
+      // Tradingeconomics veya başka güvenilir kaynaktan çekmen gerekir, burada dummy örnek:
+      let today = new Date().toISOString().slice(0, 10);
+      let api = `https://economic-calendar.tradingeconomics.com/?date=${today}`;
+      // Gerçek API ile entegre etmelisin
+      // Şimdilik örnek dummy veri:
+      const dummy = [
+        {time:"09:00", country:"TR", event:"TCMB Faiz Kararı", imp:3, val:"%50.00"},
+        {time:"11:30", country:"US", event:"İşsizlik Oranı", imp:2, val:"%3.8"}
+      ];
+      let html = `<div class='eco-calendar-list'>${dummy.map(e => `
+        <div class='eco-calendar-item eco-imp-${e.imp}'>
+          <div class='eco-head'>
+            <span class='eco-time'>${e.time}</span>
+            <span class='eco-country'>${e.country}</span>
+            <span class='eco-event'>${e.event}</span>
+            <span class='eco-val'>${e.val}</span>
+          </div>
+        </div>
+      `).join('')}</div>`;
+      document.getElementById("eco-calendar").innerHTML = html;
+    }
+    fetchEcoCalendar();
+
+    // Sol Panel veri çekimi (dummy)
+    async function fetchFinnhubPanel(type) {
+      // Demo - Gerçek API ile güncellenmeli
+      const data = {
+        bist: [
+          {name:"ASELS", price:"132.00", chg:"+1.25%"},
+          {name:"THYAO", price:"314.40", chg:"-0.61%"},
+          {name:"AKBNK", price:"46.10", chg:"+0.38%"},
+          {name:"KCHOL", price:"184.60", chg:"+0.74%"},
+          {name:"GARAN", price:"56.50", chg:"-0.16%"},
+          {name:"BIMAS", price:"216.10", chg:"+0.29%"},
+          {name:"TUPRS", price:"158.40", chg:"+0.59%"}
+        ],
+        nasdaq: [
+          {name:"Apple", price:"182.10", chg:"+1.92%"},
+          {name:"Microsoft", price:"317.20", chg:"-0.44%"},
+          {name:"Amazon", price:"127.90", chg:"+0.84%"},
+          {name:"Google", price:"116.70", chg:"+0.51%"},
+          {name:"Meta", price:"292.60", chg:"+0.19%"},
+          {name:"Nvidia", price:"401.20", chg:"-0.22%"},
+          {name:"Tesla", price:"268.40", chg:"-1.07%"}
+        ],
+        emtia: [
+          {name:"BTC", price:"108767.26", chg:"-1.70%"},
+          {name:"ETH", price:"2663.81", chg:"-0.40%"},
+          {name:"Gümüş", price:"28.44", chg:"-0.34%"},
+          {name:"Altın", price:"2332.20", chg:"+0.16%"},
+          {name:"Platin", price:"1058.10", chg:"-0.09%"},
+          {name:"Petrol", price:"76.53", chg:"-0.60%"},
+          {name:"10Y Tahvil", price:"0", chg:""}
+        ]
+      };
+      let panel = data[type] || data.bist;
+      let html = `<table class='tv-table'><tr><th>Ad</th><th>Fiyat</th><th>Değişim</th></tr>`;
+      panel.forEach(row => {
+        let chgClass = row.chg[0] === "+" ? "chg-pos" : row.chg[0] === "-" ? "chg-neg" : "chg-zero";
         html += `<tr>
-          <td>${marketDot}${symObj.name}</td>
-          <td>${price}</td>
-          <td class="${chgClass}">${pct}</td>
+          <td>${row.name}</td>
+          <td>${row.price}</td>
+          <td class="${chgClass}">${row.chg}</td>
         </tr>`;
       });
       html += `</table>`;
       document.getElementById("symbols-table").innerHTML = html;
     }
+    // Varsayılan panel yükle
+    fetchFinnhubPanel("bist");
+
+    // Panel butonları
     document.getElementById('bistBtn').onclick = function() {
-      currentType = 'bist';
-      fetchPanel('bist');
+      fetchFinnhubPanel('bist');
       renderTVSymbols('bist');
       document.getElementById("gauge-label").innerText = "Açgözlülük Endeksi";
       this.classList.add('active');
@@ -374,8 +326,7 @@
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('usBtn').onclick = function() {
-      currentType = 'nasdaq';
-      fetchPanel('nasdaq');
+      fetchFinnhubPanel('nasdaq');
       renderTVSymbols('nasdaq');
       document.getElementById("gauge-label").innerText = "Greed Index";
       this.classList.add('active');
@@ -383,17 +334,15 @@
       document.getElementById('emtiaBtn').classList.remove('active');
     };
     document.getElementById('emtiaBtn').onclick = function() {
-      currentType = 'emtia';
-      fetchPanel('emtia');
+      fetchFinnhubPanel('emtia');
       renderTVSymbols('emtia');
       document.getElementById("gauge-label").innerText = "VIX";
       this.classList.add('active');
       document.getElementById('bistBtn').classList.remove('active');
       document.getElementById('usBtn').classList.remove('active');
     };
-    fetchPanel(currentType);
 
-    // Gauge
+    // Gauge çizimi (değeri güncelleyebilirsin)
     function drawGauge(val = 62) {
       const canvas = document.getElementById("gauge-canvas");
       const ctx = canvas.getContext("2d");
@@ -406,7 +355,7 @@
         {from: 80, to: 100, color: "#e74c3c"}
       ];
       let radius = 95, cx = 205, cy = 205, width = 48;
-      let start = Math.PI, end = 2*Math.PI;
+      let start = Math.PI;
       ranges.forEach(r => {
         let s = start + Math.PI * (r.from/100);
         let e = start + Math.PI * (r.to/100);
@@ -417,6 +366,7 @@
         ctx.shadowBlur = 0;
         ctx.stroke();
       });
+      // İğne
       let a = start + Math.PI*(val/100);
       ctx.save();
       ctx.translate(cx, cy);
@@ -432,6 +382,7 @@
       ctx.shadowColor = "#222";
       ctx.fill();
       ctx.restore();
+      // Merkez top
       ctx.save();
       ctx.beginPath();
       ctx.arc(cx, cy, 13, 0, 2 * Math.PI);
@@ -439,8 +390,10 @@
       ctx.shadowBlur = 0;
       ctx.fill();
       ctx.restore();
+      // Değer kutusu
       let score = document.getElementById("gauge-score");
       score.innerText = val;
+      // Alt etiket
       let sections = ["Çok Çekingen", "Çekingen", "Normal", "Hırslı", "Çok Hırslı"];
       let sectionLabel = "";
       if(val < 20) sectionLabel = sections[0];
@@ -451,148 +404,6 @@
       document.getElementById("gauge-section-label").innerText = sectionLabel;
     }
     drawGauge(62);
-
-    // Breaking News (BBC)
-    async function getBBCNews() {
-      let api = "https://api.rss2json.com/v1/api.json?rss_url=https://feeds.bbci.co.uk/news/business/rss.xml";
-      try {
-        let res = await fetch(api);
-        let data = await res.json();
-        let stories = data.items.slice(0, 8).map(i => i.title).join(" ♦ ");
-        document.getElementById("breaking-news-content").innerText = stories;
-      } catch {
-        document.getElementById("breaking-news-content").innerText = "Ekonomi haberlerine erişilemiyor.";
-      }
-    }
-    getBBCNews();
-
-    // TradingView Grafik
-    function renderTVSymbols(type) {
-      let symbol;
-      if(type=="bist") symbol = "BIST:XU100";
-      else if(type=="nasdaq") symbol = "NASDAQ:NDX";
-      else symbol = "TVC:GOLD";
-      let html = `<div class="tv-widget">
-        <iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tradingview_77c5b&symbol=${symbol}&interval=D&hidesidetoolbar=1&hidetoptoolbar=1&theme=light&style=1&timezone=Europe/Istanbul&studies=[]&hideideas=1&hidevolume=1&toolbarbg=f7f7f7&withdateranges=1&saveimage=0&studies_overrides={}&enabled_features=[]&disabled_features=[]&locale=tr" width="730" height="380" frameborder="0" allowtransparency="true" scrolling="no"></iframe>
-      </div>`;
-      document.getElementById("tv-chart").innerHTML = html;
-    }
-    renderTVSymbols(currentType);
-
-    // Ekonomik Takvim (NATIVE / TradingEconomics)
-    async function fetchCalendar() {
-      let today = new Date();
-      let yyyy = today.getFullYear();
-      let mm = String(today.getMonth() + 1).padStart(2, '0');
-      let dd = String(today.getDate()).padStart(2, '0');
-      let dateStr = `${yyyy}-${mm}-${dd}`;
-      let url = `https://api.tradingeconomics.com/calendar/country/all?d1=${dateStr}&d2=${dateStr}&c=guest:guest`;
-      try {
-        let res = await fetch(url);
-        let data = await res.json();
-        let html = '<div class="eco-calendar-list">';
-        if (data.length == 0) html += "<div>Bugün için etkinlik yok.</div>";
-        data.forEach(ev => {
-          let impClass = "eco-imp-" + (ev.Importance || 1);
-          html += `<div class="eco-calendar-item ${impClass}">
-            <div class="eco-head"><span class="eco-time">${ev.Date.split("T")[1].slice(0,5)}</span>
-            <span class="eco-country">${ev.Country || ''}</span>
-            <span class="eco-event">${ev.Event || ''}</span>
-            <span class="eco-val">${ev.Actual || ''}</span></div>
-          </div>`;
-        });
-        html += '</div>';
-        document.getElementById("eco-calendar").innerHTML = html;
-      } catch {
-        document.getElementById("eco-calendar").innerHTML = "<div>Ekonomik takvime erişilemiyor.</div>";
-      }
-    }
-    fetchCalendar();
-
-    // Tweet Card Stili (baraj kesinlikle gösterilmez)
-    const defaultAvatar = "https://abs.twimg.com/sticky/default_profile_images/default_profile_400x400.png";
-    const tweetThresholds = [
-      {user:"@realDonaldTrump", like:250000, avatar:"https://pbs.twimg.com/profile_images/874276197357596672/kUuht00m_400x400.jpg", disp:"Donald J. Trump"},
-      {user:"@RTErdogan", like:10000, avatar:"https://pbs.twimg.com/profile_images/1364584858124802050/TsUlnWt5_400x400.jpg", disp:"Recep Tayyip Erdoğan"},
-      {user:"@catturd2", like:20000, avatar:"https://pbs.twimg.com/profile_images/1619407957409474561/MEN7-LpD_400x400.jpg", disp:"Catturd"},
-      {user:"@memetsimsek", like:300, avatar:"https://pbs.twimg.com/profile_images/1613924388975042560/tP9vGcfu_400x400.jpg", disp:"Mehmet Şimşek"},
-      {user:"@TuncSatiroglu", like:1500, avatar:"https://pbs.twimg.com/profile_images/1593433663674290176/ZYwbl4pF_400x400.jpg", disp:"Tunç Şatıroğlu"},
-      {user:"laplace2011", like:500, avatar:defaultAvatar, disp:"Laplace"},
-      {user:"@elonmusk", like:100000, avatar:"https://pbs.twimg.com/profile_images/1590968738358079488/IY9Gx6Ok_400x400.jpg", disp:"Elon Musk"},
-      {user:"@NasdaqTurk", like:50, avatar:"https://pbs.twimg.com/profile_images/1278217956535611392/ClW-RhS8_400x400.jpg", disp:"Nasdaq Türk"},
-      {user:"@charliebilello", like:420, avatar:"https://pbs.twimg.com/profile_images/1324739583522471938/Kt4PDT1p_400x400.jpg", disp:"Charlie Bilello"},
-      {user:"@steve_hanke", like:100, avatar:"https://pbs.twimg.com/profile_images/1618587801350094849/iIxeEOMr_400x400.jpg", disp:"Steve Hanke"},
-      {user:"@Vivek4real_", like:3000, avatar:"https://pbs.twimg.com/profile_images/1646318491343652864/DTm-dTNS_400x400.jpg", disp:"Vivek"}
-    ];
-    const tweets = [
-      {user:"@realDonaldTrump", text:"THE ONE, BIG, BEAUTIFUL BILL” has PASSED the House of Representatives! ...", likes:255000, date:"2025-05-28T13:45:00Z", stats:{reply:37000, rt:62000, like:357000, view:51000000}},
-      {user:"@elonmusk", text:"AI will change everything.", likes:200000, date:"2025-05-28T10:11:00Z", stats:{reply:4000, rt:12000, like:200000, view:5000000}},
-      {user:"@memetsimsek", text:"Enflasyonla mücadelede kararlıyız.", likes:830, date:"2025-05-28T07:09:00Z", stats:{reply:40, rt:50, like:830, view:10000}},
-      {user:"@RTErdogan", text:"Türkiye büyümeye devam ediyor!", likes:13500, date:"2025-05-27T19:14:00Z", stats:{reply:1100, rt:1500, like:13500, view:700000}},
-      {user:"@catturd2", text:"Markets are acting insane today.", likes:25000, date:"2025-05-28T12:22:00Z", stats:{reply:2500, rt:8000, like:25000, view:210000}},
-      {user:"@charliebilello", text:"S&P500 hits a new record.", likes:530, date:"2025-05-28T09:00:00Z", stats:{reply:22, rt:44, like:530, view:3300}},
-      {user:"laplace2011", text:"Bayesian inference for markets is fun.", likes:600, date:"2025-05-27T21:10:00Z", stats:{reply:3, rt:6, like:600, view:4000}},
-      {user:"@NasdaqTurk", text:"Nasdaq Türkiye yatırımcıları için kritik seviye: 17000", likes:100, date:"2025-05-28T11:18:00Z", stats:{reply:8, rt:22, like:100, view:2600}},
-      {user:"@steve_hanke", text:"Hyperinflation remains a threat.", likes:180, date:"2025-05-27T16:00:00Z", stats:{reply:9, rt:21, like:180, view:5000}},
-      {user:"@TuncSatiroglu", text:"Altın için yılın fırsatı mı geliyor?", likes:1800, date:"2025-05-28T09:00:00Z", stats:{reply:98, rt:220, like:1800, view:82000}}
-    ];
-    function filterTweets() {
-      const now = new Date();
-      let list = [];
-      for(let prio of tweetThresholds){
-        let t = tweets.filter(tw => tw.user === prio.user && tw.likes >= prio.like && ((now - new Date(tw.date))/(1000*3600)) < 24);
-        if (t.length) {
-          t[0].avatar = prio.avatar || defaultAvatar;
-          t[0].name = prio.disp;
-          list.push(t[0]);
-        }
-      }
-      return list;
-    }
-    function renderTweets() {
-      let tlist = filterTweets();
-      let grid = document.getElementById('tweets-grid');
-      grid.innerHTML = '';
-      tlist.forEach(tw => {
-        let dateObj = new Date(tw.date);
-        let dt = dateObj.toLocaleDateString("tr-TR",{month:"2-digit",day:"2-digit"})+" "+dateObj.toLocaleTimeString("tr-TR",{hour:"2-digit",minute:"2-digit"});
-        let avatar = tw.avatar || defaultAvatar;
-        grid.innerHTML += `
-          <div class="tweet-card">
-            <div class="tweet-header">
-              <img src="${avatar}" alt="${tw.name}" class="tweet-avatar" onerror="this.onerror=null;this.src='${defaultAvatar}';">
-              <div class="tweet-userbox">
-                <div class="tweet-username-row">
-                  <span class="tweet-username">${tw.name}</span>
-                  <span class="tweet-handle">${tw.user}</span>
-                  <span class="tweet-dot">·</span>
-                  <span class="tweet-date">${dt}</span>
-                </div>
-              </div>
-            </div>
-            <div class="tweet-body">${tw.text}</div>
-            <div class="tweet-stats">
-              <span class="tweet-stat">
-                <svg viewBox="0 0 24 24"><g><path d="M14.046 2.242l.948 1.32C12.366 4.625 9.365 5.836 7.4 7.741a7.39 7.39 0 0 0-2.218 5.52c0 1.404.393 2.697 1.11 3.796l-1.335 3.34c-.202.505.254.991.76.797l3.315-1.32c1.072.433 2.248.673 3.47.673 4.416 0 8-3.134 8-7.001 0-3.229-2.61-5.882-6.456-7.404z"></path></g></svg>
-                ${tw.stats?.reply?.toLocaleString("tr-TR") || "0"}
-              </span>
-              <span class="tweet-stat">
-                <svg viewBox="0 0 24 24"><g><path d="M23 3a1 1 0 0 1 0 2h-2.09A10.97 10.97 0 0 1 21 12c0 5.06-3.935 9-9 9a9 9 0 0 1-8.999-9A9 9 0 0 1 12 3a1 1 0 0 1 0 2 7 7 0 1 0 7 7c0-1.08-.262-2.102-.72-3H19a1 1 0 1 1 0 2h-2.78A10.93 10.93 0 0 1 12 19c4.411 0 8-3.134 8-7.001a7.982 7.982 0 0 0-.524-2.732A1 1 0 1 1 23 3z"></path></g></svg>
-                ${tw.stats?.rt?.toLocaleString("tr-TR") || "0"}
-              </span>
-              <span class="tweet-stat tweet-likes">
-                <svg viewBox="0 0 24 24"><g><path d="M12 21.638h-.01C9.14 21.59 1.35 14.857 1.35 8.478c0-3.032 2.343-5.478 5.375-5.478 2.183 0 3.949 1.286 4.747 3.057.798-1.771 2.564-3.057 4.747-3.057 3.032 0 5.375 2.446 5.375 5.478 0 6.379-7.79 13.112-10.65 13.16z"></path></g></svg>
-                ${tw.stats?.like?.toLocaleString("tr-TR") || tw.likes.toLocaleString("tr-TR")}
-              </span>
-              <span class="tweet-stat">
-                <svg viewBox="0 0 24 24"><g><path d="M8 21c-1.104 0-2-.895-2-2h16a2 2 0 0 1-2 2H8zM19 5a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h11zm-4 6h-3a1 1 0 0 0 0 2h3a1 1 0 0 0 0-2z"></path></g></svg>
-                ${tw.stats?.view?.toLocaleString("tr-TR") || ""}
-              </span>
-            </div>
-          </div>`;
-      });
-    }
-    renderTweets();
   </script>
 </body>
 </html>
